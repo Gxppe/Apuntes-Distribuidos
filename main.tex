@@ -1,0 +1,130 @@
+\documentclass[final, letterpaper, 12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumerate}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{enumitem}
+\usepackage[hypcap]{caption}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{eufrak}
+\usepackage{amsmath}
+\usepackage[justification=centering]{caption}
+\usepackage{multirow}
+\usepackage{mathrsfs} % para formato de letra
+\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{listings}
+\usepackage[compatibility=false]{caption}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{lmodern}
+\usepackage{import}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage[margin=0.65in, foot=30pt, head = 10pt, bottom = 1.6in]{geometry}
+\usepackage{hyphenat}
+\usepackage{array}
+\usepackage{epstopdf}
+\usepackage{imakeidx}
+\usepackage[bookmarks=true, hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage{titlesec}
+\usepackage{siunitx}
+\usepackage{gensymb}
+\usepackage{setspace}
+\usepackage{subfigure}
+\usepackage{comment}
+\usepackage{subcaption}
+\usepackage{csquotes}
+\usepackage{tabularx}
+\usepackage{dirtytalk}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Para escribir código %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\lstset{style=mystyle}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{darkblue}{rgb}{0,0,0.6}
+\definecolor{darkgray}{rgb}{0.3,0.3,0.3}
+\definecolor{lightgray}{rgb}{0.98,0.98,0.98}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+   language=Matlab,
+   aboveskip=3mm,
+   belowskip=3mm,
+   showstringspaces=false,
+   columns=flexible,
+   basicstyle={\small\ttfamily},
+   numbers=none,
+   numberstyle=\tiny\color{gray},
+   keywordstyle=\color{blue},
+   commentstyle=\color{dkgreen},
+   stringstyle=\color{mauve},
+   breaklines=true,
+   breakatwhitespace=true
+   tabsize=3
+   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Tipo de página %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Turn on the style
+\pagestyle{fancy}
+% Clear the header and footer
+% Set the right side of the footer to be the page number
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{2025-2}
+\fancyfoot[C]{INF343 - Sistemas Distribuidos}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Portada %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\begin{comment}
+DATOS PARA 1 ESTUDIANTE: 
+        \begin{flushright}
+          \begin{tabular}{l l}
+             \large\textbf{Nombre} &  \ \ \ \large a\\\\
+             \large\textbf{ROL} & \ \ \ \large a\\\\
+             \large\textbf{Profesor:} & \ \ \ \large a \\\\
+             \large\textbf{Ayudante:} & \ \ \ \large a\\\\
+             \large\textbf{Fecha de entrega:} & \ \ \ \large a\\\\
+        \end{tabular}  
+        \end{flushright}
+\end{comment}
+    
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% Resto del documento %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+%%%%%\setlength{\parindent}{0pt} %sacar las sangrias%%%%%
+
+\section{Desarrollo}
+    \input{Desarrollo/Desarrollo}
+    \newpage
+
+
+\end{document}
+
