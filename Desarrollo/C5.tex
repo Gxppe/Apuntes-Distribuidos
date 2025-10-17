@@ -1,0 +1,59 @@
+\section{Capítulo 5: Algoritmos Distribuidos}
+\subsection{Conceptos Básicos}
+
+\textbf{Definición}: Tipo de algoritmo que se ejecuta concurrentemente en una red de procesos, con información limitada sobre los demás procesos. Trabajando cooperativamente mediante paso de mensajes en lograr un objetivo común.
+
+Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monitoreo consistente. Elección de un líder o coordinador. Exclusión mutua distribuida.
+
+\textbf{Caracterización de algoritmos distribuidos}: \begin{itemize}
+    \item Tipo de topología: Anilo, árbol, grafo general (dirigido o no dirigido, total o parcialmente conectado)
+    \item Modelos de computación: Estilo de interacción, modelo de sincronismo y restricciones temporales, modelo de fallas y fiabilidad
+    \item Medidas de desempeño: Complejidad de mensajes (\# mensajes), complejidad de tiempo (\# rondas)
+    \item Técnicas de diseño: Números de secuencia, relojes lógicos o vectoriales, marcas de tiempo para mensajes, contadores de mensajes, métodos de asentimiento (acknowledge), métodos de crédito, paso de testigo (token-passing)
+\end{itemize}
+
+\subsection{\textbf{Algoritmo de Eco-Chang}}
+
+\textbf{Objetivo}: Visitar paralelamente todos los nodos de una red de procesos, representada como una topología de grafo general no dirigido, generando un spanning tree.
+
+\textbf{Requisitos}: Topología de grafo general no dirigido y conexo. Se asume para el sistema o red de procesos un modelo asincrónico y sin fallas. Comunicación entre procesos es por paso de mensajes asincrónico y bidireccional. Cada nodo sólo conoce a los vecinos con quienes está directamente conectado. Existe un único nodo que comienza el algoritmo \textbf{(nodo iniciador)}
+
+\textbf{\textcolor{blue}{Algoritmo de dos fases}}: \begin{itemize}
+    \item \textbf{Exploración}: El nodo iniciador envía un mensaje a todos los nosdos de la red.
+    \item \textbf{Eco}: Asentimiento (acknowledge) de los nodos que recibieron el mensaje, mandando un eco de vuelta al nodo iniciador.
+\end{itemize}
+
+\textbf{\textcolor{blue}{Comportamiento básico}}: \begin{itemize}
+    \item Nodo \textbf{iniciador} envía el mensaje de \textbf{exploración} a sus vecinos.
+    \item Si un nodo recibe el mensaje por primera vez, este \underline{memoriza el vecino de origen} y distribuye el mensaje a sus otros vecinos.
+    \item Un nodo solo envía el mensaje de \textbf{eco} al vecino de origen cuando ha recibido mensajes de eco de todos sus otros vecinos.
+    \item El algoritmo termina cuando el nodo iniciador recibe un mensaje de \textbf{eco} de todos sus vecinos.
+\end{itemize}
+
+\textbf{{\textcolor{purple}{Variables del algoritmo en cada proceso}}}: \begin{itemize}
+    \item \textbf{comprometido}: Booleano que indica si está actibo el algoritmo en el proceso.
+    \item \textbf{iniciador}: Booleano que indica si el proceso es iniciador.
+    \item \textbf{n}: contador que indica número de mensajes recibidos por el proceso desde sus vecinos.
+    \item \textbf{origen}: identifica al vecino desde el cual le llegó al proceso el \underline{primer} mensaje de exploración.
+\end{itemize}
+
+\textbf{Observación}: Inicialmente se asume que todo nodo no es iniciador, que no están comprometidos y que no han recibido mensajes.
+
+\vspace{0.5em}
+
+\textbf{Complejidad}: \textbf{Tiene complejidad 2e mensajes}, donde \textbf{e} es el número de aristas del grafo
+
+Se usa paso de mensajes unidireccional y asincrónico. El algoritmo genera un spanning tree. Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. Se supone que el algoritmo se \underline{se inicia sólo en un nodo}.
+
+\subsection{Algoritmos de elección}
+\textbf{Objetivo}: Ponerse de acuerdo en una red de procesos, suponiendo que los procesos están únicamente identificados y es posible ordenarlos totalmente.
+
+Ejemplos: Determinación de un único coordinador o líder para un grupo de procesos cooperativos. Elección de un coordinador para gestionar una transacción distribuida y comprometerla, etc.
+
+\vspace{0.5em}
+
+\textbf{Caracterización} \begin{itemize}
+    \item \textbf{Topología}: Anillo, árbol, red totalmente conectada, grafo general (arbitrario).
+    \item \textbf{Modelo del sistema}: Asincrónico vs Sincrónico, modelo de fallas
+    \item \textbf{Criterios típicos de diseño}: Nodos o procesos con identificador único, usado como criterio de selección. Principio de extinción de mensajes para garantizar término del algoritmo en tiempo finito. Simetría: nodos iguales que ejecutan el mismo algoritmo y cualquiera es elegible. Nodos tienen conocimiento sólo de sus vecinos.
+\end{itemize}
