@@ -3,5 +3,36 @@
 Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
 
 \begin{center}
-    \subset : \textbf{Contenido}, e.g: $A=\left\{1,2\right\} $ y $B=\left\{1,2,3\right\}$ podemos decir que A \subset B
+    $\subset$ : \textbf{Contenido} $\Rightarrow$ : $A=\left\{1,2\right\} $ y $B=\left\{1,2,3\right\}$ podemos decir que A $\subset$ B
 \end{center}
+
+de lo antes definido tenemos lo siguiente:
+
+\begin{itemize}
+    \item \[ \forall e, e' \in E, e \neq e' : [e' \rightarrow e] \Leftrightarrow H(e') \subset H(e) \]
+    Esto se puede traducir como: \textcolor{red}{Si $e'$ ocurre antes que $e$, entonces $H(e')$ es un subconjunto de $H(e)$}.
+
+    \item \[ \forall e, e' \in E, e \neq e' : [e' \parallel e] \Leftrightarrow [H(e') \nsubseteq H(e)] \land [H(e) \nsubseteq H(e')] \]
+    Esto se lee como: \textcolor{red}{Si $e'$ es concurrente con $e$, entonces $H(e')$ no es un subconjunto de $H(e)$ y $H(e)$ no es subconjunto de $H(e')$}.
+\end{itemize}
+
+\subsection{Relojes vectoriales}
+
+Para los relojes vectoriales definiremos la siguiente estructura para el un proceso $P_i$, para n procesos
+\[
+   \left[ \mathit{Vc}[1], \mathit{Vc}[2], \dots, \mathit{Vc}[i], \dots, \mathit{Vc}[n] \right]
+\]
+
+Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales sabemos que $\forall e \in E$: Vc(e) representa H(e).
+
+Continuando, los procesos irán aumentando de la sigueinte forma:
+
+Para \textcolor{red}{\textbf{eventos locales} del proceso $P_i$}:
+\begin{enumerate}[label=\textbf{Paso \arabic*:}]
+    \item :\\
+    Se suma 1 al Vc($e_i$)[i], vale decir que le sumamos 1 a la marca del proceso i
+    \item :\\
+    Asignarle el valor anterior al resto de los otros procesos, o sea 
+    
+
+\end{enumerate}
