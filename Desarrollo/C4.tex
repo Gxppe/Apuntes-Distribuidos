@@ -17,7 +17,6 @@ de lo antes definido tenemos lo siguiente:
 \end{itemize}
 
 \subsection{Relojes vectoriales}
-
 Para los relojes vectoriales definiremos la siguiente estructura para el un proceso $P_i$, para n procesos
 \[
    \left[ \mathit{Vc}[1], \mathit{Vc}[2], \dots, \mathit{Vc}[i], \dots, \mathit{Vc}[n] \right]
@@ -32,7 +31,39 @@ Para \textcolor{red}{\textbf{eventos locales} del proceso $P_i$}:
     \item :\\
     Se suma 1 al Vc($e_i$)[i], vale decir que le sumamos 1 a la marca del proceso i
     \item :\\
-    Asignarle el valor anterior al resto de los otros procesos, o sea 
-    
+    Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
 
+    \[
+\textcolor{green!50!black}{
+  \left[ 
+    \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
+  }
+\textcolor{black}{
+    \mathit{Vc}[i]
+}
+\textcolor{green!50!black}{
+    , \dots, \mathit{Vc}[n]
+  \right]
+}
+\]
+
+donde los indices en verde, se mantendran iguales para el evento local.\\
 \end{enumerate}
+
+Resultando Finalmente en el siguiente vector para $P_i$
+
+\[
+\textcolor{green!50!black}{
+  \left[ 
+    \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
+  }
+\textcolor{black}{
+    \mathit{Vc}[i] + 1
+}
+\textcolor{green!50!black}{
+    , \dots, \mathit{Vc}[n]
+  \right]
+}
+\]
+
+
