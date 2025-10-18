@@ -60,3 +60,64 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
     \item \textbf{Modelo del sistema}: Asincrónico vs Sincrónico, modelo de fallas
     \item \textbf{Criterios típicos de diseño}: Nodos o procesos con identificador único, usado como criterio de selección. Principio de extinción de mensajes para garantizar término del algoritmo en tiempo finito. Simetría: nodos iguales que ejecutan el mismo algoritmo y cualquiera es elegible. Nodos tienen conocimiento sólo de sus vecinos.
 \end{itemize}
+
+\subsubsection{Elección en un grafo general}
+
+\textbf{Claves de diseño del algoritmo}: Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador del sistema. Propagar identificador máximo conocido por un nodo. Identificadores menores se extignuen y dejar de propagarse, al ser dominador por algún máximo relativo. Sólo \textbf{mayor identificador logra propagarse} y alcanzar a todos los nodos de la red. Sólo procesos candidatos en una elección ejecutan la partida del algoritmo.
+
+\underline{Falta lo de las conclusiones}
+
+\subsubsection{Elección en un anillo unidireccional} 
+
+\textbf{Claves de diseño del algoritmo}: Es similar al anterior, pero permite una elección en una topología de anillo unidireccional. Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador. Sólo mayor identificador logra circular por todo el anillo. Usado en redes token-ring.
+
+\textbf{Comentarios}: Mensajes con identificador menor que M se extinguen. Si un iniciador le llega un mensaje de elección con su propio identificador, entonces toma conocimiento que ha sido elegido. El algoritmmo se puede extender, para que en una segunda ronda el ganador comunique a los otros nodos que ha sido elegido.
+
+\subsubsection{Elección en un grafo totalmente conectado con fallas de proceso}
+
+\textbf{Algoritmo del matón}:
+
+\begin{itemize}
+    \item \textbf{Requisito de conectividad}: Cada proceso conoce a todos los demás y existe conectividad completa. Cualquier nodo se comunica con un \underline{broadcast} con todos y fiablemente.
+
+    \item \textbf{Inicio del algoritmo}: Se inicia cuando un proceso diferente al coordinador detecta que éste ha fallado, lo que puede ocurrir \underline{concurrentemente} en varios procesos. Corresponde a un mecanismo de \underline{heartbeat}, donde el coordinador manda periódicamente un mensaje avisando que \textcolor{blue}{está vivo}. La detección requiere uso de \underline{timers}, por lo tanto usa un modelo \textbf{sincrónico}.
+
+    \item \textbf{Lógico del algoritmo}: Cada proceso envía un mensaje de control especial sólo a procesos con \textcolor{red}{mayor identificador}, estos procesos reciben el mensaje y responde con OK solo a procesos con \textcolor{red}{menor identificador}. Proceso que no recibe respuesta, se hace coordinador y lo comunica a los demás, si recibe respuesta de uno \textcolor{red}{mayor abandona} la elección.
+\end{itemize}
+
+\textbf{Comentarios}: Se requiere una red de conexión directa entre cualquier par de nodos. Cada nodo requiere conocer a todos los demás y como se ordenan. Opera en un modelo sincrónico. Es necesario disponer de un cierto nivel de sincronismo, para saber hasta cuánto esperar. Para detectar la falla del coordinador se usan algoritmos de tipo \underline{heartbeat}
+
+\subsection{Algoritmos distribuidos de exclusión mutua}
+
+\textbf{Objetivo}: Garantizar que a lo más un único proceso puede ejecutar simultáneamente una sección crítica. Se requiere evitar condiciones de carrera, como coordinar acceso a un recurso, garantizar la consistencia de los datos o mantener el correcto funcionamiento de un sistema distribuido.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/Clasificacion_algoritmos.png}
+    \caption{Esquema de exclusión mutua distribuida}
+\end{figure}
+
+\textbf{Una solución correcta para el problema de la exclusión mutua considera los siguientes estados y requisitos}
+
+\begin{itemize}
+    \item[a)] Estados de un proceso:
+    
+    $P_i$ respecto a la SC: \textbf{Requesting}: $P_i$ está solicitando ingresar a la SC; y se bloque si SC está ocupada por otro proceso. \textbf{Executing}: $P_i$ está ejecutando la SC y ningún otro proceso puede estar simultáneamente en este estado. \textbf{Idle}: $P_i$ esstá fuera de la SC, ejecutando acciones independientes; se dice que el proceso está ocioso.
+
+    \item[b)] Requisitos para la solución:
+    
+    \textcolor{blue}{Seguridad}: En todo momento a lo más un proceso está en la SC. \textcolor{blue}{Vivacidad}: La solicitud a entrar en la SC se resuelve en tiempo finito. \textcolor{blue}{Justicia}: Si una sollicitud de ingreso a la SC sucede antes que otra, entonces la entrada a la SC es en ese orden.
+\end{itemize}
+
+Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas.
+
+\subsubsection{Exclusión mutua con control centralizado}
+
+\textbf{Caracterización}: Requiere de un único proceso controlador que otorga el permiso para entrar a la SC. Procesos que solicitan permiso al controlador deben esperar respuesta para ingresar a su SC. La solución requiere 3 tipos de mensajes: 
+
+\begin{itemize}
+    \item \textcolor{blue}{Request}: Proceso solicita permiso a controlador para ingresar a su SC.
+    \item \textcolor{blue}{Grant}: Controlador concede el permiso.
+    \item \textcolor{blue}{Release}: Proceso que sale de su SC, avisa al controlador sobre su liberación.
+\end{itemize}
+
