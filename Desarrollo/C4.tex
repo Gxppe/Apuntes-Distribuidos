@@ -66,4 +66,32 @@ Resultando Finalmente en el siguiente vector para $P_i$
 }
 \]
 
+Para mensajes entre procesos, solo se modifica la marca del proceso que esta mandando el mensaje, por ejemplo, si $P_i$ manda un mensaje a $P_j$, se modifica la marca del vector $P_j$ asociada a $P_i$.
+
+\subsubsection{Propiedades de los rejoles vectoriales}
+
+Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un reloj en sistemas distribuidos}} se refiere a la capacidad de determinar de forma bidireccional si un evento precede causalmente a otro, permitiendo un ordenamiento total o casi total de los eventos en el sistema.
+\begin{enumerate}
+  \item Relación de igualdad:
+  \[
+  V=V' \equiv  [\forall k: V[k]=V'[K]]
+  \]
+  \item Relación de orden: 
+  \[
+  V<V' \equiv [V \neq V'] \land [\forall k: V[k] \leq V'[k]]
+  \]
+  \item Condición fuerte:
+  \[
+    e \rightarrow e' \equiv VC(e) < VC(e')
+  \]
+  \[
+      e || e' \equiv \lnot [VC(e)<VC(e')]\land \lnot[VC(e')<VC(e)]
+  \]
+\end{enumerate}
+
+El  numero de eventos precedentes es equivalente a la suma del vector completo, menos el evento mismo.
+
+La propiedad de detección de apertura nos permite a un proceso $P_j$ detectar que existe un evento e' que ocurre en otro $P_i$ despues de un evento $e_i$ ya conocido por $P_j$. Notese además que los relojes vectoriales tienen la capacidad de \textbf{detectar causalidad, concurrencia, coordinacion centralizada y es tolerante a fallos}. Sin embargo tiene limitaciones, como, \textbf{overhead, complejidad (más complejo que lamport), si bien dijimos que tolera fallas, es deficiente ante fallas bizantinas y sistemas altamente dinamicos (con una entrada y salida de procesos, dado que se tiene que redimencionar el vector)}
+
+
 
