@@ -39,9 +39,12 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 
 \textbf{Observación}: Inicialmente se asume que todo nodo no es iniciador, que no están comprometidos y que no han recibido mensajes.
 
+\textbf{Observación 2}: Si el Eco de Chang se inicia varias veces en una misma topologia por nodos distintos., lo que se genera se denomina como \textcolor{red}{\textbf{bosque}}, vale decir tambien, que cada iniciador tiene un arbol distinto.
 \vspace{0.5em}
 
-\textbf{Complejidad}: \textbf{Tiene complejidad 2e mensajes}, donde \textbf{e} es el número de aristas del grafo
+\textbf{Observación 3}: Aun con ciclos, este algoritmo converge.
+
+\textbf{Complejidad}: \textcolor{red}{\textbf{Tiene complejidad 2e mensajes}}, donde \textbf{e} es el número de aristas del grafo
 
 Se usa paso de mensajes unidireccional y asincrónico. El algoritmo genera un spanning tree. Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. Se supone que el algoritmo se \underline{se inicia sólo en un nodo}.
 
