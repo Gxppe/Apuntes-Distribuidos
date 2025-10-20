@@ -9,12 +9,21 @@ Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\tex
 de lo antes definido tenemos lo siguiente:
 
 \begin{itemize}
-    \item \[ \forall e, e' \in E, e \neq e' : [e' \rightarrow e] \Leftrightarrow H(e') \subset H(e) \]
+
+    \item 
+    \[
+    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \rightarrow e] \Leftrightarrow H(e') \subset H(e)$}
+    \]
     Esto se puede traducir como: \textcolor{red}{Si $e'$ ocurre antes que $e$, entonces $H(e')$ es un subconjunto de $H(e)$}.
 
-    \item \[ \forall e, e' \in E, e \neq e' : [e' \parallel e] \Leftrightarrow [H(e') \nsubseteq H(e)] \land [H(e) \nsubseteq H(e')] \]
+    \item 
+    \[
+    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \parallel e] \Leftrightarrow [H(e') \nsubseteq H(e)] \land [H(e) \nsubseteq H(e') ]$}
+    \]
     Esto se lee como: \textcolor{red}{Si $e'$ es concurrente con $e$, entonces $H(e')$ no es un subconjunto de $H(e)$ y $H(e)$ no es subconjunto de $H(e')$}.
+
 \end{itemize}
+
 
 \subsection{Relojes vectoriales}
 Para los relojes vectoriales definiremos la siguiente estructura para el un proceso $P_i$, para n procesos
@@ -27,27 +36,28 @@ Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales s
 Continuando, los procesos irán aumentando de la sigueinte forma:
 
 Para \textcolor{red}{\textbf{eventos locales} del proceso $P_i$}:
-\begin{enumerate}[label=\textbf{Paso \arabic*:}]
-    \item :\\
-    Se suma 1 al Vc($e_i$)[i], vale decir que le sumamos 1 a la marca del proceso i
-    \item :\\
-    Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
+% Asegúrate de tener \usepackage{enumitem} y \usepackage{xcolor} en tu preámbulo
 
+\begin{enumerate}[label=\textbf{Paso \arabic*:}, wide, labelindent=0pt]
+    \item Se suma 1 al Vc($e_i$)[i], vale decir que le sumamos 1 a la marca del proceso i
+    
+    \item Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
+    
     \[
-\textcolor{green!50!black}{
-  \left[ 
-    \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
-  }
-\textcolor{black}{
-    \mathit{Vc}[i]
-}
-\textcolor{green!50!black}{
-    , \dots, \mathit{Vc}[n]
-  \right]
-}
-\]
-
-donde los indices en verde, se mantendran iguales para el evento local.\\
+    \textcolor{green!50!black}{
+      \left[ 
+        \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
+      }
+    \textcolor{black}{
+        \mathit{Vc}[i]
+    }
+    \textcolor{green!50!black}{
+        , \dots, \mathit{Vc}[n]
+      \right]
+    }
+    \]
+    
+    donde los indices en verde, se mantendran iguales para el evento local.
 \end{enumerate}
 
 Resultando Finalmente en el siguiente vector para $P_i$
@@ -73,15 +83,15 @@ Para mensajes entre procesos, solo se modifica la marca del proceso que esta man
 Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un reloj en sistemas distribuidos}} se refiere a la capacidad de determinar de forma bidireccional si un evento precede causalmente a otro, permitiendo un ordenamiento total o casi total de los eventos en el sistema.
 \begin{enumerate}
   \item Relación de igualdad:
-  \[
+  \[ \tiny
   V=V' \equiv  [\forall k: V[k]=V'[K]]
   \]
   \item Relación de orden: 
-  \[
+  \[ \tiny
   V<V' \equiv [V \neq V'] \land [\forall k: V[k] \leq V'[k]]
   \]
   \item Condición fuerte:
-  \[
+  \[ \tiny
     e \rightarrow e' \equiv VC(e) < VC(e')
   \]
   \[
@@ -108,7 +118,7 @@ La cola observada en la figura anterior, es la encargada de generar las observac
 Para entregas causales tenemos las siguientes condiciones:
 
 \textbf{Condición FIFO:}
-\begin{figure}[!ht]
+\begin{figure}[H]
 \centering
 \begin{circuitikz}[scale=1.2, transform shape]
 \tikzset{every node/.style={font=\small}}
@@ -147,25 +157,25 @@ Las lineas verdes hacen el flujo de izquierda a derecha que representa una corre
 
 \textbf{Condición de entrega causal:} Si yo tengo un mensaje de J, para ver que no exista un mensaje de otro proceso, se compara lo siguiente
 \[
-  \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
+  \tiny \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
 \]
 \subsubsection*{Visualización del algoritmo de entrega causal}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.5\linewidth]{img/Alg_entrega_causal.png}
+  \includegraphics[width=1\linewidth]{img/Alg_entrega_causal.png}
   \caption{Algoritmo de entrega causal}\label{fig:1760798568394}
 \end{figure}
 
 Desde el punto de vista de $P_0$, comparamos lo siguiente
 \[
-  D[k]\leq Vc(m)[k]
+  \tiny D[k]\leq Vc(m)[k]
 \]
 
 Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en Q, observamos todas las dimensiones distintas de K:
 
 \[
-  \left[   \underbrace{n_1, n_2, \dots}_{\textcolor{red}{\textbf{Vemos esto}}}, n_k ,\underbrace{\dots,n_{n-1}, n_{n},}_{\textcolor{red}{\textbf{Vemos esto}}}   \right] 
+  \tiny \left[   \underbrace{n_1, n_2, \dots}_{\textcolor{red}{\textbf{Vemos esto}}}, n_k ,\underbrace{\dots,n_{n-1}, n_{n},}_{\textcolor{red}{\textbf{Vemos esto}}}   \right] 
 \]
 
 Algo a tener en cuenta y es bastante importante, distintos observadores podrian tener distintos relojes vectoriales \textcolor{red}{(esto es debido a latencias con $P_0$)}
@@ -174,7 +184,7 @@ Algo a tener en cuenta y es bastante importante, distintos observadores podrian 
 \subsubsection{Estados globales}
 Un corte puede tener mensajes en transito. pero denotamos la siguiente caracteristica:
 \[
-    \text{Corte valido} \neq \text{Corte consistente}
+  \tiny  \text{Corte valido} \neq \text{Corte consistente}
 \]
 Por lo tanto decimos que, un corte consistente es aquel que un evento sucede antes que otro, es considerado
 
@@ -184,7 +194,7 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
 \begin{figure}[H]
   \centering
   \captionsetup[subfigure]{labelformat=empty}
-  \begin{subfigure}[b]{0.48\textwidth}
+  \begin{subfigure}[b]{0.3\textwidth}
     \includegraphics[width=\textwidth]{img/Chandy_ver.png}
     \caption{Visualización del algoritmo}
   \end{subfigure}
@@ -195,7 +205,6 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
   \end{subfigure}
   \label{fig:imagenes_lado_a_lado}
 \end{figure}
-
 Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, este envia otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
 
 En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca exactamente, independiente de la cantidad de marcas que vaya a recibir. 
@@ -203,12 +212,9 @@ En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca
 \subsubsection{Estados estables}
 
 Para cualquier estado \textcolor{red}{\textbf{S}} y un estado futuro \textcolor{red}{\textbf{S'}}, si la propiedad \textcolor{red}{\textbf{P}} es verdadera en \textcolor{red}{\textbf{S}}, y el sistema puede llegar a \textcolor{red}{\textbf{S'}}, entonces la propiedad \textcolor{red}{\textbf{P}} tambien debe ser verdadera en \textcolor{red}{\textbf{S'}}
-
 Los siguientes son ejemplos de estados estables:
-\begin{center}
-  \begin{enumerate}
-    \item El sistema esta en deadlock
-    \item El algoritmo termino
-  \end{enumerate}
-\end{center}
+\begin{enumerate}
+  \item El sistema esta en deadlock
+  \item El algoritmo termino
+\end{enumerate}
 Una propiedad podria ser un algoritmo que detecte detención.

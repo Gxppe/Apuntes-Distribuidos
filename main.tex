@@ -13,7 +13,7 @@
 \usepackage[spanish,es-tabla]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{circuitikz}
+\usepackage[siunitx, european]{circuitikz}
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{eufrak}
@@ -57,77 +57,47 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-
-\lstset{style=mystyle}
-
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{darkblue}{rgb}{0,0,0.6}
-\definecolor{darkgray}{rgb}{0.3,0.3,0.3}
-\definecolor{lightgray}{rgb}{0.98,0.98,0.98}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{frame=tb,
-   language=Matlab,
-   aboveskip=3mm,
-   belowskip=3mm,
-   showstringspaces=false,
-   columns=flexible,
-   basicstyle={\small\ttfamily},
-   numbers=none,
-   numberstyle=\tiny\color{gray},
-   keywordstyle=\color{blue},
-   commentstyle=\color{dkgreen},
-   stringstyle=\color{mauve},
-   breaklines=true,
-   breakatwhitespace=true
-   tabsize=3
-   }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%% Tipo de página %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Turn on the style
-\pagestyle{fancy}
-% Clear the header and footer
-% Set the right side of the footer to be the page number
-\fancyfoot[R]{\thepage}
-\fancyfoot[L]{2025-2}
-\fancyfoot[C]{INF343 - Sistemas Distribuidos}
+\geometry{margin=0.4cm} % Márgenes más reducidos
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0pt}
+\renewcommand{\baselinestretch}{0.55} % Interlineado más reducido
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%% Portada %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Configuración COMPLETA para listas compactas
+\usepackage{enumitem}
+\setlist{
+  nosep,                    % Elimina TODO el espacio vertical
+  left=0pt,                 % Sangría izquierda cero
+  topsep=0pt,               % Sin espacio arriba
+  partopsep=0pt,            % Sin espacio adicional
+  parsep=0pt,               % Sin espacio entre ítems
+  itemsep=0pt               % Sin espacio entre elementos
+}
+
+\captionsetup{
+    font = footnotesize,  % <-- Letra más pequeña
+    justification = centering,
+    skip = 1pt            % <-- Espacio MÍNIMO entre imagen y leyenda (puedes usar 0pt)
+}
+
+% Quita TODO el espacio vertical ANTES y DESPUÉS de las figuras [H]
+\setlength{\intextsep}{0pt}
+
+% Configuración de títulos más compacta
+\usepackage{titlesec}
+\titleformat{\section}{\bfseries}{\thesection}{0.2em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection}{0.2em}{}
+\titleformat{\subsubsection}{\bfseries}{\thesubsubsection}{0.2em}{}
+\titlespacing{\section}{0pt}{6pt}{0pt} % Espacio reducido alrededor de secciones
+\titlespacing{\subsection}{0pt}{6pt}{0pt}
+\titlespacing{\subsubsection}{0pt}{6pt}{0pt}
 
 \begin{document}
+\scriptsize % Tamaño de letra más pequeño
+\begin{multicols}{3}
 
-\begin{comment}
-DATOS PARA 1 ESTUDIANTE: 
-        \begin{flushright}
-          \begin{tabular}{l l}
-             \large\textbf{Nombre} &  \ \ \ \large a\\\\
-             \large\textbf{ROL} & \ \ \ \large a\\\\
-             \large\textbf{Profesor:} & \ \ \ \large a \\\\
-             \large\textbf{Ayudante:} & \ \ \ \large a\\\\
-             \large\textbf{Fecha de entrega:} & \ \ \ \large a\\\\
-        \end{tabular}  
-        \end{flushright}
-\end{comment}
-    
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%% Resto del documento %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newpage
-%%%%%\setlength{\parindent}{0pt} %sacar las sangrias%%%%%
-
-\section{Desarrollo}
-    \input{Desarrollo/Desarrollo}
-    \newpage
-
-
+\input{Desarrollo/Desarrollo.tex}
+\end{multicols}
 \end{document}
 
