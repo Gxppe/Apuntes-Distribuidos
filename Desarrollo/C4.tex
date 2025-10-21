@@ -2,9 +2,12 @@
 \subsection{Historias Causales}
 Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
 
-\begin{center}
-    $\subset$ : \textbf{Contenido} $\Rightarrow$ : $A=\{1,2\}$ y $B=\big\{\underbrace{1,2}_{\textcolor{red}{\textbf{A}}},3\big\}$ podemos decir que A $\subset$ B
-\end{center}
+{
+\noindent\centering
+$\subset$ : \textbf{Contenido} $\Rightarrow$ : $A=\{1,2\}$ y 
+$B=\big\{\underbrace{1,2}_{\textcolor{red}{\textbf{A}}},3\big\}$ podemos decir que $A \subset B$
+\par
+}
 
 de lo antes definido tenemos lo siguiente:
 
@@ -120,7 +123,7 @@ Para entregas causales tenemos las siguientes condiciones:
 \textbf{Condición FIFO:}
 \begin{figure}[H]
 \centering
-\begin{circuitikz}[scale=1.2, transform shape]
+\begin{circuitikz}[scale=0.7, transform shape]
 \tikzset{every node/.style={font=\small}}
 
 % Línea principal
@@ -205,12 +208,11 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
   \end{subfigure}
   \label{fig:imagenes_lado_a_lado}
 \end{figure}
-Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, este envia otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
+Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, estos envian otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
 
 En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca exactamente, independiente de la cantidad de marcas que vaya a recibir. 
 
 \subsubsection{Estados estables}
-main.pdf
 Para cualquier estado \textcolor{red}{\textbf{S}} y un estado futuro \textcolor{red}{\textbf{S'}}, si la propiedad \textcolor{red}{\textbf{P}} es verdadera en \textcolor{red}{\textbf{S}}, y el sistema puede llegar a \textcolor{red}{\textbf{S'}}, entonces la propiedad \textcolor{red}{\textbf{P}} tambien debe ser verdadera en \textcolor{red}{\textbf{S'}}
 Los siguientes son ejemplos de estados estables:
 \begin{enumerate}
@@ -218,3 +220,6 @@ Los siguientes son ejemplos de estados estables:
   \item El algoritmo termino
 \end{enumerate}
 Una propiedad podria ser un algoritmo que detecte detención.
+
+
+\noindent\rule{\linewidth}{0.1pt}

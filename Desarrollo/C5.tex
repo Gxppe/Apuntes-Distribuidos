@@ -44,6 +44,7 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 
 \textbf{Observación 3}: Aun con ciclos, este algoritmo converge.
 
+\textbf{Observación 4}: El como se genera el arbol depende de la velocidad de transmisión del explorador entre nodos 
 \textbf{Complejidad}: \textcolor{red}{\textbf{Tiene complejidad 2e mensajes}}, donde \textbf{e} es el número de aristas del grafo
 
 Se usa paso de mensajes unidireccional y asincrónico. El algoritmo genera un spanning tree. Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. Se supone que el algoritmo se \underline{se inicia sólo en un nodo}.
@@ -53,6 +54,7 @@ Se usa paso de mensajes unidireccional y asincrónico. El algoritmo genera un sp
 
 Ejemplos: Determinación de un único coordinador o líder para un grupo de procesos cooperativos. Elección de un coordinador para gestionar una transacción distribuida y comprometerla, etc.
 
+Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, si pasa esto, puede existir dos coordinadores \textcolor{red}{\textbf{(Cortar el algoritmmo antes de tiempo)}}.
 \vspace{0.5em}
 
 \textbf{Caracterización} \begin{itemize}
@@ -81,9 +83,9 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/AU_1.png}
-    \includegraphics[width=0.2\textwidth]{img/AU_2.png}
-    \includegraphics[width=0.2\textwidth]{img/AU_3.png}
+    \includegraphics[width=0.25\textwidth]{img/AU_1.png}
+    \includegraphics[width=0.25\textwidth]{img/AU_2.png}
+    \includegraphics[width=0.25\textwidth]{img/AU_3.png}
     \caption{Esquema de elección en un anillo unidireccional}
 \end{figure}
 
@@ -103,8 +105,8 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/Bully_1.png}
-    \includegraphics[width=0.2\textwidth]{img/Bully_2.png}
+    \includegraphics[width=0.25\textwidth]{img/Bully_1.png}
+    \includegraphics[width=0.25\textwidth]{img/Bully_2.png}
     \caption{Esquema del algoritmo del matón}
     
 \end{figure}
@@ -115,7 +117,7 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/Clasificacion_algoritmos.png}
+    \includegraphics[width=0.25\textwidth]{img/Clasificacion_algoritmos.png}
     \caption{Esquema de exclusión mutua distribuida}
 \end{figure}
 
@@ -145,7 +147,7 @@ Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/E_M_Control_Centralizado.png}
+    \includegraphics[width=0.25\textwidth]{img/E_M_Control_Centralizado.png}
     \caption{Esquema de exclusión mutua con control centralizado}
 \end{figure}
 
@@ -153,7 +155,7 @@ Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/Algoritmos_token.png}
+    \includegraphics[width=0.25\textwidth]{img/Algoritmos_token.png}
     \caption{Esquema de algoritmo basado en token}
 \end{figure}
 
@@ -176,7 +178,7 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/A_Lamport.png}
+    \includegraphics[width=0.25\textwidth]{img/A_Lamport.png}
     \caption{Esquema del algoritmo de Lamport}
 \end{figure}
 
@@ -191,7 +193,7 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la siguiente figura) hace el trabanjo de Grant (para notificar el proximo proceso que tenga acceso a la SC), eso lo hace retrasando en envio de \textcolor{darkgreen}{\textbf{reply}} hasta el final.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{img/A_Ricart_Agrawala.png}
+    \includegraphics[width=0.33\textwidth]{img/A_Ricart_Agrawala.png}
     \caption{Esquema del algoritmo de Ricart y Agrawala}
 \end{figure}
 
