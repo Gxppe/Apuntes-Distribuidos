@@ -65,13 +65,27 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
 
 \textbf{Claves de diseño del algoritmo}: Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador del sistema. Propagar identificador máximo conocido por un nodo. Identificadores menores se extignuen y dejar de propagarse, al ser dominador por algún máximo relativo. Sólo \textbf{mayor identificador logra propagarse} y alcanzar a todos los nodos de la red. Sólo procesos candidatos en una elección ejecutan la partida del algoritmo.
 
-\underline{Falta lo de las conclusiones}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{img/GG_1.png}
+    \includegraphics[width=0.45\textwidth]{img/GG_2.png}
+    \includegraphics[width=0.45\textwidth]{img/GG_3.png}
+    \caption{Esquema de elección en un grafo general}
+\end{figure}
 
 \subsubsection{Elección en un anillo unidireccional} 
 
 \textbf{Claves de diseño del algoritmo}: Es similar al anterior, pero permite una elección en una topología de anillo unidireccional. Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador. Sólo mayor identificador logra circular por todo el anillo. Usado en redes token-ring.
 
 \textbf{Comentarios}: Mensajes con identificador menor que M se extinguen. Si un iniciador le llega un mensaje de elección con su propio identificador, entonces toma conocimiento que ha sido elegido. El algoritmmo se puede extender, para que en una segunda ronda el ganador comunique a los otros nodos que ha sido elegido.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/AU_1.png}
+    \includegraphics[width=0.5\textwidth]{img/AU_2.png}
+    \includegraphics[width=0.5\textwidth]{img/AU_3.png}
+    \caption{Esquema de elección en un anillo unidireccional}
+\end{figure}
 
 \subsubsection{Elección en un grafo totalmente conectado con fallas de proceso}
 
@@ -86,6 +100,14 @@ Ejemplos: Determinación de un único coordinador o líder para un grupo de proc
 \end{itemize}
 
 \textbf{Comentarios}: Se requiere una red de conexión directa entre cualquier par de nodos. Cada nodo requiere conocer a todos los demás y como se ordenan. Opera en un modelo sincrónico. Es necesario disponer de un cierto nivel de sincronismo, para saber hasta cuánto esperar. Para detectar la falla del coordinador se usan algoritmos de tipo \underline{heartbeat}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/Bully_1.png}
+    \includegraphics[width=0.6\textwidth]{img/Bully_2.png}
+    \caption{Esquema del algoritmo del matón}
+    
+\end{figure}
 
 \subsection{Algoritmos distribuidos de exclusión mutua}
 
@@ -121,3 +143,87 @@ Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas
     \item \textcolor{blue}{Release}: Proceso que sale de su SC, avisa al controlador sobre su liberación.
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/E_M_Control_Centralizado.png}
+    \caption{Esquema de exclusión mutua con control centralizado}
+\end{figure}
+
+\subsubsection{Algoritmos basados en token}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/Algoritmos_token.png}
+    \caption{Esquema de algoritmo basado en token}
+\end{figure}
+
+\subsection{Algoritmo de Lamport} 
+
+\textbf{Caracterización}: Algoritmo descentralizado basado en permisos, para un sisema asincrónico y basado en relojes lógico de lamport, para ordenar las solicitudes de ingreso a la SC.
+
+\vspace{0.5em}
+\underline{Condiciones para cada proceso $P_i$}: 
+
+Mantiene un reloj lógico LC y marca sus solicitudes con el par $(TS_i, i)$, para estableceer un orden global único. 
+
+Comunicación es por paso de mensajes asincrónico y garantiza orden FIFO para entrega de los mensajes. 
+
+Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascendentemente por marca de tiempo. $R_i = \{P_1, P_2, \ldots, P_n\} : \forall i, 1 \leq i \leq n$
+
+\vspace{0.5em}
+
+\underline{Tipos de mensajes}: Request, Reply, Release.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/A_Lamport.png}
+    \caption{Esquema del algoritmo de Lamport}
+\end{figure}
+
+\textbf{Desempeño}: \textcolor{red}{3(N-1)} mensajes por cada invocación a la \textbf{SC}. \textcolor{magenta}{Retardo de sincronización: T. Throughput = $\frac{1}{E+T}$}
+
+\textbf{Correctitud}: Es imposible que dos procesos vean en primera posición su solicitud en la cola, si sus canales son FIFO. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
+
+\subsection{Algoritmo de Ricart y Agrawala}
+
+\textbf{Claves de diseño}: Comparte la misma caracterización general con el algoritmo de Lamport. Cada proceso requiere permiso de todos los demás procesos. Inicialmente se cumple \textcolor{blue}{$\forall i, 1 \leq i \leq n$: $State_i$ = IDLE $\wedge$ $RequestQueue_i$ = $\emptyset$}. La RequestQueue contiene a los procesos que han sido diferidos en el ingreso a la SC. Solo se requiere 2 tipos de mensajes: Request y Reply
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/A_Ricart_Agrawala.png}
+    \caption{Esquema del algoritmo de Ricart y Agrawala}
+\end{figure}
+
+\textbf{Desempeño}: \textcolor{red}{2(N-1)} mensajes por cada invocación a la \textbf{SC}.  \textcolor{magenta}{Retardo de sincronización: T. Throughput = $\frac{1}{E+T}$}
+
+\textbf{Correctitud}: Es imposible que dos procesos diferentes, si sus canales son FIFO, reciban un mensaje \textcolor{red}{REPLY} de los demás. Necesariamente el mayor de los dos va a ser diferido en la cola de menor marca. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
+
+\subsection{Algoritmo de Susuki-Hasami}
+
+\textbf{Caracterización}: Algoritmo \textcolor{blue}{descentralizado basado en token}, para un sistema \textcolor{magenta}{asincrónico}. Garantiza \textcolor{magenta}{seguridad, vivacidad y justicia}.
+
+\textbf{Características específica}: Un único token circula entre los procesos que lo solicitan y únicamente el proceso en posición del token puede hacer uso de SC, \textcolor{blue}{garantizando exclusión mutua}. Reduce la sobrecarga de mensajes; sin embargo, la pérdida del token interrumpe operación del sistema, lo que \textcolor{red}{requiere mecanismos de recuperación.}
+
+\subsubsection{Idea general de funcionamiento}
+
+Supondremos N procesos. Un proceso $P_i = (\forall i, 1 \leq i \leq N)$ que intenta regresar a la SC y que no tiene token, debe solicitarlo a los demás procesos. Difunde un mensaje REQUEST por el token a todos los demás procesos. El proceso que posee el token al recibir mensaje REQUEST, se lo envía al solicitante bajo las siguientes condiciones: 
+\begin{itemize}
+    \item El token se envía al solicitante sólo si el proceso en posesión de éste no está enla SC
+    \item Si el proceso con el token estuviera en su SC, debiera retardar su envío hasta que salga de la SC.
+    \item En el caso de existir varias solicitudes pendientes, se prioriza acceso que primero generó la solicitud.
+\end{itemize}
+
+El \textbf{token} es una estructura de datos que lleva un registro de las solicitudes procesadas para cada proceso y mantiene una cola de solicitudes pendientes, estableciendo un orden de procesamiento y garantizando justicia y vivacidad.
+
+\subsubsection{Claves de diseño}
+\begin{itemize}
+    \item[a)] \textbf{Identificador único de solicitudes}: Cada solicitud de un proceso $P_i$ se identifica con su UID y un número de secuencia $ns_i$ independiente de otros procesos. Luego, cada mensaje de solicitud queda únicamente identificada como: $REQUEST(i, ns_i)$
+    \item[b)] \textbf{Arreglo de solicitudes por proceso}: $P_i$ mantiene $RN_i[1\ldots N]$, donde $RN_i[j]$ es la mayor solicitud recibida por $P_i$ desde $P_j$. Permite distinguir en el sistema entre solicitudes a\~{n}ejas y solicitudes recientes de un mismo proceso.
+    \item[c)] \textbf{Token}: Es único en el sistema y consiste de una \textcolor{blue}{cola $Q$} y un arreglo de solicitudes completamente procesadas $LN[1 \ldots N]$. \textcolor{blue}{$Q$} corresponde a una cola FIFO que \underline{ordena} el ingreso a la SC de procesos que solicitan necesitan el token.  $LN[1 \ldots N]$ es un arreglo, donde $LN[i]$ contiene $ns_i$ de última solicitud procesada para proceso $P_i$  permite determinar qué procesos tienen solicitudes pendientes.
+    \item[d)] \textbf{Lógica de procesos}: Un proceso $P_i$ en posición del token al salir de su SC, lo actualiza antes de considerar su envío haciendo: $P_i$ actualiza en el token: $LN[i] = RN[i]$. \textbf{Si} $RN_i[j] = LN[j] + 1$ y $P_j$ no está en la cola, \textbf{entonces} \textcolor{red}{$P_j$ tiene una solicitud pendiente y debe ser agregado }a $Q$
+\end{itemize}
+
+\textbf{Desempeño}: \textcolor{magenta}{Genera 0 a N mensajes por solicitud procesada, tiempo de sincronización: 0 o T, Throughput máximo = $\frac{1}{E+T}$}
+
+El orden de agregar las solicitudes pendientes a la cola FIFO del token, es normalmente por nuevas solicitudes \textcolor{blue}{ordenadas por el identificador de proceso}. \textcolor{red}{El orden de procesamiento no es necesariamente por orden de llegada}. La FIFO garantiza que no exista postergación indefinida. 
