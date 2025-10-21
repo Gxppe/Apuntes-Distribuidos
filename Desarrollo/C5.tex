@@ -188,7 +188,7 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 
 \textbf{Claves de diseño}: Comparte la misma caracterización general con el algoritmo de Lamport. Cada proceso requiere permiso de todos los demás procesos. Inicialmente se cumple \textcolor{blue}{$\forall i, 1 \leq i \leq n$: $State_i$ = IDLE $\wedge$ $RequestQueue_i$ = $\emptyset$}. La RequestQueue contiene a los procesos que han sido diferidos en el ingreso a la SC. Solo se requiere 2 tipos de mensajes: Request y Reply
 
-
+Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la siguiente figura) hace el trabanjo de Grant (para notificar el proximo proceso que tenga acceso a la SC), eso lo hace retrasando en envio de \textcolor{darkgreen}{\textbf{reply}} hasta el final.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{img/A_Ricart_Agrawala.png}
@@ -199,7 +199,7 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 
 \textbf{Correctitud}: Es imposible que dos procesos diferentes, si sus canales son FIFO, reciban un mensaje \textcolor{red}{REPLY} de los demás. Necesariamente el mayor de los dos va a ser diferido en la cola de menor marca. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
 
-\subsection{Algoritmo de Susuki-Hasami}
+\subsection{Algoritmo de Susuki-Kasami}
 
 \textbf{Caracterización}: Algoritmo \textcolor{blue}{descentralizado basado en token}, para un sistema \textcolor{magenta}{asincrónico}. Garantiza \textcolor{magenta}{seguridad, vivacidad y justicia}.
 
@@ -214,7 +214,7 @@ Supondremos N procesos. Un proceso $P_i = (\forall i, 1 \leq i \leq N)$ que inte
     \item En el caso de existir varias solicitudes pendientes, se prioriza acceso que primero generó la solicitud.
 \end{itemize}
 
-El \textbf{token} es una estructura de datos que lleva un registro de las solicitudes procesadas para cada proceso y mantiene una cola de solicitudes pendientes, estableciendo un orden de procesamiento y garantizando justicia y vivacidad.
+El \textbf{token} es una estructura de datos que lleva  vector de registro de las solicitudes procesadas para cada proceso y mantiene una cola de solicitudes pendientes, estableciendo un orden de procesamiento y garantizando justicia y vivacidad.
 
 \subsubsection{Claves de diseño}
 \begin{itemize}
@@ -227,3 +227,5 @@ El \textbf{token} es una estructura de datos que lleva un registro de las solici
 \textbf{Desempeño}: \textcolor{magenta}{Genera 0 a N mensajes por solicitud procesada, tiempo de sincronización: 0 o T, Throughput máximo = $\frac{1}{E+T}$}
 
 El orden de agregar las solicitudes pendientes a la cola FIFO del token, es normalmente por nuevas solicitudes \textcolor{blue}{ordenadas por el identificador de proceso}. \textcolor{red}{El orden de procesamiento no es necesariamente por orden de llegada}. La FIFO garantiza que no exista postergación indefinida. 
+
+\textbf{Observación:} Si bien Susuki-Kasami tiene una cola, esta no tiene orden fifo, dado que el orden de entrada de los procesos, es en relación a su posición en el vector \textbf{LN}
