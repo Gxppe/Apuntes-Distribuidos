@@ -227,5 +227,3 @@ El \textbf{token} es una estructura de datos que lleva  vector de registro de la
 \textbf{Desempeño}: \textcolor{magenta}{Genera 0 a N mensajes por solicitud procesada, tiempo de sincronización: 0 o T, Throughput máximo = $\frac{1}{E+T}$}
 
 El orden de agregar las solicitudes pendientes a la cola FIFO del token, es normalmente por nuevas solicitudes \textcolor{blue}{ordenadas por el identificador de proceso}. \textcolor{red}{El orden de procesamiento no es necesariamente por orden de llegada}. La FIFO garantiza que no exista postergación indefinida. 
-
-\textbf{Observación:} Si bien Susuki-Kasami tiene una cola, esta no tiene orden fifo, dado que el orden de entrada de los procesos, es en relación a su posición en el vector \textbf{LN}
