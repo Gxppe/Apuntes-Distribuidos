@@ -1,4 +1,4 @@
-\documentclass[final, letterpaper, 12pt]{article}
+\documentclass[final, legalpaper, 12pt]{article} % <-- CAMBIO AQUÍ
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%
@@ -32,7 +32,11 @@
 \usepackage{import}
 \usepackage{float}
 \usepackage{wrapfig}
-\usepackage[margin=0.65in, foot=30pt, head = 10pt, bottom = 1.6in]{geometry}
+%
+% --- ESTA ES LA LÍNEA MÁS IMPORTANTE ---
+% Añadimos 'legalpaper' a las opciones de geometry
+\usepackage[legalpaper, margin=0.65in, foot=30pt, head = 10pt, bottom = 1.6in]{geometry} % <-- CAMBIO AQUÍ
+%
 \usepackage{hyphenat}
 \usepackage{array}
 \usepackage{epstopdf}
@@ -57,7 +61,9 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-\geometry{margin=0.4cm} % Márgenes más reducidos
+% Esta línea anula los márgenes definidos antes, 
+% pero mantiene el 'legalpaper'
+\geometry{margin=0.4cm} 
 \setlength{\parskip}{0pt}
 \setlength{\parindent}{0pt}
 \renewcommand{\baselinestretch}{0.55} % Interlineado más reducido
@@ -100,4 +106,3 @@
 \input{Desarrollo/Desarrollo.tex}
 \end{multicols}
 \end{document}
-
