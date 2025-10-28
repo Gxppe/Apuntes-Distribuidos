@@ -14,7 +14,7 @@ Atributos claves
 
 Los atributos antes mencionados son cuantificables y medibles para el analisis de la \textbf{tolerancia a fallos}.
 
-\subsubsection{Modelo Causal de averias}
+\subsection{Modelo Causal de averias}
 Para este contexto definiremos al sistema como un conjunto de componentes tanto de hardware como de software, preparados para colaborar coordinadamente para ofrecer un servicio, según pautas establecidas para un correcto funcionamiento.
 
 \begin{figure}[H]
@@ -58,7 +58,7 @@ Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos d
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\linewidth]{img/modelo_de_fallas.png}
-    \caption{Modelo de fallas}\label{fig:1761584179354}
+    \caption{Modelo jerarquico de fallas}\label{fig:1761584179354}
 \end{figure}
 
 \begin{itemize}
@@ -79,3 +79,73 @@ Para manejar lo anterior, se propone los siguientes enfoques para mejorar la con
     \subitem Se debe disponer de algún tipo de redundancia para enmascarar fallos.
     \subitem Capacidad de reparar un fallo sin interrumpir el servicio, para asegurar continuidad operacional del servicio.
 \end{itemize}
+
+\subssection{Tolerancia a fallos}
+Definimos la tolerancia a fallos como la capacidad de enmascarar la existencia de fallos en un sistema, usando redundacia. Esto busca evitar una averia o falla del sistema. Si bien un sistema puede ser tolerante a fallos, estos deberian ser de sus propios componentes, y no con fallas que comprometen todo el sistema. Queremos que el sistema, a pesar de que sus componentes esten fallados, este tenga un comportamiento consistente a lo especificado.
+\vspace{1mm}
+
+El manejo de fallos en un sistema es un proceso de cuatro fases: primero, la \textbf{Detección de error}, donde los fallos se deducen por errores en el estado del sistema; segundo, la \textbf{Aislación y evaluación del daño}, que busca contener la expansión del error; tercero, la \textbf{Recuperación del error}, que corrige el problema y devuelve el sistema a un estado consistente (e.g., \textit{rollback}); y finalmente, el \textbf{Tratamiento del fallo y servicio contínuo}, que, ante fallos permanentes, reconfigura el sistema para dejar de usar el componente dañado y reemplazarlo.
+
+La \textcolor{red}{\textbf{redundancia}} se define en base a las partes de un sistema que no son necesarias para su correcto funcionamiento, si no se requiere tolerar fallos. Existen 3 tipos de tolerancias
+\begin{enumerate}
+    \item \textbf{Espacial:} Se agregan componentes de redundantes de hardware o software.
+    \item \textbf{Temporal:} Ejecutar y repetir varias veces una acción o secuencia de instrucciones (similar a la maquina de estado determoinista y replicada). Un ejemplo es la retransmisión de mensajes, rollback de una acción y repetir su ejecición.
+    \item \textbf{De información:} Se agrega información redundante para tolerar fallos.
+\end{enumerate} 
+
+\subsection{Enfoques de recuperación de errores}
+Para recuperarnos de errores durante la ejecución tenemos dos enfoques.
+
+\textbf{Recuperación regresiva(\textit{backward recovery}):} El sistema retrocede a un estado correcto anterior y se repite la ejecución, se introduce el concepto de checkpoints en la ejecución, los cuales son puntos donde se guarda el estado del sistema en una memoria estable (no se ve afectada por alguna averia). En caso de detectar errores, el sistema hace un rollback.
+
+\textbf{Recuperación progresiva(\textit{forward recovery}):} El sistema sigue avanzando, corrigiendo un posible estado erroneo. Al detectarse errores, se siguie si ejecución mientras que a la par se realizan acciones correctivas. No es viable para todos los sistemas
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/Comparacion_enfoques.png}
+    \caption{Comparativa de enfoques de recuperación}\label{fig:1761609494042}
+\end{figure}
+
+Dentro de los esquemas para tolerancia a fallos encontramos 
+\begin{itemize}
+    \item Transacciones o acciones atomicas
+    \item Checkpoint y rollback
+    \item Replicación de procesos
+    \item Maquina de estado replicada o determoinista
+    \subitem Basada en multicast atomico con orden total
+    \subitem Ordenamiento basado en conceso (Paxos,Raft)
+\end{itemize}
+
+\subsection{Maquina de estado determinista y replicada}
+Esta maquina es un grupo de replicación, donde cada proceso no fallado, ejecuta los mismos comandos en el mismo orden. Se caracteriza por el determinismo de estado, donde todas las replicas correctas mantienen el mismo estado. Se necesita concenso (dińamico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Se trabaja sobre modelos con o sin fallas donde, si se trabaja en un modelo \textbf{sin fallas}, se pueden usar relojes de lampor para ordenamiento global y total de los mensajes del grupo o un secuenciador central. Para el caso del modelo con fallas, se requieren de algoritmos de consesso tolerantes a fallos. 
+
+Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es iniciado con un valor de 1, tendremos dos maquinas que ejecutaran las mismas instrucciones, pero en diferente orden, para este caso:
+
+\textcolor{red}{\textbf{Maquina A:}}
+\begin{itemize}
+    \item Multiplicar por 2 a $k$
+    \item Sumarle 1 a $k$
+\end{itemize}
+\textcolor{red}{\textbf{Maquina B:}}
+\begin{itemize}
+    \item Sumarle 1 a $k$
+    \item Multiplicar por 2 a $k$
+\end{itemize}
+\vspace{1mm}
+
+Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$k=3$} y para la maquina B, el \textcolor{red}{$k=4$}. por esto buscamos mantener un orden y los mismos comandos para ambas maquinas.
+
+\subsection{Modelos cuantitativos de confiabilidad}
+
+
+%Pagina 21
+
+
+
+
+
+
+
+%Pagina 44
+
+%seguir aqui!!!!
