@@ -80,7 +80,7 @@ Para manejar lo anterior, se propone los siguientes enfoques para mejorar la con
     \subitem Capacidad de reparar un fallo sin interrumpir el servicio, para asegurar continuidad operacional del servicio.
 \end{itemize}
 
-\subssection{Tolerancia a fallos}
+\subsection{Tolerancia a fallos}
 Definimos la tolerancia a fallos como la capacidad de enmascarar la existencia de fallos en un sistema, usando redundacia. Esto busca evitar una averia o falla del sistema. Si bien un sistema puede ser tolerante a fallos, estos deberian ser de sus propios componentes, y no con fallas que comprometen todo el sistema. Queremos que el sistema, a pesar de que sus componentes esten fallados, este tenga un comportamiento consistente a lo especificado.
 \vspace{1mm}
 
@@ -148,4 +148,117 @@ Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$
 
 %Pagina 44
 
-%seguir aqui!!!!
+Blockchain usa un modelo bizanino de fallas
+
+\subsection{Comunicación grupal tolerante a fallos}
+El principal enfoque es que claro, una vez tengamos el mecanismo necesitamos las herramientas (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) para la replicación de los datos.
+
+Estan presentes dos tipos de multicast.
+\textbf{Simple:}  No esta determinado el número de receptores efectivos, cuando existen emisores de uno o varios, no esta determinado el orden de llegada a los receptores, es util para apliicaciones no críticas, no tiene condiciones de consistencia, es mas eficiente o liviano
+
+\textbf{Fiable:} Garantiza la entrega a procesos no fallados aun en presencia de de fallos de comunicación. Se retransmiten mensajes automáticamente, elimiando mensajes repetidos o corruptos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Multicast_grupal.png}
+    \caption{Usando comunicación grupal (multicast)}\label{fig:1761651184845}
+\end{figure}
+\subsubsection{Semantica de dentrega de mensajes}
+\textbf{Fiabilidad de entrega:}
+\begin{itemize}
+    \item \textbf{Mejor esfuerzo} (Best-effort): Sin garantía sobre cuántos miembros reciben un mensaje.
+    \item \textbf{Fiabilidad-}$k$: Garantía de que al menos $k$ miembros reciben el mensaje.
+    \item \textbf{Atómico}: Garantía de que todos los miembros lo reciben, o ninguno de ellos lo recibe.
+\end{itemize}
+\textbf{Orden de entrega:}
+\begin{itemize}
+    \item \textbf{No ordenado}: Ninguna garantía de orden de entrega en el receptor.
+    \item \textbf{Orden FIFO}: Mensajes de un mismo emisor se entregan según orden de envío.
+    \item \textbf{Orden causal}: Se respeta en la entrega orden causal de eventos de envío.
+    \item \textbf{Orden total}: Único orden de entrega de los mensajes en los receptores. Podría requerir también cumplir orden causal.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/multi_fifo.png}
+    \caption{Multicast: orden FIFO}\label{fig:1761678535409}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/multi_causal.png}
+    \caption{Multicast: orden causal}\label{fig:1761678585653}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/multi_total.png}
+    \caption{Multicast: orden total}\label{fig:1761678629682}
+\end{figure}
+
+\textcolor{red}{\textbf{Obs.1:}} Es necesario utlizar multicas con entrega con orden total y causal pasa maquinas de estado replicadas deterministas para asegurar la entrega de comandos en el mismo orden.
+
+En los grupos muchas veces existen miembros distinguidos (con un rol asociado), los nodos, deben tomar el rol del nodo afectado una vez detectada la falla. Si en algún punto un nuevo nodo se integra al grupo, se debe sincronizar con los demás nodos
+\subsubsection{Modelo de sincronia virtual (modelo \textit{Fail-stop})}
+Definimos la sincronia virtual como un modelo de comunicación que asegura consistencia de entrega de mensajes aun en presencia de fallos. Es facil de implementar una maquina de estado replicada y determinista y replicada  en un modelo \textit{Fail-stop} multicast fiable y cambios de mebresía. Algo a tener en cuenta es que este modelo no soporta fallas bizantinas ni particiones de red.
+
+El sistema es parcialmente asincronico porque requiere de \textit{timer} para detectar la falla de procesos 
+
+\textbf{ABCAST:} Asegura orden total, tiene la semantica de entrega más fuerte. Para que un grupo reciba un mensaje en el mismo orden, se necesita un protocolo de dos fases, para este caso el proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
+
+En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez enviado el mensaje, el resto de los procesos del grupo (no fallados), marca tentativamente los mensajes recibidos en base a su reloj local de lamport $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}. En la segunda fase, una vez $P_i$ reciba la marca tentativa de sus miembros del grupo, marca la máxima marca tentativa como $t_m$, (en caso de que dos procesos tengan el mismo valor para el relojes, se desempata con el id). Finalmente una vez definido el valor para el mensaje, Se le notifica a todos los procesos del grupo, la marca ganadora y se pasa el valor de comprometido a \textcolor{blue}{\textbf{TRUE}}.
+
+\textbf{Primera fase}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/Primer_paso.png}
+    \caption{Primer paso ABCAST}\label{fig:1761653095435}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/Segundo_paso.png}
+    \caption{Segundo paso ABCAST}\label{fig:1761653127112}
+\end{figure}
+
+\textbf{Segunda fase}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/Tercer_paso.png}
+    \caption{Tercer paso ABCAST}\label{fig:1761653161267}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/Cuarto_paso.png}
+    \caption{Cuarto paso ABCAST}\label{fig:1761653182730}
+\end{figure}
+
+Para establecer un numero de mensajes por solicitud, Si hay N procesos, hay N envios, Como hay N procesos, hay N respuestas, y finalmente Se tiene que comunicar para los N procesos N actualizaciones de marca para un mensaje, resultando finalmente en que la \textcolor{red}{complejidad} es $3N$
+
+
+\textbf{CBCAST:} Asegura orden causal, hace uso de relojes vectoriales,antes habia un solo monitor, y cada miembro hace entrega causal. Las reglas son las siguientes. Para cada mensaje m, a ser enviado por $P_i$, se incrementa $VC_i[i]$, Cuando $P_j$,  recibe un mensaje m desde $P_i$, con la marca asociada al mensaje, entonces $P_j$ retarda la entrega de m hasta que se cumpla la condicion \textcolor{red}{\textbf{FIFO}} y la condicion \textcolor{red}{\textbf{CAUSAL}} (estas se definieron en el capitulo 4, y están en este apunte).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/CBCAST.png}
+    \caption{Ejemplo visual de CBCAST}\label{fig:1761675486364}
+\end{figure}
+
+\textbf{Api de gestion de grupos:} Pasa asegurar atomicidad, nos provee una interfaz para gestionar grupos, servicios como, crear grupo, unirse a un grupo, salir de un grupo (por detección termino o fallas), una lista de quienes reciben el mensaje (Vista), y notificar un cambio de en la lista del grupo.
+
+Definimos un grupo atomico, como un grupo donde todos los miembros tienen la misma vista, cuando existen cambios en la vista (alguien se sale o une al grupo), este proceso necesariamente debe ser atómico.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Api_gestion.png}
+    \caption{Ejemplo de grupos atomicos para API de gestión de grupos}\label{fig:1761676301300}
+\end{figure}
+
+\textcolor{red}{\textbf{Obs.1}} Notar que los 3 protocolos antes descritos tienen entrega atómica.
+
+
+\subsection{Algoritmo de PAXOS y otros (consenso con fallas de crash)}
+
+Paxos se usa para mantener consistente información del sistema, por ejemplo, información de la configuración del sistema. Permite coordinacion tolerante a fallos.
