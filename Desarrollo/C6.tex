@@ -17,11 +17,6 @@ Los atributos antes mencionados son cuantificables y medibles para el analisis d
 \subsection{Modelo Causal de averias}
 Para este contexto definiremos al sistema como un conjunto de componentes tanto de hardware como de software, preparados para colaborar coordinadamente para ofrecer un servicio, según pautas establecidas para un correcto funcionamiento.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/Modelo_Causal_de_averias.png}
-    \caption{Modelo Causal de averias}\label{fig:1761579857293}
-\end{figure}
 
 Pero, que causa un mal funcionamiento de un sistema. Partiremos definiendo 3 diferencias claves para el analisis.
 
@@ -54,12 +49,8 @@ Las \textbf{\textit{fallas}} o \textbf{\textit{averias}} se clasifican según su
     \subitem Son fallas dificiles de detectar y tolerar
 \end{itemize}
 
+
 Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos de fallas, en base a una jerarquia.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\linewidth]{img/modelo_de_fallas.png}
-    \caption{Modelo jerarquico de fallas}\label{fig:1761584179354}
-\end{figure}
 
 \begin{itemize}
     \item \textcolor{red}{\textbf{Fail-stop:}} Un proceso fallado se detiene, conservando su estado, y todos los demas saben inmediatamente que ha fallado. Los procesos se comportan correctamente o se detienen.
@@ -68,6 +59,13 @@ Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos d
     \item \textcolor{red}{\textbf{Temporal (\textit{timing}):}} El sistema puede violar restricciones temporales, tal como respuestas fuera de tiempo. Dificil de discriminar entre fallas de crash y omisión
     \item \textcolor{red}{\textbf{Bizantino:}} Un proceso puede enviar mensajes contradictorios, mentir sobre su estado interno o colaborar maliciosamente con otros. Corresponde a un modelo más general
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/Modelo_Causal_de_averias.png}
+    \caption{Modelo Causal de averias}\label{fig:1761579857293}
+\end{figure}
+
 
 Para manejar lo anterior, se propone los siguientes enfoques para mejorar la confiabilidad del sistema.
 
@@ -136,19 +134,122 @@ Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es ini
 Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$k=3$} y para la maquina B, el \textcolor{red}{$k=4$}. por esto buscamos mantener un orden y los mismos comandos para ambas maquinas.
 
 \subsection{Modelos cuantitativos de confiabilidad}
-
-
 %Pagina 21
+Se define la \textbf{fiabilidad R(t)} como la probabilidad de que un sistema no falle hasta el timepo t. Tambien definimos \textbf{MTTF (Mean Time To Failure)} como el tiempo de vida esperado sin un fallo del sistema. la cual se calcula de la siguiente forma:
+
+\[
+    MTTF= \int_{0}^{\infty}R(t)dt
+\]
+
+Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF= \frac{1}{\lambda}$
+
+\subsubsection{Fiabilidad en serie}
+Un sistema en serie, es aquel en donde si un componente falla, el sistema completo falla. Donde $R_i(t)$ es la fiabilidad del componente i, y $\lambda_i$ es la tasa media de fallas de componentes, de lo anterior la fiabilidad del sistema completo es:
+
+\[
+    R_{serie}=\prod_{i=1}^{n} R_i(t)
+\]
+Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $ 
+
+\subsubsection{Fiabilidad en paralelo}
+Un sistema en paralelo, es aquel donde si \textbf{TODOS} los componentes del sistema, el sistema falla (Se mantendra la misma notación que anteriormente definida)
+
+\[
+    R_{paralelo}= 1 - \prod_{i=1}^{n} (1-R_i(t))
+\]
+
+Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}*\frac{ln(n)}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $
+
+\subsubsection{Confiabilidad con cadenas de Markov}
+Modelo de fallas que tolera una única falla y con una reparación, se plantea la siguiente solución, considerando que $MTTF=\frac{1}{\lambda}$ y que $MTTR=\frac{1}{\mu}$
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Markov.png}
+    \caption{Solución y dos ejemplos}\label{fig:1761834118505}
+\end{figure}
+
+\subsubsection{Caso de fiabilidad en discos raid-4 y espejo}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Espejo.png}
+    \caption{Ejemplo disco espejo}\label{fig:1761834250462}
+\end{figure}
+Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
 
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/Raid-4.png}
+    \caption{Ejemplo para discos fragmentados RAID-4}\label{fig:1761834325234}
+\end{figure}
 
+Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$
 
+\[
+    D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
+\]
 
+\subsection{Disponibilidad}
+Se definira la disponibilidad instantanea como $A(T)$ como la probabilidad de que un sistema este funcionamiento correctamente en un tiempo T. Luego la disponibilidad limite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$ como:
+\[
+    \alpha= \lim_{\tau \rightarrow \infty} \frac{1}{\tau}\int_{0}^{\tau}A(t)dt
+\]
 
+Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/MTTF.png}
+    \caption{Flujo de vida de un componente}\label{fig:1761836148913}
+\end{figure}
+de lo anterior definimos que MTTF corresponde al "Mean Time TO Failure", MTBF como "Mean Time Between Failure" y MTTR como "Mean Time To Repair", donde tenemos finalmente que $MTBF= MTTF + MTTR$. Adicionalmente, podemos encontrar la disponibilidad limite $\alpha$ como:
 
-%Pagina 44
+\[
+    \alpha = \frac{MTTF}{MTTF+MTTR}
+\]
 
-Blockchain usa un modelo bizanino de fallas
+\subsubsection{Caso de replicación de servidores}
+Suponiendo un sistema de n réplicas similares, donde la disponibilidad por servidor es de $a_0$ , donde se trabaja con un modelo en paralelo, la solucion de disponibilidad es $a_n=1-(1-a_0)^n$
+
+\subsection{Acuerdo y consenso distribuido}
+Para el consenso  en sistemas distribudios es fundamental mantener consistencia y confiabilidad en el sistema, es decir mantener un estado consistente y funcionar correctamente en presencia de fallas, particiones de red y/o retardos. El objetivo de los algoritmos asociados al tema es garantizar el acuerdo entre nodos sobre un unico valor o tomar una misma decisión. Los desafios principales son la falla en nodos, particiones de red, comunicación asincrona (Demora en mensaje, cambio de orden o perdida de los mismos), y las fallas bizantinas.
+
+En el problema del acuerdo, se busca decidir sobre un único valor o curso de acción tal que se satisfaca el \textbf{acuerdo} (el valor decidido debe ser igual para todos), \textbf{integridad} (no se puede cambiar la decisión de un participante), \textbf{valides}(el valor elegido debio ser propuesto por alguno de los participales) y\textbf{termino} (se decide en tiempo finito). Todo esto sobre el ambiente de fallas anteriormente planteado. Notar que las tres primeras condiciones hacen referencia a \textbf{\textit{safety}} y la última a \textbf{\textit{liveness}}
+\textbf{Acuerdo.} Existe un proceso designado (transmisor) que tiene y propone un valor inicial, para alcanzar acuerdo con los demás procesos sobre este valor, según las siguientes condiciones:
+\begin{itemize}
+    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo valor.
+    \item \textbf{Validez:} Si el proceso transmisor está no fallado, entonces el valor acordado por todos los procesos no fallados tiene que ser el mismo valor inicial del transmisor.
+\end{itemize}
+
+\textbf{Consenso.} Cada proceso tiene un valor inicial y todos los procesos correctos tienen que acordar un único valor, según las siguientes condiciones:
+\begin{itemize}
+    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo valor (único).
+    \item \textbf{Validez:} Si todos los procesos no fallados tienen el mismo valor inicial, entonces el valor acordado tiene que ser este valor; o alguno de los valores iniciales, si los valores no son iguales.
+\end{itemize}
+
+\textbf{Consistencia interactiva.} Cada proceso tiene un valor inicial y todos los procesos correctos tienen que acordar sobre un conjunto de valores, según las siguientes condiciones:
+\begin{itemize}
+    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo arreglo de valores $A[v_1, v_2, \dots, v_n]$.
+    \item \textbf{Validez:} Si proceso $P_i$ no fallado tiene valor inicial $v_i$, entonces todos los procesos no fallados acordará $v_i$ como el valor $A[i]$ (\textit{nótese}: si proceso $P_j$ está fallado, entonces todos los procesos no fallados acordarán cualquier valor común para $A[j]$).
+\end{itemize}
+
+Para la relación entre procesos se sigue la siguiente relacion de componentes en buen estado y fallados $f<n$ (varia segun el modelo de fallas). Para la existencia de solucion debe de existir comunicación fiable, en caso de que es sistema sea asincrónico, no es posible llegar a una solucion, dado que no se puede discriminar entre falla o demora.
+
+\subsubsection{Algoritmo de acuerdo bizantino con mensajes ordinarios (no tienen ningún hash criptografico)}
+
+Para este algoritmo, solo se trabaja con un modelo de fallas bizantinas y no de comunicación, donde se debe cumplir que $3f+1\leq n$ . Para el numero m de rondas, se cumple que existe a lo mas $m= f+1$ rondas.
+
+Para la primera ronda (el caso base $m = 0$), el transmisor envía su valor a todos los receptores (nodos), seguido a eso, cada receptor usa el valor recibido del transmisor o el por defecto.
+
+Para las siguientes rondas (los pasos recursivos $m > 0$), el transmisor envía el valor a los receptores, \textbf{y cada receptor ($P_i$) anota ese valor ($v_i$)} (o usa el valor por defecto si no recibe nada). Inmediatamente, ese mismo receptor $P_i$ actúa como un nuevo transmisor en una \textbf{sub-ronda} del algoritmo (específicamente $OM(f-1)$), y le envía \textit{su} valor $v_i$ a todos los demás $n-2$ receptores.
+
+Finalmente, después de esa sub-ronda, cada receptor $P_i$ recopila todos los valores ($v_j$) que recibió de sus compañeros. El valor que $P_i$ decide y adopta como final es el que gane por \textbf{mayoría} entre todos los valores que juntó ($v_1, \dots, v_{n-1}$). (se explica mejor visualizando el algoritmo la verdad)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/ordinario.png}
+    \caption{Ejemplo de OM con n=4 y f=1}\label{fig:1761838884075}
+\end{figure}
 
 \subsection{Comunicación grupal tolerante a fallos}
 El principal enfoque es que claro, una vez tengamos el mecanismo necesitamos las herramientas (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) para la replicación de los datos.
@@ -262,3 +363,4 @@ Definimos un grupo atomico, como un grupo donde todos los miembros tienen la mis
 \subsection{Algoritmo de PAXOS y otros (consenso con fallas de crash)}
 
 Paxos se usa para mantener consistente información del sistema, por ejemplo, información de la configuración del sistema. Permite coordinacion tolerante a fallos.
+
