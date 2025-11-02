@@ -4,8 +4,8 @@ Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\tex
 
 {
 \noindent\centering
-$\subset$ : \textbf{Contenido} $\Rightarrow$ : $A=\{1,2\}$ y 
-$B=\big\{\underbrace{1,2}_{\textcolor{red}{\textbf{A}}},3\big\}$ podemos decir que $A \subset B$
+$\subset \text{ : } \textbf{Contenido} \Rightarrow \text{ : } A=\{1,2\}$ y 
+$B=\big\{\underbrace{1,2}_{\text{\textcolor{red}{\textbf{A}}}},3\big\}$ podemos decir que $A \subset B$
 \par
 }
 
@@ -34,30 +34,30 @@ Para los relojes vectoriales definiremos la siguiente estructura para el un proc
    \left[ \mathit{Vc}[1], \mathit{Vc}[2], \dots, \mathit{Vc}[i], \dots, \mathit{Vc}[n] \right]
 \]
 
-Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales sabemos que $\forall e \in E$: Vc(e) representa H(e).
+Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales sabemos que $\forall e \in E$: $Vc(e)$ representa $H(e)$.
 
 Continuando, los procesos irán aumentando de la sigueinte forma:
 
-Para \textcolor{red}{\textbf{eventos locales} del proceso $P_i$}:
+Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
 % Asegúrate de tener \usepackage{enumitem} y \usepackage{xcolor} en tu preámbulo
 
 \begin{enumerate}[label=\textbf{Paso \arabic*:}, wide, labelindent=0pt]
-    \item Se suma 1 al Vc($e_i$)[i], vale decir que le sumamos 1 a la marca del proceso i
+    \item Se suma 1 al $Vc(e_i)[i]$, vale decir que le sumamos 1 a la marca del proceso $i$
     
     \item Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
     
     \[
+    \left[ 
     \textcolor{green!50!black}{
-      \left[ 
         \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
-      }
+    }
     \textcolor{black}{
         \mathit{Vc}[i]
     }
     \textcolor{green!50!black}{
         , \dots, \mathit{Vc}[n]
-      \right]
     }
+    \right]
     \]
     
     donde los indices en verde, se mantendran iguales para el evento local.
@@ -66,17 +66,17 @@ Para \textcolor{red}{\textbf{eventos locales} del proceso $P_i$}:
 Resultando Finalmente en el siguiente vector para $P_i$
 
 \[
+\left[ 
 \textcolor{green!50!black}{
-  \left[ 
     \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
-  }
+}
 \textcolor{black}{
     \mathit{Vc}[i] + 1
 }
 \textcolor{green!50!black}{
     , \dots, \mathit{Vc}[n]
-  \right]
 }
+\right]
 \]
 
 Para mensajes entre procesos, solo se modifica la marca del proceso que esta mandando el mensaje, por ejemplo, si $P_i$ manda un mensaje a $P_j$, se modifica la marca del vector $P_j$ asociada a $P_i$.
@@ -86,17 +86,17 @@ Para mensajes entre procesos, solo se modifica la marca del proceso que esta man
 Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un reloj en sistemas distribuidos}} se refiere a la capacidad de determinar de forma bidireccional si un evento precede causalmente a otro, permitiendo un ordenamiento total o casi total de los eventos en el sistema.
 \begin{enumerate}
   \item Relación de igualdad:
-  \[ \tiny
-  V=V' \equiv  [\forall k: V[k]=V'[K]]
-  \]
+  {\tiny \[
+  V=V' \equiv [\forall k: V[k]=V'[K]]
+  \]}
   \item Relación de orden: 
-  \[ \tiny
+  {\tiny \[
   V<V' \equiv [V \neq V'] \land [\forall k: V[k] \leq V'[k]]
-  \]
+  \]}
   \item Condición fuerte:
-  \[ \tiny
+  {\tiny \[
     e \rightarrow e' \equiv VC(e) < VC(e')
-  \]
+  \]}
   \[
       e || e' \equiv \lnot [VC(e)<VC(e')]\land \lnot[VC(e')<VC(e)]
   \]
@@ -104,7 +104,7 @@ Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un 
 
 El  numero de eventos precedentes es equivalente a la suma del vector completo, menos el evento mismo.
 
-La propiedad de detección de apertura nos permite a un proceso $P_j$ detectar que existe un evento e' que ocurre en otro $P_i$ despues de un evento $e_i$ ya conocido por $P_j$. Notese además que los relojes vectoriales tienen la capacidad de \textbf{detectar causalidad, concurrencia, coordinacion centralizada y es tolerante a fallos}. Sin embargo tiene limitaciones, como, \textbf{overhead, complejidad (más complejo que lamport), si bien dijimos que tolera fallas, es deficiente ante fallas bizantinas y sistemas altamente dinamicos (con una entrada y salida de procesos, dado que se tiene que redimencionar el vector)}
+La propiedad de detección de apertura nos permite a un proceso $P_j$ detectar que existe un evento $e'$ que ocurre en otro $P_i$ despues de un evento $e_i$ ya conocido por $P_j$. Notese además que los relojes vectoriales tienen la capacidad de \textbf{detectar causalidad, concurrencia, coordinacion centralizada y es tolerante a fallos}. Sin embargo tiene limitaciones, como, \textbf{overhead, complejidad (más complejo que lamport), si bien dijimos que tolera fallas, es deficiente ante fallas bizantinas y sistemas altamente dinamicos (con una entrada y salida de procesos, dado que se tiene que redimencionar el vector)}
 
 \subsection{Monitoreo de una computación distribuida}
 
@@ -155,13 +155,12 @@ Para entregas causales tenemos las siguientes condiciones:
 \label{fig:relaciones-eventos}
 \end{figure}
 
-Las lineas verdes hacen el flujo de izquierda a derecha que representa una correcta contición FIFO, mientras que las rojas omiten el evento $e_{i,k+1}$ lo cual muestra una incorrecta condición fifo.  \\
-
+Las lineas verdes hacen el flujo de izquierda a derecha que representa una correcta contición FIFO, mientras que las rojas omiten el evento $e_{i,k+1}$ lo cual muestra una incorrecta condición fifo.
 
 \textbf{Condición de entrega causal:} Si yo tengo un mensaje de J, para ver que no exista un mensaje de otro proceso, se compara lo siguiente
-\[
-  \tiny \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
-\]
+{\tiny \[
+  \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
+\]}
 \subsubsection*{Visualización del algoritmo de entrega causal}
 
 \begin{figure}[H]
@@ -171,18 +170,17 @@ Las lineas verdes hacen el flujo de izquierda a derecha que representa una corre
 \end{figure}
 
 Desde el punto de vista de $P_0$, comparamos lo siguiente
-\[
-  \tiny D[k]\leq Vc(m)[k]
-\]
+{\tiny \[
+  D[k]\leq Vc(m)[k]
+\]}
 
-Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en Q, observamos todas las dimensiones distintas de K:
+Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en $Q$, observamos todas las dimensiones distintas de $K$:
 
-\[
-\tiny
-  \scriptsize [\,\underbrace{n_1, n_2, \dots}_{\textcolor{red}{\textbf{Vemos esto}}}, 
+{\scriptsize \[
+  [\,\underbrace{n_1, n_2, \dots}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}, 
   n_k , 
-  \underbrace{\dots,n_{n-1}, n_{n}}_{\textcolor{red}{\textbf{Vemos esto}}}\,]
-\]
+  \underbrace{\dots,n_{n-1}, n_{n}}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}\,]
+\]}
 
 
 Algo a tener en cuenta y es bastante importante, distintos observadores podrian tener distintos relojes vectoriales \textcolor{red}{(esto es debido a latencias con $P_0$)}
@@ -190,9 +188,9 @@ Algo a tener en cuenta y es bastante importante, distintos observadores podrian 
 
 \subsubsection{Estados globales}
 Un corte puede tener mensajes en transito. pero denotamos la siguiente caracteristica:
-\[
-  \tiny  \text{Corte valido} \neq \text{Corte consistente}
-\]
+{\tiny \[
+  \text{Corte valido} \neq \text{Corte consistente}
+\]}
 Por lo tanto decimos que, un corte consistente es aquel que un evento sucede antes que otro, es considerado
 
 \subsubsection{Algoritmo de Chandy-Lamport}
@@ -210,20 +208,16 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
     \includegraphics[width=\textwidth]{img/Topologia.png}
     \caption{Topología trabajada}
   \end{subfigure}
-  \label{fig:imagenes_lado_a_lado}
 \end{figure}
 Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, estos envian otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
 
 En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca exactamente, independiente de la cantidad de marcas que vaya a recibir. 
 
 \subsubsection{Estados estables}
-Para cualquier estado \textcolor{red}{\textbf{S}} y un estado futuro \textcolor{red}{\textbf{S'}}, si la propiedad \textcolor{red}{\textbf{P}} es verdadera en \textcolor{red}{\textbf{S}}, y el sistema puede llegar a \textcolor{red}{\textbf{S'}}, entonces la propiedad \textcolor{red}{\textbf{P}} tambien debe ser verdadera en \textcolor{red}{\textbf{S'}}
+Para cualquier estado \textcolor{red}{\textbf{$S$}} y un estado futuro \textcolor{red}{\textbf{$S'$}}, si la propiedad \textcolor{red}{\textbf{$P$}} es verdadera en \textcolor{red}{\textbf{$S$}}, y el sistema puede llegar a \textcolor{red}{\textbf{$S'$}}, entonces la propiedad \textcolor{red}{\textbf{$P$}} tambien debe ser verdadera en \textcolor{red}{\textbf{$S'$}}
 Los siguientes son ejemplos de estados estables:
 \begin{enumerate}
   \item El sistema esta en deadlock
   \item El algoritmo termino
 \end{enumerate}
 Una propiedad podria ser un algoritmo que detecte detención.
-
-
-\noindent\rule{\linewidth}{0.1pt}
