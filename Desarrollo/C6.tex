@@ -164,7 +164,7 @@ Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos 
 Modelo de fallas que tolera una única falla y con una reparación, se plantea la siguiente solución, considerando que $MTTF=\frac{1}{\lambda}$ y que $MTTR=\frac{1}{\mu}$
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/Markov.png}
+    \includegraphics[width=0.6\linewidth]{img/Markov.png}
     \caption{Solución y dos ejemplos}\label{fig:1761834118505}
 \end{figure}
 
@@ -172,7 +172,7 @@ Modelo de fallas que tolera una única falla y con una reparación, se plantea l
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/Espejo.png}
+    \includegraphics[width=0.2\linewidth]{img/Espejo.png}
     \caption{Ejemplo disco espejo}\label{fig:1761834250462}
 \end{figure}
 Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
@@ -180,7 +180,7 @@ Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/Raid-4.png}
+    \includegraphics[width=0.2\linewidth]{img/Raid-4.png}
     \caption{Ejemplo para discos fragmentados RAID-4}\label{fig:1761834325234}
 \end{figure}
 
@@ -199,7 +199,7 @@ Se definira la disponibilidad instantanea como $A(T)$ como la probabilidad de qu
 Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/MTTF.png}
+    \includegraphics[width=0.5\linewidth]{img/MTTF.png}
     \caption{Flujo de vida de un componente}\label{fig:1761836148913}
 \end{figure}
 de lo anterior definimos que MTTF corresponde al "Mean Time TO Failure", MTBF como "Mean Time Between Failure" y MTTR como "Mean Time To Repair", donde tenemos finalmente que $MTBF= MTTF + MTTR$. Adicionalmente, podemos encontrar la disponibilidad limite $\alpha$ como:
@@ -247,7 +247,7 @@ Finalmente, después de esa sub-ronda, cada receptor $P_i$ recopila todos los va
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/ordinario.png}
+    \includegraphics[width=0.4\linewidth]{img/ordinario.png}
     \caption{Ejemplo de OM con n=4 y f=1}\label{fig:1761838884075}
 \end{figure}
 
@@ -261,7 +261,7 @@ Estan presentes dos tipos de multicast.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/Multicast_grupal.png}
+    \includegraphics[width=0.4\linewidth]{img/Multicast_grupal.png}
     \caption{Usando comunicación grupal (multicast)}\label{fig:1761651184845}
 \end{figure}
 \subsubsection{Semantica de dentrega de mensajes}
@@ -353,7 +353,7 @@ Definimos un grupo atomico, como un grupo donde todos los miembros tienen la mis
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\linewidth]{img/Api_gestion.png}
+    \includegraphics[width=0.5\linewidth]{img/Api_gestion.png}
     \caption{Ejemplo de grupos atomicos para API de gestión de grupos}\label{fig:1761676301300}
 \end{figure}
 
@@ -362,5 +362,74 @@ Definimos un grupo atomico, como un grupo donde todos los miembros tienen la mis
 
 \subsection{Algoritmo de PAXOS y otros (consenso con fallas de crash)}
 
-Paxos se usa para mantener consistente información del sistema, por ejemplo, información de la configuración del sistema. Permite coordinacion tolerante a fallos.
+Paxos se usa para mantener consistente información del sistema, por ejemplo, información de la configuración del sistema. Permite coordinacion tolerante a fallos. Paxos trabaja con un modelo de fallas de \textit{crash} (no bizantinas), con omisión de mensajes. Trabajamos en una red con comunicación no fiable, y por paso de mensajes, los mensajes pueden sufrir retardos en la entrega (lo que hace que paxos sea parcialmente sincronico), los mensajes pueden duplicarse, desordenarse o perder, pero no corromperse (modelo de falla de omisión). A nivel de tolerancia a fallas, solo soporta para $2f+1\leq n$.
 
+\textbf{Roles de agentes:}
+\begin{itemize}
+    \item \textbf{\textit{Proposer}} (Proponente): Propone un valor de un cliente para que sea aceptado por consenso.
+    \item \textbf{\textit{Acceptor}} (Aceptador): Elige (o rechaza) alguna propuesta de un \textit{Proposer} y les comunica su aceptación. Este componente tiene acceso a memoria estable (esto es debido a que debe recordar su decisión en caso de fallas)
+    \item \textbf{\textit{Learner}} (Aprendiz): Aprende cuál es el valor elegido por la mayoría de los \textit{Acceptors}.
+\end{itemize}
+
+\textcolor{red}{\textbf{Obs.1:}} Un acceptor y un proposer puede estar en un mismo proceso, pero no pueden haber mas de dos acceptor en un mismo proceso, dado que se asegura que las fallas de los acceptor son independientes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/paxos_componentes.png}
+    \caption{Componentes de Paxos}\label{fig:1761858653370}
+\end{figure}
+
+Paxos cuenta con dos pasos escenciales:
+
+\textcolor{red}{\textbf{Paso 1:}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Por el lado del \textcolor{red}{\textbf{proposer:}} Se propone una propuesta con un valor $VALUE$, y esta propuesta tiene un ID asociado (este id es estrictamente creciente).
+
+Por el lado del \textcolor{red}{\textbf{acceptor:}} El acceptor verifica si el id de la propuesta es mayor al que ya tiene (en caso de que nom este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/Paso_1_paxos.png}
+    \caption{Primer paso de Paxos}\label{fig:1761859086537}
+\end{figure}
+
+\textcolor{red}{\textbf{Paso 2:}}\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textcolor{red}{\textbf{Fase 2A (Aceptación):}}
+
+    Por el lado del \textcolor{red}{\textbf{proposer:}} Si un proposer ha recibido una respuesta a su promesa de la mayoria de loos acceptors, en caso de que alguna respuesta contenga valores de otras propuestas aceptadas, el proposer selecciona el valor de la propuesta con el ID mas alto, y asigna ese valor como el valor aceptado, en caso contrario, se elige el $VALUE$ de la propuesta original. Finalmente, el proposer envia un mensaje de aceptación a la mayoria de los aceptors con su ID y el $VALUE$ con mayor ID asociado
+    
+    Por el lado del \textcolor{red}{\textbf{acceptor:}} En caso de que el acceptor reciba un mensaje de aceptación con un ID mayor o igual al maximo ID conocido, este informa a los Learners del valor aceptado.
+
+
+\textcolor{red}{\textbf{Fase 2B (Aprendizaje):}}
+
+Por el lado del \textcolor{red}{\textbf{learner:}} Si recibde un valor aceptado con su ID y $VALUE$, de la mayoria de los aceptors, se registra el valor $VALUE$ 
+
+Por el lado del \textcolor{red}{\textbf{proposer:}} Una vez recibe un accepted de la mayoria de los aceptors, se confirma, el consenso de $VALUE$. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/Paso_2_paxos.png}
+    \caption{Segundo paso de Paxos}\label{fig:1761859213280}
+\end{figure}
+
+
+\textbf{Proposer:}
+\begin{itemize}
+    \item \textit{ID} : Identificador único y ordenado de una propuesta.
+    \item \textit{cnt} : Mayor \textit{ID} conocido en el sistema (podría ser un TS o contador con UID)
+\end{itemize}
+
+
+\textbf{Acceptor:}
+\begin{itemize}
+    \item \textit{max\_id} : Máximo identificador de propuesta conocido por \textit{Acceptor} y que respondió con una promesa (en 1\textsuperscript{a} fase).
+    \item \textit{proposal\_accepted} : El \textit{Acceptor} ha aceptado una propuesta (en 2\textsuperscript{a} fase), una variable booleana.
+    
+    % Marcamos el inicio y fin de la llave
+    \item \textit{accepted\_ID} : \textit{ID} de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (start-brace) {};
+    \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
+\end{itemize}
+
+El quorum para aceptar un valor es de $\lfloor \frac{n}{2} \rfloor + 1$
