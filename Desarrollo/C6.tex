@@ -119,17 +119,12 @@ Esta maquina es un grupo de replicación, donde cada proceso no fallado, ejecuta
 
 Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es iniciado con un valor de 1, tendremos dos maquinas que ejecutaran las mismas instrucciones, pero en diferente orden, para este caso:
 
-\textcolor{red}{\textbf{Maquina A:}}
-\begin{itemize}
-    \item Multiplicar por 2 a $k$
-    \item Sumarle 1 a $k$
-\end{itemize}
-\textcolor{red}{\textbf{Maquina B:}}
-\begin{itemize}
-    \item Sumarle 1 a $k$
-    \item Multiplicar por 2 a $k$
-\end{itemize}
-\vspace{1mm}
+\begin{tabular}{lr}
+\textcolor{red}{\textbf{Maquina A:}} & \textcolor{red}{\textbf{Maquina B:}} \\
+Multiplicar por 2 a $k$ & Sumar 1 a $k$ \\
+Sumar 1 a $k$ & Multiplicar por 2 a $k$ \\    
+\end{tabular}
+
 
 Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$k=3$} y para la maquina B, el \textcolor{red}{$k=4$}. por esto buscamos mantener un orden y los mismos comandos para ambas maquinas.
 
@@ -138,7 +133,7 @@ Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$
 Se define la \textbf{fiabilidad R(t)} como la probabilidad de que un sistema no falle hasta el timepo t. Tambien definimos \textbf{MTTF (Mean Time To Failure)} como el tiempo de vida esperado sin un fallo del sistema. la cual se calcula de la siguiente forma:
 
 \[
-    MTTF= \int_{0}^{\infty}R(t)dt
+  \textstyle  MTTF= \int_{0}^{\infty}R(t)dt
 \]
 
 Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF= \frac{1}{\lambda}$
@@ -147,7 +142,7 @@ Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos 
 Un sistema en serie, es aquel en donde si un componente falla, el sistema completo falla. Donde $R_i(t)$ es la fiabilidad del componente i, y $\lambda_i$ es la tasa media de fallas de componentes, de lo anterior la fiabilidad del sistema completo es:
 
 \[
-    R_{serie}=\prod_{i=1}^{n} R_i(t)
+  \textstyle  R_{serie}=\prod_{i=1}^{n} R_i(t)
 \]
 Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $ 
 
@@ -155,7 +150,7 @@ Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos 
 Un sistema en paralelo, es aquel donde si \textbf{TODOS} los componentes del sistema, el sistema falla (Se mantendra la misma notación que anteriormente definida)
 
 \[
-    R_{paralelo}= 1 - \prod_{i=1}^{n} (1-R_i(t))
+  \textstyle  R_{paralelo}= 1 - \prod_{i=1}^{n} (1-R_i(t))
 \]
 
 Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}*\frac{ln(n)}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $
@@ -187,13 +182,13 @@ Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
 Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$
 
 \[
-    D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
+    \textstyle  D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
 \]
 
 \subsection{Disponibilidad}
 Se definira la disponibilidad instantanea como $A(T)$ como la probabilidad de que un sistema este funcionamiento correctamente en un tiempo T. Luego la disponibilidad limite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$ como:
 \[
-    \alpha= \lim_{\tau \rightarrow \infty} \frac{1}{\tau}\int_{0}^{\tau}A(t)dt
+   \textstyle  \alpha= \lim_{\tau \rightarrow \infty} \frac{1}{\tau}\int_{0}^{\tau}A(t)dt
 \]
 
 Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
@@ -205,7 +200,7 @@ Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos e
 de lo anterior definimos que MTTF corresponde al "Mean Time TO Failure", MTBF como "Mean Time Between Failure" y MTTR como "Mean Time To Repair", donde tenemos finalmente que $MTBF= MTTF + MTTR$. Adicionalmente, podemos encontrar la disponibilidad limite $\alpha$ como:
 
 \[
-    \alpha = \frac{MTTF}{MTTF+MTTR}
+   \textstyle  \alpha = \frac{MTTF}{MTTF+MTTR}
 \]
 
 \subsubsection{Caso de replicación de servidores}
@@ -237,6 +232,12 @@ Para la relación entre procesos se sigue la siguiente relacion de componentes e
 
 \subsubsection{Algoritmo de acuerdo bizantino con mensajes ordinarios (no tienen ningún hash criptografico)}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/ordinario.png}
+    \caption{Ejemplo de OM con n=4 y f=1}\label{fig:1761838884075}
+\end{figure}
+
 Para este algoritmo, solo se trabaja con un modelo de fallas bizantinas y no de comunicación, donde se debe cumplir que $3f+1\leq n$ . Para el numero m de rondas, se cumple que existe a lo mas $m= f+1$ rondas.
 
 Para la primera ronda (el caso base $m = 0$), el transmisor envía su valor a todos los receptores (nodos), seguido a eso, cada receptor usa el valor recibido del transmisor o el por defecto.
@@ -245,11 +246,7 @@ Para las siguientes rondas (los pasos recursivos $m > 0$), el transmisor envía 
 
 Finalmente, después de esa sub-ronda, cada receptor $P_i$ recopila todos los valores ($v_j$) que recibió de sus compañeros. El valor que $P_i$ decide y adopta como final es el que gane por \textbf{mayoría} entre todos los valores que juntó ($v_1, \dots, v_{n-1}$). (se explica mejor visualizando el algoritmo la verdad)
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\linewidth]{img/ordinario.png}
-    \caption{Ejemplo de OM con n=4 y f=1}\label{fig:1761838884075}
-\end{figure}
+
 
 \subsection{Comunicación grupal tolerante a fallos}
 El principal enfoque es que claro, una vez tengamos el mecanismo necesitamos las herramientas (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) para la replicación de los datos.
@@ -307,7 +304,7 @@ El sistema es parcialmente asincronico porque requiere de \textit{timer} para de
 
 \textbf{ABCAST:} Asegura orden total, tiene la semantica de entrega más fuerte. Para que un grupo reciba un mensaje en el mismo orden, se necesita un protocolo de dos fases, para este caso el proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
 
-En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez enviado el mensaje, el resto de los procesos del grupo (no fallados), marca tentativamente los mensajes recibidos en base a su reloj local de lamport $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}. En la segunda fase, una vez $P_i$ reciba la marca tentativa de sus miembros del grupo, marca la máxima marca tentativa como $t_m$, (en caso de que dos procesos tengan el mismo valor para el relojes, se desempata con el id). Finalmente una vez definido el valor para el mensaje, Se le notifica a todos los procesos del grupo, la marca ganadora y se pasa el valor de comprometido a \textcolor{blue}{\textbf{TRUE}}.
+En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez enviado el mensaje, el resto de los procesos del grupo (no fallados), marca tentativamente los mensajes recibidos en base a su reloj local de lamport $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}.
 
 \textbf{Primera fase}
 \begin{figure}[H]
@@ -322,8 +319,10 @@ En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez
     \caption{Segundo paso ABCAST}\label{fig:1761653127112}
 \end{figure}
 
-\textbf{Segunda fase}
 
+En la segunda fase, una vez $P_i$ reciba la marca tentativa de sus miembros del grupo, marca la máxima marca tentativa como $t_m$, (en caso de que dos procesos tengan el mismo valor para el relojes, se desempata con el id). Finalmente una vez definido el valor para el mensaje, Se le notifica a todos los procesos del grupo, la marca ganadora y se pasa el valor de comprometido a \textcolor{blue}{\textbf{TRUE}}.
+
+\textbf{Segunda fase}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{img/Tercer_paso.png}
@@ -350,13 +349,6 @@ Para establecer un numero de mensajes por solicitud, Si hay N procesos, hay N en
 \textbf{Api de gestion de grupos:} Pasa asegurar atomicidad, nos provee una interfaz para gestionar grupos, servicios como, crear grupo, unirse a un grupo, salir de un grupo (por detección termino o fallas), una lista de quienes reciben el mensaje (Vista), y notificar un cambio de en la lista del grupo.
 
 Definimos un grupo atomico, como un grupo donde todos los miembros tienen la misma vista, cuando existen cambios en la vista (alguien se sale o une al grupo), este proceso necesariamente debe ser atómico.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{img/Api_gestion.png}
-    \caption{Ejemplo de grupos atomicos para API de gestión de grupos}\label{fig:1761676301300}
-\end{figure}
-
 \textcolor{red}{\textbf{Obs.1}} Notar que los 3 protocolos antes descritos tienen entrega atómica.
 
 
@@ -382,18 +374,27 @@ Paxos se usa para mantener consistente información del sistema, por ejemplo, in
 Paxos cuenta con dos pasos escenciales:
 
 \textcolor{red}{\textbf{Paso 1:}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Por el lado del \textcolor{red}{\textbf{proposer:}} Se propone una propuesta con un valor $VALUE$, y esta propuesta tiene un ID asociado (este id es estrictamente creciente).
 
-Por el lado del \textcolor{red}{\textbf{acceptor:}} El acceptor verifica si el id de la propuesta es mayor al que ya tiene (en caso de que nom este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\linewidth]{img/Paso_1_paxos.png}
     \caption{Primer paso de Paxos}\label{fig:1761859086537}
 \end{figure}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Por el lado del \textcolor{red}{\textbf{proposer:}} Se propone una propuesta con un valor $VALUE$, y esta propuesta tiene un ID asociado (este id es estrictamente creciente).
+
+Por el lado del \textcolor{red}{\textbf{acceptor:}} El acceptor verifica si el id de la propuesta es mayor al que ya tiene (en caso de que nom este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \textcolor{red}{\textbf{Paso 2:}}\\
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/Paso_2_paxos.png}
+    \caption{Segundo paso de Paxos}\label{fig:1761859213280}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textcolor{red}{\textbf{Fase 2A (Aceptación):}}
 
@@ -408,11 +409,6 @@ Por el lado del \textcolor{red}{\textbf{learner:}} Si recibde un valor aceptado 
 
 Por el lado del \textcolor{red}{\textbf{proposer:}} Una vez recibe un accepted de la mayoria de los aceptors, se confirma, el consenso de $VALUE$. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\linewidth]{img/Paso_2_paxos.png}
-    \caption{Segundo paso de Paxos}\label{fig:1761859213280}
-\end{figure}
 
 
 \textbf{Proposer:}

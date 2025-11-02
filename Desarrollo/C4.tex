@@ -176,7 +176,7 @@ Desde el punto de vista de $P_0$, comparamos lo siguiente
 
 Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en $Q$, observamos todas las dimensiones distintas de $K$:
 
-{\scriptsize \[
+{\scriptsize \[ \textstyle 
   [\,\underbrace{n_1, n_2, \dots}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}, 
   n_k , 
   \underbrace{\dots,n_{n-1}, n_{n}}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}\,]
@@ -197,18 +197,18 @@ Por lo tanto decimos que, un corte consistente es aquel que un evento sucede ant
 Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, un proceso puede recibir distintas marcas, de distintos procesos (más adelante definiremos que sucede en estos casos).
 
 \begin{figure}[H]
-  \centering
-  \captionsetup[subfigure]{labelformat=empty}
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{img/Chandy_ver.png}
-    \caption{Visualización del algoritmo}
-  \end{subfigure}
-  \hspace{2mm} % pequeño espacio entre imágenes
-  \begin{subfigure}[b]{0.2\textwidth}
-    \includegraphics[width=\textwidth]{img/Topologia.png}
-    \caption{Topología trabajada}
-  \end{subfigure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/Chandy_ver.png}
+    \caption{Algoritmo de Chandy-Lamport}\label{fig:1761838884075}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{img/Topologia.png}
+    \caption{Topología trabajada}\label{fig:1761838884075}
+\end{figure}
+
+
 Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, estos envian otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
 
 En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca exactamente, independiente de la cantidad de marcas que vaya a recibir. 
