@@ -1,0 +1,248 @@
+\section{Capítulo 7: Replicación de Datos} 
+\subsection{Introducción a la Replicación de Datos}
+
+\textbf{Escalabilidad/desempeño}: La escalabilidad de sistemas de almacenamiento de datos con buen desempeño ante cargas se basa en dos técnicas: 
+
+\begin{itemize}
+    \item Particionamiento (sharding o fragmentación): Datos \textcolor{blue}{se fragmentan y se distribuyen} localizandolos en varios sitios,  \textcolor{red}{aumentando el desempeño al distribuir la carga y agregar recursos}
+    \item Replicación: Datos replicados \textcolor{red}{mejora el desempeño al distribuir cargas entre réplicas}, pero también al acceder a una copia más cercana (mejor tiempo de respuesta y menor latencia)
+\end{itemize}
+
+\textbf{Disponibilidad/Resilencia}: Datos replicados para \textcolor{red}{alta disponibilidad y tolerancia a fallos}
+
+\begin{itemize}
+    \item Por ejemplo, en un modelo de fallas fail-stop, si $\alpha_0$ es la disponibilidad de una réplica, entonces la disponibilidad de $n$ réplicas es: $\alpha_n = 1 - (1 - \alpha_0)^n$
+    \item Cuando existen actualizaciones el \textcolor{red}{gran desafío} es \textcolor{blue}{mantener la consistencia} entre las réplicas
+\end{itemize}
+
+\textbf{Desafíos de la replicación de datos}:
+
+\begin{itemize}
+    \item \textcolor{blue}{Concurrencia}: Actualizar una copia genera una inconsistencia entre ellas. Se requiere \textcolor{red}{coordinar acceso concurrente} para garantizar consistencia.
+    \item \textcolor{blue}{Fallas}: En ambientes distribuidos se producen fallas de servidores y/o comunicación. Se requiere \textcolor{red}{coordinar recuperación ante posibles errores} para asegurar estado consistente y mantener disponibilidad del sistema.
+    \item \textcolor{blue}{Particiones de red}: Si se produce una partición de la red, no es posible coordinar a los nodos, pertenecientes a diferentes particiones. Se requiere \textcolor{red}{coordinar la consistencia} entre réplicas durante una partición, lo que \textbf{requiere sacrificiar disponibilidad}.
+    \item \textcolor{blue}{Complejidad}: La ejecución de los diferentes protocolos para consistencia y disponibilidad \textcolor{red}{puede ser demasiado costoso, sacrificando desempeño y limitando la escalabilidad}. Es decir, mayor latencia, uso de ancho de banda y carga sobre servidores
+\end{itemize}
+
+\subsubsection{Modelos de replicación}
+
+\textbf{Semántica de consistencia}: 
+
+\begin{itemize}
+    \item \textbf{Consistencia fuerte}: Asegura que todas las réplicas retornan el mismo valor.
+    \item \textbf{Consistencia débil}: Permite retornar diferentes valores, sacrificando consistencia para favorecer alta disponibilidad y mejorar desempeño. (consistencia eventual)
+\end{itemize}
+
+\textbf{Atomicidad computacional}: 
+
+\begin{itemize}
+    \item \textbf{Mono-objeto + mono-operacional}: Cada operación sobre un objeto de datos se realiza atómicamente, independiente de otras operaciones y objetos. (en ejecución de métodos en objetos distribuidos y replicados)
+    \item \textbf{Multi-objeto + Multi-operacional (transaccional)}: Operaciones de diferentes transacciones actualizan concurremente las réplicas. (con propiedades ACID)
+\end{itemize}
+
+\subsubsection{Consistencia débil}
+La consistencia débil es útil para mejorar disponibilidad y desempeño, a costa de sacrificar consistencia
+
+Ejemplos:
+\begin{itemize}
+    \item \textbf{DNS}: Actualizaciones desde un único primario son propagdas asincrónicamente a los secundarios, no siendo inmediatamente visibles.
+    \item \textbf{WWW}: Uso de caching intensivo, porque es tolerable leer un a página desactualizada. Puede haber copia de caché desactualizadas en navegadores, servidores proxies o CDN.
+    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes. Similar situación en CVS o GitHub para control de versiones de programas.
+    \item \textbf{Carrito de compra}: Coppia local puede quedar desactualizada por desconexión.
+\end{itemize}
+
+\subsubsection{Teorema CAP}: 
+\textbf{Teorema}: Un sistema de datos compartidos puede cumplir simultáneamente a lo más dos de las siguientes tres propiedades:
+
+\begin{itemize}
+    \item \textbf{C - Consistencia de datos}: Equivalente a mantener actualización de una copia.
+    \item \textbf{A - Disponibilidad (Availability)}: Tolerancia a fallos y del sistema para seguir actualizando las copias de datos. 
+    \item \textbf{P - Tolerancia a particiones}: Sistema sigue operando, pese a existir una partición de red.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{img/CAP.png}
+    \caption{Teorema CAP}\label{fig:cap}
+\end{figure}
+
+\subsubsection{Estrategias de actualización de réplicas}
+
+\textbf{Sincronización de actualizaciones}: 
+\begin{itemize}
+    \item \textbf{Sincrónica}: Una actualización está completa cuando se obtiene confirmación de todas para comprometerla. Asegura una consistencia fuerte pero introduce mayor latencia.
+    \item \textbf{Asincrónica}: Una actualización se considera completa si lo confirma un nodo distinguido. Demás réplicas se actualizan más tarde, lo que reduce latencia ymejora desempeño. Mejora disponibilidad, pero puede producir inconsistencias por concurrencia, latencias o fallas.
+\end{itemize}
+
+\textbf{Propagación de actualizaciones}: 
+\begin{itemize}
+    \item \textbf{Ansiosa}: Las actualizaciones se propagan inmediatemente una vezz comprometidas. Se mantiene réplicas cercanamente sincronizadas.
+    \item \textbf{Perezosa}: Actualizaciones se envían después de cierto retardo o tiempo. Habilita replicación optimista y operaciones desconectadas.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{img/Descentralizacion.png}
+    \caption{Descentralizacion en la Gestión de réplica}\label{fig:descentralizacion}
+\end{figure}
+
+\subsubsection{Estrategias de Resolución de conflictos}
+
+\textbf{Pesimista}: Estrategia de replicación que \underline{previene conflictos}, coordinando actualizaciones antes de comprometerlas.
+
+\begin{itemize}
+    \item Garantiza una \textcolor{red}{consistencia fuerte} en replicación de datos.
+    \item \textcolor{blue}{Se sacrifica disponibilidad, si se tolera particiones de red}. Más pesado y no escala bien.
+\end{itemize}
+
+\underline{Técnicas}: Uso de métodos de candados, protocolos de quorum o consenso
+
+\textbf{Optimista}: 
+Permite \underline{actualizaciones concurrentes}, baja la premisa que los conflictos rara vez ocurren; y si ocurren, se reseuelven más tarde.
+
+\begin{itemize}
+    \item Acepta semánticas de \textcolor{red}{consistencia débil}. Típicamente las actualizaciones se propagan \textcolor{red}{asincrónicamente}. Requiere mecanismos de resolución de conflictos. 
+    \item Se logra \textcolor{red}{mayor disponibilidad, sacrificando consistencia}, eventualmente tolerando paraticiones de red. Escala bien, con mejores tiempos de respuesta.
+\end{itemize}
+
+\underline{Técnicas}: Uso de métodos como relojes vectoriales, marcas de tiempos, algoritmos epidémicos.
+
+\subsection{Modelos semánticos de consistencia en replicación}
+
+\textbf{Definición (Modelo de consistencia)}: \textcolor{red}{Contrato} entre los procesos y los almacenes de datos respecto a cómo se realizan las operaciones sobre los objetos de datos replicados. \textcolor{blue}{Involucra reglas} sobre cómo y cuándo las actualizaciones sobre datos replicados se vuelven visibles y qué garantía de orden existe para las operaciones observables por los clientes.
+
+\subsubsection{}{Consistencia estricta}
+Cualquier lectura sobre un objeto de dato x retorna el valor corresponiente al resultado de la escritura más reciente sobre x.
+
+Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato x. $R_j(x) : a$ lectura del proceso $P_i$ del valor $a$ desde el dato x.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/consistencia_estricta.png}
+    \caption{Consistencia estricta}\label{fig:consistencia_estricta}
+\end{figure}
+
+\subsubsection{Consistencia fuerte (1-copia)}:
+\begin{itemize}
+    \item \textbf{Consistencia linealizable}: Una vez se completa una escritura sobre un objeto x, \textcolor{red}{toda lectura posterior sobre x deben retornar el valor de esa escritura, o el de una escritura posterior}. Una vez que una lectura sobre x retorna un valor particular,\textcolor{red}{todas las lecturas posteriores sobre x retornan ese valor, o el de una escritura posterior}.
+    \item \textbf{Consistencia serializable}: \textcolor{red}{Garantiza que la ejecución de un conjunto de transacciones con operaciones sobre varios objetos de datos}, es quivalente a alguna ejecución serial. \textcolor{blue}{Corresponde a semántica de serialización de una copia}.
+    \item \textbf{Consistencia estrictamente serializable}: Es una consistencia linealizable y serializable
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/Modelos_de_consistencia_en_replicacion.png}
+    \caption{Modelo de consistencia en replicación}\label{fig:modelos_de_consistencia_en_replicacion}
+\end{figure}
+
+\subsubsection{Modelos de consistencia no-transaccional}
+
+\textbf{A) Consistencia linealizable}: \textcolor{red}{El resultado de cualquier ejecución es la misma, si las operaciones sobre los datos fueron ejecutadas en algún orden secuencial por todos los procesos y las operaciones de cada proceso aparecen en esa secuencia en el orden especificado por el programa}. El orden es consistente con el tiempo real en la que ocurrió cada operación durante la ejecución. Requiere sincronización de todas las copias para cada actualización.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/consistencia_linealizable.png}
+    \caption{Sin consistencia linealizable}\label{fig:consistencia_linealizable_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/consistencia_linealizable_2.png}
+    \caption{Con consistencia linealizable}\label{fig:consistencia_linealizable_2}
+\end{figure}
+
+\textbf{B) Consistencia secuencial (No-transaccional)}: El \textcolor{red}{resultado de cualquier ejecución es la mismsa, si las operaciones sobre los datos fueron ejecutadas en algún orden secuencial y las operaciones de cada proceso individual aparecen en esa secuencia en el orden especificado por el programa}. SUpone que operaciones de diferentes procesos se entremezclan y todos los procesos ven este mismo orden. No hay restricciones temporales, se cumple especificación de una única copia del objeto de datos. Corresponde al modelo de múltiples procesadores con memoria compartida.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/secuecial_1.png}
+    \caption{Sin consistencia secuencial}\label{fig:secuencial_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/secuencial_2.png}
+    \caption{Con consistencia secuencial}\label{fig:secuencial_2}
+\end{figure}
+
+\textbf{C) Consistencia causal}: \textcolor{red}{Escrituras que son potencialmente causales tienen que verse en todos los procesos en el mismo orden. Escrituras concurrentes pueden verse en diferente orden en distintos procesos}. No se cumple especificación de una única copia para un objeto de datos. Se puede implementar usando relojes vectoriales. \textcolor{blue}{Supone una consistencia más débil} que consistencia secuencial, pues sólo impone un ordenamiento para eventos causales.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/causal_1.png}
+    \caption{Causal pero no secuencial}\label{fig:causal_1}
+\end{figure}
+
+\underline{Problemas de consistencia fuerte}:
+\begin{itemize}
+    \item \textbf{Disponibilidad y latencia de red}: Internet es muchas veces lenta y poco fiable, afectando la disponibilidad y latencia, los dispositivos móviles se desconectan frecuentemente de la red. Intento de sincronización con un servidor no disponible puede provocar bloqueos.
+    \item \textbf{Escalabilidad de sistemas replicados}: En redes extendidas con gran cantidad de nodos, es díficil replicar masivamente sistemas que realizan frecuentemente actualizaciones. Throughput y disponibilidad empeora con el incremento del número de nodos.
+    \item \textbf{Necesidades de aplicaciones de trabajo colaborativo}: Se comparten datos, pero permitiendo trabajar temporalmente en forma aislada. Es preferible actualizar datos independientes y resolver ocasionalmente conflictos cuando ocurren.
+\end{itemize}
+
+\textbf{D) Consistencia eventual}: En ausencia de nuevas operaciones de escritura sobre un objeto de dato x, \textcolor{red}{todas las operaciones de sobre x \underline{eventualmente} retornarán el mismo resultado}. Requiere que las actualizaciones se propaguen a todas las réplicas, tal que en algún momento todas convergan al mismo valor. Es más escalable y barato de implementar. Funciona bien mientras los clientes accedan a una misma copia.
+
+\subsubsection{Modelos de consistencia de sesión}
+\textbf{Concepto de consistencia}: Solo provee garantía de conssitencia para un único cliente. No provee garantía de consistencia si existe acceso concurrente de diferentes clientes a un mismo dato. Potenciales conflictos se deben resolver en una capa superior.
+
+\textbf{Autoría}: Base de datos para clientes móviles, un cliente trabaja con una copia local, cada dato tiene un dueño quien preferentemente lo modifica.
+
+Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escribe versión $x_2$ del dato sin conoceer otras versiones anteriores. $W_1(x_1 ; x_2)$: $P_1$ escribe versión $x_2$ del dato, basada en versión $x_1$. $W_1(x_1 | x_2)$: $P_1$ escribe versión $x_2$ del dato concurrentemente a $x_1$
+
+\textbf{A) Lecturas monótonas}: Si un proceso $P$ lee un valor de un objeto de datos x, cualquier lectura posterior de $P$ sobre x siempre reotrnará el mismo valor o uno más reciente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/monotona_1.png}
+    \caption{Lectura no monótona}\label{fig:monotona_1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/monotona_2.png}
+    \caption{Lectura monótona}\label{fig:monotona_2}
+\end{figure}
+
+\textbf{B) Escrituras monótonas}: Operación de escritura de un proceso $P$ sobre un objeto de datos x se completa antes que cualquier operación posterior de escritura de $P$ sobre x. Las operaciones de escritura, independiente del sitio, se propagan en el orden correcto a todas las copias de un almacen de datos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/monotona_3.png}
+    \caption{Escritura no monótona}\label{fig:monotona_3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/monotona_4.png}
+    \caption{Escritura monótona}\label{fig:monotona_4}
+\end{figure}
+
+\textbf{C) Lecturas de propias escrituras (read your writes)}: Los efectos de una operación de escritura de un proceso $P$ sobre un objeto de datos x va a ser siempre visto por operaciones de lectura suscesivas sobre x por $P$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/lec-inconsistente.png}
+    \caption{Lectura inconsistente}\label{fig:lec-inconsistente}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/lec-consistente.png}
+    \caption{Lectura consistente}\label{fig:lec-consistente}
+\end{figure}
+
+\textbf{D) Escrituras siguen lecturas (writes follow reads)}: Una operación de escritura de un proceso $P$ sobre un objeto de datos x que sigue a una operación de lectura sobre x realizada también por $P$, tiene garantizado que $P$ va a obtener el mismo valor de x o uno más reciente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/lec-inconsistente-2.png}
+    \caption{Lectura inconsistente}\label{fig:lec-inconsistente-2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/lec-consistente-2.png}
+    \caption{Lectura consistente}\label{fig:lec-consistente-2}
+\end{figure}
+
+\subsection{Arquitectura para replicación de datos}
