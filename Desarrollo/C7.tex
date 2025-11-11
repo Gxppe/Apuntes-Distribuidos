@@ -111,7 +111,7 @@ Permite \underline{actualizaciones concurrentes}, baja la premisa que los confli
 
 \textbf{Definición (Modelo de consistencia)}: \textcolor{red}{Contrato} entre los procesos y los almacenes de datos respecto a cómo se realizan las operaciones sobre los objetos de datos replicados. \textcolor{blue}{Involucra reglas} sobre cómo y cuándo las actualizaciones sobre datos replicados se vuelven visibles y qué garantía de orden existe para las operaciones observables por los clientes.
 
-\subsubsection{}{Consistencia estricta}
+\subsubsection{Consistencia estricta}
 Cualquier lectura sobre un objeto de dato x retorna el valor corresponiente al resultado de la escritura más reciente sobre x.
 
 Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato x. $R_j(x) : a$ lectura del proceso $P_i$ del valor $a$ desde el dato x.
@@ -122,7 +122,7 @@ Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato 
     \caption{Consistencia estricta}\label{fig:consistencia_estricta}
 \end{figure}
 
-\subsubsection{Consistencia fuerte (1-copia)}:
+\subsubsection{Consistencia fuerte (1-copia)}
 \begin{itemize}
     \item \textbf{Consistencia linealizable}: Una vez se completa una escritura sobre un objeto x, \textcolor{red}{toda lectura posterior sobre x deben retornar el valor de esa escritura, o el de una escritura posterior}. Una vez que una lectura sobre x retorna un valor particular,\textcolor{red}{todas las lecturas posteriores sobre x retornan ese valor, o el de una escritura posterior}.
     \item \textbf{Consistencia serializable}: \textcolor{red}{Garantiza que la ejecución de un conjunto de transacciones con operaciones sobre varios objetos de datos}, es quivalente a alguna ejecución serial. \textcolor{blue}{Corresponde a semántica de serialización de una copia}.
@@ -141,30 +141,43 @@ Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/consistencia_linealizable.png}
-    \caption{Sin consistencia linealizable}\label{fig:consistencia_linealizable_1}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/consistencia_linealizable_2.png}
-    \caption{Con consistencia linealizable}\label{fig:consistencia_linealizable_2}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/consistencia_linealizable.png}
+        \caption{Sin consistencia linealizable}
+        \label{fig:consistencia_linealizable_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/consistencia_linealizable_2.png}
+        \caption{Con consistencia linealizable}
+        \label{fig:consistencia_linealizable_2}
+    \end{subfigure}
+    
 \end{figure}
 
 \textbf{B) Consistencia secuencial (No-transaccional)}: El \textcolor{red}{resultado de cualquier ejecución es la mismsa, si las operaciones sobre los datos fueron ejecutadas en algún orden secuencial y las operaciones de cada proceso individual aparecen en esa secuencia en el orden especificado por el programa}. SUpone que operaciones de diferentes procesos se entremezclan y todos los procesos ven este mismo orden. No hay restricciones temporales, se cumple especificación de una única copia del objeto de datos. Corresponde al modelo de múltiples procesadores con memoria compartida.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/secuecial_1.png}
-    \caption{Sin consistencia secuencial}\label{fig:secuencial_1}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/secuecial_1.png}
+        \caption{Sin consistencia secuencial}
+        \label{fig:secuencial_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/secuencial_2.png}
+        \caption{Con consistencia secuencial}
+        \label{fig:secuencial_2}
+    \end{subfigure}
+    
 \end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/secuencial_2.png}
-    \caption{Con consistencia secuencial}\label{fig:secuencial_2}
-\end{figure}
-
 \textbf{C) Consistencia causal}: \textcolor{red}{Escrituras que son potencialmente causales tienen que verse en todos los procesos en el mismo orden. Escrituras concurrentes pueden verse en diferente orden en distintos procesos}. No se cumple especificación de una única copia para un objeto de datos. Se puede implementar usando relojes vectoriales. \textcolor{blue}{Supone una consistencia más débil} que consistencia secuencial, pues sólo impone un ordenamiento para eventos causales.
 
 \begin{figure}[H]
@@ -193,56 +206,154 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/monotona_1.png}
-    \caption{Lectura no monótona}\label{fig:monotona_1}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/monotona_2.png}
-    \caption{Lectura monótona}\label{fig:monotona_2}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_1.png}
+        \caption{Escritura no monótona}
+        \label{fig:monotona_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_2.png}
+        \caption{Escritura monótona}
+        \label{fig:monotona_2}
+    \end{subfigure}
+    
 \end{figure}
 
 \textbf{B) Escrituras monótonas}: Operación de escritura de un proceso $P$ sobre un objeto de datos x se completa antes que cualquier operación posterior de escritura de $P$ sobre x. Las operaciones de escritura, independiente del sitio, se propagan en el orden correcto a todas las copias de un almacen de datos.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/monotona_3.png}
-    \caption{Escritura no monótona}\label{fig:monotona_3}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/monotona_4.png}
-    \caption{Escritura monótona}\label{fig:monotona_4}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_3.png}
+        \caption{Escritura no monótona}
+        \label{fig:monotona_3}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_4.png}
+        \caption{Escritura monótona}
+        \label{fig:monotona_4}
+    \end{subfigure}
+    
 \end{figure}
 
 \textbf{C) Lecturas de propias escrituras (read your writes)}: Los efectos de una operación de escritura de un proceso $P$ sobre un objeto de datos x va a ser siempre visto por operaciones de lectura suscesivas sobre x por $P$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/lec-inconsistente.png}
-    \caption{Lectura inconsistente}\label{fig:lec-inconsistente}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/lec-consistente.png}
-    \caption{Lectura consistente}\label{fig:lec-consistente}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-inconsistente.png}
+        \caption{Lectura inconsistente}
+        \label{fig:lec-inconsistente}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-consistente.png}
+        \caption{Lectura consistente}
+        \label{fig:lec-consistente}
+    \end{subfigure}
+    
 \end{figure}
 
 \textbf{D) Escrituras siguen lecturas (writes follow reads)}: Una operación de escritura de un proceso $P$ sobre un objeto de datos x que sigue a una operación de lectura sobre x realizada también por $P$, tiene garantizado que $P$ va a obtener el mismo valor de x o uno más reciente.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/lec-inconsistente-2.png}
-    \caption{Lectura inconsistente}\label{fig:lec-inconsistente-2}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.48\linewidth]{img/lec-consistente-2.png}
-    \caption{Lectura consistente}\label{fig:lec-consistente-2}
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-inconsistente-2.png}
+        \caption{Lectura inconsistente}
+        \label{fig:lec-inconsistente-2}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-consistente-2.png}
+        \caption{Lectura consistente}
+        \label{fig:lec-consistente-2}
+    \end{subfigure}
+    
 \end{figure}
 
 \subsection{Arquitectura para replicación de datos}
+
+Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/modelo_de_referencia.png}
+    \caption{Modelo básico de referencia}\label{fig:modelo_de_referencia}
+\end{figure}
+
+FE es un proxy del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
+
+RM es servidor que gestiona una réplica y coordina con otros RMs para consistencia. Grupo de RMs puede ser estático o dinámico. \textcolor{red}{Un RM puede sufrir fallas de crash y/o omisión}. Se asume algún grado de sincronismo. 
+
+\subsubsection{Replicación pasiva con protocolo Primario-Respaldo (Primary-backup)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/primary-backup.png}
+    \caption{Protocolo de Primario-Respaldo}\label{fig:primary-backup}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Petición}: FE \textcolor{blue}{genera una petición con un identificador único (UID) y lo envía al Primario}. Peticiones se generan sincrónicamente por el cliente (secuencial).
+    \item \textbf{Coordinación}: El primario procesa cada petición atómicamente y en el orden de llegada. Antes verifica el UID de la petición para asegurarse que no ha sido procesada previamente \textcolor{red}{(at-most-once)}. Si es el caso, responde inmediatamente con copia de respuesta guardada en \underline{buffer}.
+    \item \textbf{Ejecución}: El primario ejecuta la petición y almacena en \underline{buffer} la respuesta.
+    \item \textbf{Acuerdo}: Si la petición es una \textcolor{blue}{actualización, el primario envía a todos los RMs de respaldo el estado} de la actualización, la respuesta y UID. Cada respaldo \textcolor{red}{responde con un ACK} al primario.
+    \item \textbf{Respuesta}: El primario responde a FE, que a su vez le responde de vuelta al cliente.
+\end{itemize}
+
+Las operaciones de lectura se hacen directamente sobre cualquier réplica para distribuir carga y aumentar disponibilidad. La propragación de actualizaciones es asincrónica y perezosa, para mejorar el tiempo de respuesta \textcolor{red}{(sacrificando consistencia)}.
+
+El sistema implementa una \textcolor{blue}{semántica de consistencia linealizable}. Si el primario falla, un respaldo debe asumir su rol. Tiene la desventaja de que es bastante pesado, para mejorarlo se requiere sacrificar consistencia. Para balancear la carga, los clientes pueden leer directamente en algún servidor de respaldo, pero se pierde consistencia linealizable y se conserva consistencia secuencial.
+
+En un modelo \underline{Fail-Stop}, se requiere de $f+1$ copias; en modelo \underline{crash} se requiere $2f+1$ copias; en modelo \underline{bizantino} se requiere $3f+1$ copias. 
+
+\textbf{Reparación}: Tiene tres enfoques:
+\begin{itemize}
+    \item \textbf{Hot backup}: Respaldo \textcolor{red}{siempre listo} para tomar control si falla el primario, \textcolor{blue}{con retardo mínimo}.
+    \item \textbf{Warm backup}: Se ha \textcolor{red}{realizado el trabajo de preparación} para tomar el control, \textcolor{red}{pero no está listo inmediatamente} para asumir el rol de primario.
+    \item \textbf{Cold backup}: \textcolor{red}{No existe trabajo preparatorio}, \textcolor{blue}{se debe recuperar la base de datos antes} de que el respaldo pueda tomar el control.
+\end{itemize}
+
+\textbf{Detección de fallas}: Para detectar la falla del primario, debe haber un proceso de monitoreo que deba ser fiable en la detección. Puede haber retardo en detectar la falla, lo que aumenta el MTTR y degrada la disponibilidad. Si falla el primario, es posible que al haber fallado y reparado quiera tomar el rol de primario haciendo fallar al primario suplente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/primario-respaldo.png}
+    \caption{Esquema de Primario-Respaldo}\label{fig:primario-respaldo}
+\end{figure} 
+
+\subsubsection{Replicación activa}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/replicacion-activa.png}
+    \caption{Esquema de Replicación Activa}\label{fig:replicacion-activa}
+\end{figure} 
+
+\begin{itemize}
+    \item \textbf{Petición}: FE genera una petición con un identificador único y lo envía a todos los RMs. \textcolor{red}{FE a lo más falla por crash}.
+    \item \textbf{Coordinación}: El sistema de comunicación grupal entrega la petición a cada RM en el mismo orden.
+    \item \textbf{Ejecución}: Cada RM ejecuta la petición y en el mismo orden. Grupo de RMs definen una máquina de estado replicada y determinista. La respuesta contiene UID de la petición.
+    \item \textbf{Acuerdo}: \textcolor{red}{No se requiere}. Está subyacente en el protocolo de multicast.
+    \item \textbf{Respuesta}: Cada RM envía su respuesta al FE, el cual debe filtrar respuestas repetidas según el mismo UID o modelo de fallas usado.
+\end{itemize}
+
+Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se procesan en orden FIFO}. \textcolor{blue}{No es linealizable}. Si los clientes no se comunican entre sí mientras esperan una respuesta se garantiza ordenamiento causal. De esto último, si tiene multihebra en los clientes, puede ocurrir comunicación entre ellos y si se quiere orden causal habrá que agregar un protocolo de multicast que provea el orden causal y total.
+
+Puede tolerar f fallas bizantinas, si se tiene al menos $2f + 1$ réplicas y FE debe recolectar al menos $f+1$ respuestas iguales. Es posible mejorar el desempeño si se considera que operaciones de diferentes clientes conmutan.
+
+\subsection{Protocolos de consistencia de datos}
