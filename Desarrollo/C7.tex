@@ -357,3 +357,114 @@ Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se p
 Puede tolerar f fallas bizantinas, si se tiene al menos $2f + 1$ réplicas y FE debe recolectar al menos $f+1$ respuestas iguales. Es posible mejorar el desempeño si se considera que operaciones de diferentes clientes conmutan.
 
 \subsection{Protocolos de consistencia de datos}
+
+\textbf{Tipos de protocolos}: Pesimista 
+(prevención de conflictos) y optimista (actualizaciones concurrentes y con resolución de conflictos).
+
+\subsubsection{A) Protocolo de copia primaria}
+
+\begin{itemize}
+    \item \textbf{Actualización}: Reservar la copia primaria, modificar la copia primaria. Si modificación es válida, copia primaria provocará actualización de copias secundarias.
+    \item \textbf{Consultas}: \underline{Consulta consistente}: Reservar en copia primaria y luego consultar copia local. \underline{Consulta aproximada}: Consultar la copia local, sin reservar la primaria.
+\end{itemize}
+
+Si existen $k+1$ copias, se pueden tolerar $k$ fallas de nodos. Si el nodo primario falla, se puede activar algoritmo de elección, si se produce partición, sólo se permiten operaciones en la partición del primario. Funciona bien si es posible discriminar entre falla del primario y partición de red. Existen esquemas que detectan si el primario está en una partición con una mayoría de nodos; si no es el caso, se le destituye y una partición mayoritaria puede elegir otro primario.
+
+\subsubsection{B) Protocolo de Quorum mayoritoria}
+
+\begin{itemize}
+    \item \textbf{Antecedentes}: Permite tolerar fallas de nodos y particiones de red, sin necesidad de discriminar entre ellas.
+    \item \textbf{Idea básica}: Asignarle a cada copia o réplica de dato una cierta cantidad de votos. Una operación de lectura o escritura sólo se acepta si el usuario logra obtener suficientes votos.
+\end{itemize}
+
+\textbf{Quórums de observación}: $V(a)$: Número de votos totales sobre el dato "a". $R(a)$: Quórum necesario para leer "a". $W(a)$: Quórum necesario para poder escribir "a".
+
+\textbf{Relaciones a cumplir}: $2 \cdot W(a) > V(a)$: evita actualizaciones simultáneas. $W(a) + R(a) > V(a)$: evita lectura y escritura simultánea. 
+
+\subsubsection{C) CODA: Sistema de archivos distribuidos}
+
+Existen varios servidores que mantienen réplicas de archivos. Clientes pueden trabajar desconectado, manteniendo en caché copia de archivos de trabajo. Replicación optimista para detectar conflictos. En la reconexión se detectan conflictos y se resuelven semi-manualmente. Sus conceptos son patrones de diseño claves en sistemas móviles y colaborativos. 
+
+\textbf{Mecanismo de resolución de conflictos}: Existen $n$ sitios, donde existe una copia de cada archivo. Se mantiene un vector n-dimensional $V_i$ para cada archivo en cada sitio i; cada sitio i cuenta el número de actualizaciones provenientes de cada otro sitio j en $V_i[j]$. Si no existe partición, entonces los vectores son iguales en todos los sitios; sino pueden diferenciarse en diferentes particiones. Si existe casualidad, se dice que un vector domina al otro, sino existe conflicto.  
+
+\begin{itemize}
+    \item Si $V_i$ domina a $V_j$: Se actualiza copia de sitio i a sitio j.
+    \item Si $V_i$ en conflicto con $V_j$: El administrador del sistema realiza resolución (semi)-manual.
+\end{itemize}
+
+\subsubsection{CODA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/CODA.png}
+    \caption{CODA}\label{fig:CODA}
+\end{figure} 
+
+\subsubsection{D) Protocolos épidemicos (optimista y sin líder)}
+
+Implementan consistencia \textbf{eventual}, propagando actualizaciones asincrónica entre los RMs. No resuelven conflictos de actualización, que deber ser realizado por otra instancia de orden superior. Actualizaciones se propagan infectando progresivamente las réplicas hasta infectarlas todas. 
+
+Tres tipos (o estados) para las réplicas en los servidores (RM):
+\begin{itemize}
+    \item \textbf{Infectado}: Tiene actualización que desea propagar.
+    \item \textbf{Propenso}: No ha sido infectado.
+    \item \textbf{removido}: Está actualizado, pero no propaga más la actualización.    
+\end{itemize}
+
+\textbf{Idea del algoritmo}: Actualizaciones se realizan inicialmente en una o pocas réplicas. Una réplica propaga sus actualizaciones a un número limitado de vecinos. Las actualizaciones se propagan flojamente, en forma asincrónica y no se realizan inmediatamente, lo que se puede demorar más en lograr consistencia eventual. Finalmente, cada actualización alcanzará a cada réplica, quedando todas ellas con un mismo valor.
+
+\textbf{Estrategias de actualización}:
+\begin{itemize}
+    \item \textbf{Anti-entropía}: Cada servidor de réplica regularmente elige a otra aleatoriamente Q, e intercambia diferencias de estados, dejándolos iguales al posteriomente. Dos estrategias de intercambio. 1. \underline{Push}: P sólo transfiere sus actualizaciones a Q (sin conocer las de Q). 2.\underline{Pull}: P sólo obtiene nuevas actualizaciones desde Q (sin comunicar las propias). 3. \underline{Push \& Pull}: P y Q intercambian todas sus actualizaciones.
+    \item \textbf{Chisme}: Réplica que acaba de actualizarse, lo comunica a otras. Si un servidor P es actualizado, contacta aleatoriamente a un servidor Q arbitrario y tratar de empujar su actualización. Si Q ya está actualizado, P pierde interés en propagar la actualización. Para asegurar que se actualizan todas las réplicas se combina con Anti-Entropía.  
+\end{itemize}
+
+\textbf{Caso blockchain}: 
+
+\begin{itemize}
+    \item Arquitectura: Arquitectura 2P2, descentralizada, simétrica y sin líder. Cada nodo mantiene copia de la cadena de bloques.
+    \item Propagación de actualización: Cuando un nodo resuelve el problema de minado, lo propaga al resto de la red. Minero ganador asume el rol de coordinador para propagar nuevo bloque a ser agregado a la cadena. Se usa un método optimista con un estilo epidémico de chisme para propagar(consistencia eventual).
+    \item Resolución de conflcitos: Se produce un fork, si se agregan concurrentemente varios bloques. Se resuelve por la regla de la cadena más larga es válida. 
+\end{itemize}
+
+\subsection{Ubicación y distribución de réplicas}
+
+\subsubsection{Gestión de número de réplicas}
+
+\textbf{Estrategias de ubicación y colocación de réplicas}: Distribución geográfica y aspectos de balance de carga, latencia, consumo energético.
+
+\textbf{Dinamismo en número de réplicas}: Replicación elástica por demanda, recolección de basura, variación de miembros
+
+\subsubsection{Localización de réplicas}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/localizacion.png}
+    \caption{Localización de réplicas}\label{fig:localizacion}
+\end{figure} 
+
+\subsubsection{Réplicas lado del servidor}
+\textbf{Réplicas permanentes}:
+
+\begin{itemize}
+    \item Característica: Corresponde a conjunto inicial de réplicas, normalmente un número pequeño y estático de réplicas.
+    \item Dos estrategias: Clustering (balance de carga) y Mirroring (mayor distribución geográfica).
+    \item Ejemplos: Sitio web replicado en cluster, base de datos distribuidas o replicadas.
+\end{itemize}
+
+\textbf{Réplicas iniciadas por el servidor}:
+
+\begin{itemize}
+    \item Característica: Copia réplica a lugar más cerca del cliente, para satisfacer la alta demanda, de preferencia de lectura.
+    \item Gestión de N° de réplicas: Requiere monitorear frecuencia de acceso. Se copia si se sobrepasa un umbral, se borra si baja de un umbral y las copias también pueden migrar.
+    \item Ejemplo: El CDN
+\end{itemize}
+
+\subsubsection{Réplicas al lado del cliente}
+Conocidas como (client) caches. Frecuentemente administradas por el cliente, pero a veces se incorpora el servidor, mejora el tiempo de acceso y típicamente se utiliza una marca de tiempo de último acceso.   
+
+\textbf{En caso de caching}: Se propaga notificaciones de actualización, datos de una copia a otra, operación de actualización a otras copias. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/propagacion.png}
+    \caption{Propagación de actualizaciones}\label{fig:Propagacion-de-actualizaciones}
+\end{figure} 
