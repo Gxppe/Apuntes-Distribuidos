@@ -29,30 +29,30 @@
 \textbf{Semántica de consistencia}: 
 
 \begin{itemize}
-    \item \textbf{Consistencia fuerte}: Asegura que todas las réplicas retornan el mismo valor.
-    \item \textbf{Consistencia débil}: Permite retornar diferentes valores, sacrificando consistencia para favorecer alta disponibilidad y mejorar desempeño. (consistencia eventual)
+    \item \textbf{Consistencia fuerte}: \textcolor{red}{Asegura que todas las réplicas retornan el mismo valor.}
+    \item \textbf{Consistencia débil}: \textcolor{blue}{Permite retornar diferentes valores}, sacrificando consistencia para favorecer alta disponibilidad y mejorar desempeño. (consistencia eventual)
 \end{itemize}
 
 \textbf{Atomicidad computacional}: 
 
 \begin{itemize}
-    \item \textbf{Mono-objeto + mono-operacional}: Cada operación sobre un objeto de datos se realiza atómicamente, independiente de otras operaciones y objetos. (en ejecución de métodos en objetos distribuidos y replicados)
-    \item \textbf{Multi-objeto + Multi-operacional (transaccional)}: Operaciones de diferentes transacciones actualizan concurremente las réplicas. (con propiedades ACID)
+    \item \textbf{Mono-objeto + mono-operacional}: \textcolor{blue}{Cada operación sobre un objeto de datos se realiza atómicamente}, \textcolor{red}{independiente} de otras operaciones y objetos. (en ejecución de métodos en objetos distribuidos y replicados)
+    \item \textbf{Multi-objeto + Multi-operacional (transaccional)}: \textcolor{red}{Operaciones de diferentes transacciones actualizan concurremente las réplicas.} (con propiedades ACID)
 \end{itemize}
 
 \subsubsection{Consistencia débil}
-La consistencia débil es útil para mejorar disponibilidad y desempeño, a costa de sacrificar consistencia
+La consistencia débil \textcolor{blue}{es útil para mejorar disponibilidad y desempeño, }a costa de sacrificar consistencia
 
 Ejemplos:
 \begin{itemize}
-    \item \textbf{DNS}: Actualizaciones desde un único primario son propagdas asincrónicamente a los secundarios, no siendo inmediatamente visibles.
-    \item \textbf{WWW}: Uso de caching intensivo, porque es tolerable leer un a página desactualizada. Puede haber copia de caché desactualizadas en navegadores, servidores proxies o CDN.
-    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes. Similar situación en CVS o GitHub para control de versiones de programas.
-    \item \textbf{Carrito de compra}: Coppia local puede quedar desactualizada por desconexión.
+    \item \textbf{DNS}: Actualizaciones desde un único primario \textcolor{red}{son propagadas asincrónicamente} a los secundarios, no siendo inmediatamente visibles.
+    \item \textbf{WWW}: \textcolor{blue}{Uso de caching intensivo}, porque es tolerable leer un a página desactualizada. Puede haber copia de caché desactualizadas en navegadores, servidores proxies o CDN.
+    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) \textcolor{red}{quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes}. Similar situación en CVS o GitHub para control de versiones de programas.
+    \item \textbf{Carrito de compra}: Copia local puede quedar desactualizada por desconexión.
 \end{itemize}
 
-\subsubsection{Teorema CAP}: 
-\textbf{Teorema}: Un sistema de datos compartidos puede cumplir simultáneamente a lo más dos de las siguientes tres propiedades:
+\subsubsection{Teorema CAP}
+\textbf{Teorema}: \textcolor{red}{Un sistema de datos compartidos puede cumplir simultáneamente a lo más dos de las siguientes tres propiedades}:
 
 \begin{itemize}
     \item \textbf{C - Consistencia de datos}: Equivalente a mantener actualización de una copia.
@@ -70,14 +70,14 @@ Ejemplos:
 
 \textbf{Sincronización de actualizaciones}: 
 \begin{itemize}
-    \item \textbf{Sincrónica}: Una actualización está completa cuando se obtiene confirmación de todas para comprometerla. Asegura una consistencia fuerte pero introduce mayor latencia.
-    \item \textbf{Asincrónica}: Una actualización se considera completa si lo confirma un nodo distinguido. Demás réplicas se actualizan más tarde, lo que reduce latencia ymejora desempeño. Mejora disponibilidad, pero puede producir inconsistencias por concurrencia, latencias o fallas.
+    \item \textbf{Sincrónica}:\textcolor{blue}{Una actualización está completa cuando se obtiene confirmación de todas para comprometerla}. Asegura una consistencia fuerte pero introduce mayor latencia.
+    \item \textbf{Asincrónica}: \textcolor{blue}{Una actualización se considera completa si lo confirma un nodo distinguido.} \textcolor{red}{Demás réplicas se actualizan más tarde}, lo que reduce latencia ymejora desempeño. Mejora disponibilidad, pero puede producir inconsistencias por concurrencia, latencias o fallas.
 \end{itemize}
 
 \textbf{Propagación de actualizaciones}: 
 \begin{itemize}
-    \item \textbf{Ansiosa}: Las actualizaciones se propagan inmediatemente una vezz comprometidas. Se mantiene réplicas cercanamente sincronizadas.
-    \item \textbf{Perezosa}: Actualizaciones se envían después de cierto retardo o tiempo. Habilita replicación optimista y operaciones desconectadas.
+    \item \textbf{Ansiosa}: \textcolor{red}{Las actualizaciones se propagan inmediatemente una vez comprometidas}. Se mantiene réplicas cercanamente sincronizadas.
+    \item \textbf{Perezosa}: \textcolor{blue}{Actualizaciones se envían después de cierto retardo o tiempo}. Habilita replicación optimista y operaciones desconectadas.
 \end{itemize}
 
 \begin{figure}[H]
@@ -112,7 +112,7 @@ Permite \underline{actualizaciones concurrentes}, baja la premisa que los confli
 \textbf{Definición (Modelo de consistencia)}: \textcolor{red}{Contrato} entre los procesos y los almacenes de datos respecto a cómo se realizan las operaciones sobre los objetos de datos replicados. \textcolor{blue}{Involucra reglas} sobre cómo y cuándo las actualizaciones sobre datos replicados se vuelven visibles y qué garantía de orden existe para las operaciones observables por los clientes.
 
 \subsubsection{Consistencia estricta}
-Cualquier lectura sobre un objeto de dato x retorna el valor corresponiente al resultado de la escritura más reciente sobre x.
+\textcolor{red}{Cualquier lectura sobre un objeto de dato x retorna el valor corresponiente al resultado de la escritura más reciente sobre x.}
 
 Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato x. $R_j(x) : a$ lectura del proceso $P_i$ del valor $a$ desde el dato x.
 
@@ -188,21 +188,21 @@ Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato 
 
 \underline{Problemas de consistencia fuerte}:
 \begin{itemize}
-    \item \textbf{Disponibilidad y latencia de red}: Internet es muchas veces lenta y poco fiable, afectando la disponibilidad y latencia, los dispositivos móviles se desconectan frecuentemente de la red. Intento de sincronización con un servidor no disponible puede provocar bloqueos.
-    \item \textbf{Escalabilidad de sistemas replicados}: En redes extendidas con gran cantidad de nodos, es díficil replicar masivamente sistemas que realizan frecuentemente actualizaciones. Throughput y disponibilidad empeora con el incremento del número de nodos.
-    \item \textbf{Necesidades de aplicaciones de trabajo colaborativo}: Se comparten datos, pero permitiendo trabajar temporalmente en forma aislada. Es preferible actualizar datos independientes y resolver ocasionalmente conflictos cuando ocurren.
+    \item \textbf{Disponibilidad y latencia de red}: \textcolor{red}{Internet es muchas veces lenta y poco fiable, afectando la disponibilidad y latencia}, los dispositivos móviles se desconectan frecuentemente de la red. Intento de sincronización con un servidor no disponible puede provocar bloqueos.
+    \item \textbf{Escalabilidad de sistemas replicados}: \textcolor{blue}{En redes extendidas con gran cantidad de nodos, es díficil replicar masivamente sistemas que realizan frecuentemente actualizaciones.} Throughput y disponibilidad empeora con el incremento del número de nodos.
+    \item \textbf{Necesidades de aplicaciones de trabajo colaborativo}: \textcolor{red}{Se comparten datos, pero permitiendo trabajar temporalmente en forma aislada.} Es preferible actualizar datos independientes y resolver ocasionalmente conflictos cuando ocurren.
 \end{itemize}
 
 \textbf{D) Consistencia eventual}: En ausencia de nuevas operaciones de escritura sobre un objeto de dato x, \textcolor{red}{todas las operaciones de sobre x \underline{eventualmente} retornarán el mismo resultado}. Requiere que las actualizaciones se propaguen a todas las réplicas, tal que en algún momento todas convergan al mismo valor. Es más escalable y barato de implementar. Funciona bien mientras los clientes accedan a una misma copia.
 
 \subsubsection{Modelos de consistencia de sesión}
-\textbf{Concepto de consistencia}: Solo provee garantía de conssitencia para un único cliente. No provee garantía de consistencia si existe acceso concurrente de diferentes clientes a un mismo dato. Potenciales conflictos se deben resolver en una capa superior.
+\textbf{Concepto de consistencia}: \textcolor{red}{Solo provee garantía de conssitencia para un único cliente}.\underline{No provee garantía de consistencia si existe acceso concurrente de diferentes clientes a un mismo dato.} Potenciales conflictos se deben resolver en una capa superior.
 
-\textbf{Autoría}: Base de datos para clientes móviles, un cliente trabaja con una copia local, cada dato tiene un dueño quien preferentemente lo modifica.
+\textbf{Autoría}: Base de datos para clientes móviles, \underline{un cliente trabaja con una copia local}, \textcolor{red}{cada dato tiene un dueño quien preferentemente lo modifica}.
 
 Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escribe versión $x_2$ del dato sin conoceer otras versiones anteriores. $W_1(x_1 ; x_2)$: $P_1$ escribe versión $x_2$ del dato, basada en versión $x_1$. $W_1(x_1 | x_2)$: $P_1$ escribe versión $x_2$ del dato concurrentemente a $x_1$
 
-\textbf{A) Lecturas monótonas}: Si un proceso $P$ lee un valor de un objeto de datos x, cualquier lectura posterior de $P$ sobre x siempre reotrnará el mismo valor o uno más reciente.
+\textbf{A) Lecturas monótonas}: \textcolor{red}{Si un proceso $P$ lee un valor de un objeto de datos x, cualquier lectura posterior de $P$ sobre x siempre reotrnará el mismo valor o uno más reciente.}
 
 \begin{figure}[H]
     \centering
@@ -223,7 +223,7 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
     
 \end{figure}
 
-\textbf{B) Escrituras monótonas}: Operación de escritura de un proceso $P$ sobre un objeto de datos x se completa antes que cualquier operación posterior de escritura de $P$ sobre x. Las operaciones de escritura, independiente del sitio, se propagan en el orden correcto a todas las copias de un almacen de datos.
+\textbf{B) Escrituras monótonas}: \textcolor{red}{Operación de escritura de un proceso $P$ sobre un objeto de datos x se completa antes que cualquier operación posterior de escritura de $P$ sobre x.} Las operaciones de escritura, independiente del sitio, se propagan en el orden correcto a todas las copias de un almacen de datos.
 
 \begin{figure}[H]
     \centering
@@ -244,7 +244,7 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
     
 \end{figure}
 
-\textbf{C) Lecturas de propias escrituras (read your writes)}: Los efectos de una operación de escritura de un proceso $P$ sobre un objeto de datos x va a ser siempre visto por operaciones de lectura suscesivas sobre x por $P$.
+\textbf{C) Lecturas de propias escrituras (read your writes)}: \textcolor{red}{Los efectos de una operación de escritura de un proceso $P$ sobre un objeto de datos x va a ser siempre visto por operaciones de lectura suscesivas sobre x por $P$.}
 
 \begin{figure}[H]
     \centering
@@ -265,7 +265,7 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
     
 \end{figure}
 
-\textbf{D) Escrituras siguen lecturas (writes follow reads)}: Una operación de escritura de un proceso $P$ sobre un objeto de datos x que sigue a una operación de lectura sobre x realizada también por $P$, tiene garantizado que $P$ va a obtener el mismo valor de x o uno más reciente.
+\textbf{D) Escrituras siguen lecturas (writes follow reads)}: \textcolor{red}{Una operación de escritura de un proceso $P$ sobre un objeto de datos x que sigue a una operación de lectura sobre x realizada también por $P$,} tiene garantizado que $P$ va a obtener el mismo valor de x o uno más reciente.
 
 \begin{figure}[H]
     \centering
@@ -296,9 +296,9 @@ Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de con
     \caption{Modelo básico de referencia}\label{fig:modelo_de_referencia}
 \end{figure}
 
-FE es un proxy del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
+\textcolor{red}{FE es un proxy} del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
 
-RM es servidor que gestiona una réplica y coordina con otros RMs para consistencia. Grupo de RMs puede ser estático o dinámico. \textcolor{red}{Un RM puede sufrir fallas de crash y/o omisión}. Se asume algún grado de sincronismo. 
+\textcolor{blue}{RM es servidor que gestiona una réplica y coordina con otros RMs para consistencia}. Grupo de RMs puede ser estático o dinámico. \textcolor{red}{Un RM puede sufrir fallas de crash y/o omisión}. Se asume algún grado de sincronismo. 
 
 \subsubsection{Replicación pasiva con protocolo Primario-Respaldo (Primary-backup)}
 
