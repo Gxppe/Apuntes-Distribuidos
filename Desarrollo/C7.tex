@@ -123,17 +123,20 @@ Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato 
 \end{figure}
 
 \subsubsection{Consistencia fuerte (1-copia)}
-\begin{itemize}
-    \item \textbf{Consistencia linealizable}: Una vez se completa una escritura sobre un objeto x, \textcolor{red}{toda lectura posterior sobre x deben retornar el valor de esa escritura, o el de una escritura posterior}. Una vez que una lectura sobre x retorna un valor particular,\textcolor{red}{todas las lecturas posteriores sobre x retornan ese valor, o el de una escritura posterior}.
-    \item \textbf{Consistencia serializable}: \textcolor{red}{Garantiza que la ejecución de un conjunto de transacciones con operaciones sobre varios objetos de datos}, es quivalente a alguna ejecución serial. \textcolor{blue}{Corresponde a semántica de serialización de una copia}.
-    \item \textbf{Consistencia estrictamente serializable}: Es una consistencia linealizable y serializable
-\end{itemize}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.48\linewidth]{img/Modelos_de_consistencia_en_replicacion.png}
     \caption{Modelo de consistencia en replicación}\label{fig:modelos_de_consistencia_en_replicacion}
 \end{figure}
+
+\begin{itemize}
+    \item \textbf{Consistencia linealizable}: Una vez se completa una escritura sobre un objeto x, \textcolor{red}{toda lectura posterior sobre x deben retornar el valor de esa escritura, o el de una escritura posterior}. Una vez que una lectura sobre x retorna un valor particular,\textcolor{red}{todas las lecturas posteriores sobre x retornan ese valor, o el de una escritura posterior}.
+    \item \textbf{Consistencia serializable}: \textcolor{red}{Garantiza que la ejecución de un conjunto de transacciones con operaciones sobre varios objetos de datos}, es quivalente a alguna ejecución serial. \textcolor{blue}{Corresponde a semántica de serialización de una copia}.
+    \item \textbf{Consistencia estrictamente serializable}: Es una consistencia linealizable y serializable
+\end{itemize}
+
+
 
 \subsubsection{Modelos de consistencia no-transaccional}
 
@@ -288,13 +291,15 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
 
 \subsection{Arquitectura para replicación de datos}
 
-Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.48\linewidth]{img/modelo_de_referencia.png}
     \caption{Modelo básico de referencia}\label{fig:modelo_de_referencia}
 \end{figure}
+
+Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
+
 
 \textcolor{red}{FE es un proxy} del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
 
@@ -395,7 +400,7 @@ Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se p
 \subsubsection{CODA}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.48\linewidth]{img/CODA.png}
+    \includegraphics[width=0.3\linewidth]{img/CODA.png}
     \caption{CODA}\label{fig:CODA}
 \end{figure} 
 

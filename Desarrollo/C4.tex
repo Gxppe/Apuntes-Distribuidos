@@ -1,36 +1,36 @@
 \section{Capitulo 4: Fundamentos teoricos de la computación distriuida}
-\subsection{Historias Causales}
-Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
-
-{
-\noindent\centering
-$\subset \text{ : } \textbf{Contenido} \Rightarrow \text{ : } A=\{1,2\}$ y 
-$B=\big\{\underbrace{1,2}_{\text{\textcolor{red}{\textbf{A}}}},3\big\}$ podemos decir que $A \subset B$
-\par
-}
-
-de lo antes definido tenemos lo siguiente:
-
-\begin{itemize}
-
-    \item 
-    \[
-    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \rightarrow e] \Leftrightarrow H(e') \subset H(e)$}
-    \]
-    Esto se puede traducir como: \textcolor{red}{Si $e'$ ocurre antes que $e$, entonces $H(e')$ es un subconjunto de $H(e)$}.
-
-    \item 
-    \[
-    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \parallel e] \Leftrightarrow [H(e') \nsubseteq H(e)] \land [H(e) \nsubseteq H(e') ]$}
-    \]
-    Esto se lee como: \textcolor{red}{Si $e'$ es concurrente con $e$, entonces $H(e')$ no es un subconjunto de $H(e)$ y $H(e)$ no es subconjunto de $H(e')$}.
-
-\end{itemize}
+%\subsection{Historias Causales}
+%Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
+%
+%{
+%\tiny\textstyle\noindent\centering
+%$\subset \text{ : } \textbf{Contenido} \Rightarrow \text{ : } A=\{1,2\}$ y 
+%$B=\big\{\underbrace{1,2}_{\text{\textcolor{red}{\textbf{A}}}},3\big\}$ podemos decir que $A \subset B$
+%\par
+%}
+%
+%de lo antes definido tenemos lo siguiente:
+%
+%\begin{itemize}
+%
+%    \item 
+%    \[\textstyle
+%    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \rightarrow e] \Leftrightarrow H(e') \subset H(e)$}
+%    \]
+%    Esto se puede traducir como: \textcolor{red}{Si $e'$ ocurre antes que $e$, entonces $H(e')$ es un subconjunto de $H(e)$}.
+%
+%    \item 
+%    \[\textstyle
+%    \scalebox{0.70}{$\forall e, e' \in E, e \neq e' : [e' \parallel e] \Leftrightarrow [H(e') \nsubseteq H(e)] \land [H(e) \nsubseteq H(e') ]$}
+%    \]
+%    Esto se lee como: \textcolor{red}{Si $e'$ es concurrente con $e$, entonces $H(e')$ no es un subconjunto de $H(e)$ y $H(e)$ no es subconjunto de $H(e')$}.
+%
+%\end{itemize}
 
 
 \subsection{Relojes vectoriales}
 Para los relojes vectoriales definiremos la siguiente estructura para el un proceso $P_i$, para n procesos
-\[
+\[\textstyle
    \left[ \mathit{Vc}[1], \mathit{Vc}[2], \dots, \mathit{Vc}[i], \dots, \mathit{Vc}[n] \right]
 \]
 
@@ -39,7 +39,6 @@ Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales s
 Continuando, los procesos irán aumentando de la sigueinte forma:
 
 Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
-% Asegúrate de tener \usepackage{enumitem} y \usepackage{xcolor} en tu preámbulo
 
 \begin{enumerate}[label=\textbf{Paso \arabic*:}, wide, labelindent=0pt]
     \item Se suma 1 al $Vc(e_i)[i]$, vale decir que le sumamos 1 a la marca del proceso $i$
@@ -47,7 +46,7 @@ Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
     \item Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
     
     \[
-    \left[ 
+    \left[ \textstyle
     \textcolor{green!50!black}{
         \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
     }
@@ -66,7 +65,7 @@ Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
 Resultando Finalmente en el siguiente vector para $P_i$
 
 \[
-\left[ 
+\left[ \textstyle
 \textcolor{green!50!black}{
     \mathit{Vc}[1], \mathit{Vc}[2], \dots, 
 }
@@ -81,109 +80,122 @@ Resultando Finalmente en el siguiente vector para $P_i$
 
 Para mensajes entre procesos, solo se modifica la marca del proceso que esta mandando el mensaje, por ejemplo, si $P_i$ manda un mensaje a $P_j$, se modifica la marca del vector $P_j$ asociada a $P_i$.
 
-\subsubsection{Propiedades de los rejoles vectoriales}
+% \subsubsection{Propiedades de los rejoles vectoriales}
 
-Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un reloj en sistemas distribuidos}} se refiere a la capacidad de determinar de forma bidireccional si un evento precede causalmente a otro, permitiendo un ordenamiento total o casi total de los eventos en el sistema.
-\begin{enumerate}
-  \item Relación de igualdad:
-  {\tiny \[
-  V=V' \equiv [\forall k: V[k]=V'[K]]
-  \]}
-  \item Relación de orden: 
-  {\tiny \[
-  V<V' \equiv [V \neq V'] \land [\forall k: V[k] \leq V'[k]]
-  \]}
-  \item Condición fuerte:
-  {\tiny \[
-    e \rightarrow e' \equiv VC(e) < VC(e')
-  \]}
-  \[
-      e || e' \equiv \lnot [VC(e)<VC(e')]\land \lnot[VC(e')<VC(e)]
-  \]
-\end{enumerate}
+% Lo siguiente que denotameros es \textcolor{red}{\textbf{condición fuerte de un reloj en sistemas distribuidos}} se refiere a la capacidad de determinar de forma bidireccional si un evento precede causalmente a otro, permitiendo un ordenamiento total o casi total de los eventos en el sistema.
+% \begin{enumerate}
+% % --- En tu documento ---
+% \item Relación de igualdad:
+%   {% Grupo para que el cambio sea local
+%     \setlength{\abovedisplayskip}{3pt}
+%     \setlength{\belowdisplayskip}{3pt}
+%     {\tiny \[\textstyle
+%     V=V' \equiv [\forall k: V[k]=V'[K]]
+%     \]}
+%   }
+% \item Relación de orden: 
+%   {% Grupo para que el cambio sea local
+%     \setlength{\abovedisplayskip}{3pt}
+%     \setlength{\belowdisplayskip}{3pt}
+%     {\tiny \[\textstyle
+%     V<V' \equiv [V \neq V'] \land [\forall k: V[k] \leq V'[k]]
+%     \]}
+%   }
+% \item Condición fuerte:
+%   {% Grupo para que el cambio sea local
+%     \setlength{\abovedisplayskip}{3pt}
+%     \setlength{\belowdisplayskip}{3pt}
+%     {\tiny \[\textstyle
+%       \begin{gathered} % Para apilar las líneas (de tu pregunta anterior)
+%         e \rightarrow e' \equiv VC(e) < VC(e') \\
+%         e || e' \equiv \lnot [VC(e)<VC(e')]\land \lnot[VC(e')<VC(e)]
+%       \end{gathered}
+%     \]}
+%   }
+% \end{enumerate}
 
-El  numero de eventos precedentes es equivalente a la suma del vector completo, menos el evento mismo.
+% El  numero de eventos precedentes es equivalente a la suma del vector completo, menos el evento mismo.
 
-La propiedad de detección de apertura nos permite a un proceso $P_j$ detectar que existe un evento $e'$ que ocurre en otro $P_i$ despues de un evento $e_i$ ya conocido por $P_j$. Notese además que los relojes vectoriales tienen la capacidad de \textbf{detectar causalidad, concurrencia, coordinacion centralizada y es tolerante a fallos}. Sin embargo tiene limitaciones, como, \textbf{overhead, complejidad (más complejo que lamport), si bien dijimos que tolera fallas, es deficiente ante fallas bizantinas y sistemas altamente dinamicos (con una entrada y salida de procesos, dado que se tiene que redimencionar el vector)}
+% La propiedad de detección de apertura nos permite a un proceso $P_j$ detectar que existe un evento $e'$ que ocurre en otro $P_i$ despues de un evento $e_i$ ya conocido por $P_j$. Notese además que los relojes vectoriales tienen la capacidad de \textbf{detectar causalidad, concurrencia, coordinacion centralizada y es tolerante a fallos}. Sin embargo tiene limitaciones, como, \textbf{overhead, complejidad (más complejo que lamport), si bien dijimos que tolera fallas, es deficiente ante fallas bizantinas y sistemas altamente dinamicos (con una entrada y salida de procesos, dado que se tiene que redimencionar el vector)}
 
-\subsection{Monitoreo de una computación distribuida}
+% \subsection{Monitoreo de una computación distribuida}
 
-Una \textbf{observación valida} si implica una relación causal, deberia estar ordenada, caso contrario, no (esta se podria ver de cualquer forma) 
+% Una \textbf{observación valida} si implica una relación causal, deberia estar ordenada, caso contrario, no (esta se podria ver de cualquer forma) 
 
-  \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{img/Monitoreo_computacion_distribuida.png}
-    \caption{Monitoreo de computacion distribuida}\label{fig:1760794290290}
-  \end{figure}
+%   \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.5\linewidth]{img/Monitoreo_computacion_distribuida.png}
+%     \caption{Monitoreo de computacion distribuida}\label{fig:1760794290290}
+%   \end{figure}
 
-La cola observada en la figura anterior, es la encargada de generar las observaciones validas.
+% La cola observada en la figura anterior, es la encargada de generar las observaciones validas.
 
-Para entregas causales tenemos las siguientes condiciones:
+% Para entregas causales tenemos las siguientes condiciones:
 
-\textbf{Condición FIFO:}
-\begin{figure}[H]
-\centering
-\begin{circuitikz}[scale=0.7, transform shape]
-\tikzset{every node/.style={font=\small}}
+% \textbf{Condición FIFO:}
+% \begin{figure}[H]
+% \centering
+% \begin{circuitikz}[scale=0.5, transform shape]
+% \tikzset{every node/.style={font=\small}}
 
-% Línea principal
-\draw (0,0) -- (6,0);
+% % Línea principal
+% \draw (0,0) -- (6,0);
 
-% Nodos
-\node[circ] (a) at (0.5,0) {};
-\node[circ] (b) at (3,0) {};
-\node[circ] (c) at (5.5,0) {};
+% % Nodos
+% \node[circ] (a) at (0.5,0) {};
+% \node[circ] (b) at (3,0) {};
+% \node[circ] (c) at (5.5,0) {};
 
-% Etiquetas de eventos
-\node[below=2pt] at (a) {$e_{i,k}$};
-\node[below=2pt] at (b) {$e_{i,k+1}$};
-\node[below=2pt] at (c) {$e_{i,k+2}$};
+% % Etiquetas de eventos
+% \node[below=2pt] at (a) {$e_{i,k}$};
+% \node[below=2pt] at (b) {$e_{i,k+1}$};
+% \node[below=2pt] at (c) {$e_{i,k+2}$};
 
-% Flechas verdes ("Bien")
-\draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (1,-0.4) -- (2.3,-0.4);
-\draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (3.6,-0.4) -- (4.9,-0.4);
-\node[color={rgb,255:red,38; green,162; blue,105}, font=\Large] at (3,-1) {Bien};
+% % Flechas verdes ("Bien")
+% \draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (1,-0.4) -- (2.3,-0.4);
+% \draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (3.6,-0.4) -- (4.9,-0.4);
+% \node[color={rgb,255:red,38; green,162; blue,105}, font=\Large] at (3,-1) {Bien};
 
-% Flechas rojas ("Mal")
-\draw [color={rgb,255:red,224; green,27; blue,36}, very thick, ->, >=Stealth] (0.5,0.5) -- (5.5,0.5);
-\draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (0.5,0) -- (0.5,0.5);
-\draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (5.5,0.5) -- (5.5,0);
-\node[color={rgb,255:red,224; green,27; blue,36}, font=\Large] at (3,0.9) {Mal};
+% % Flechas rojas ("Mal")
+% \draw [color={rgb,255:red,224; green,27; blue,36}, very thick, ->, >=Stealth] (0.5,0.5) -- (5.5,0.5);
+% \draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (0.5,0) -- (0.5,0.5);
+% \draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (5.5,0.5) -- (5.5,0);
+% \node[color={rgb,255:red,224; green,27; blue,36}, font=\Large] at (3,0.9) {Mal};
 
-\end{circuitikz}
-\caption{Ejemplo de relaciones entre eventos}
-\label{fig:relaciones-eventos}
-\end{figure}
+% \end{circuitikz}
+% \caption{Ejemplo de relaciones entre eventos}
+% \label{fig:relaciones-eventos}
+% \end{figure}
 
-Las lineas verdes hacen el flujo de izquierda a derecha que representa una correcta contición FIFO, mientras que las rojas omiten el evento $e_{i,k+1}$ lo cual muestra una incorrecta condición fifo.
+% Las lineas verdes hacen el flujo de izquierda a derecha que representa una correcta contición FIFO, mientras que las rojas omiten el evento $e_{i,k+1}$ lo cual muestra una incorrecta condición fifo.
 
-\textbf{Condición de entrega causal:} Si yo tengo un mensaje de J, para ver que no exista un mensaje de otro proceso, se compara lo siguiente
-{\tiny \[
-  \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
-\]}
-\subsubsection*{Visualización del algoritmo de entrega causal}
+% \textbf{Condición de entrega causal:} Si yo tengo un mensaje de J, para ver que no exista un mensaje de otro proceso, se compara lo siguiente
+% {\tiny \[
+%   \forall k , i \neq j : Vc_i(m')[k] \geq Vc_j(m)[k]
+% \]}
+% \subsubsection*{Visualización del algoritmo de entrega causal}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=1.05\linewidth]{img/Alg_entrega_causal.png}
-  \caption{Algoritmo de entrega causal}\label{fig:1760798568394}
-\end{figure}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=1.05\linewidth]{img/Alg_entrega_causal.png}
+%   \caption{Algoritmo de entrega causal}\label{fig:1760798568394}
+% \end{figure}
 
-Desde el punto de vista de $P_0$, comparamos lo siguiente
-{\tiny \[
-  D[k]\leq Vc(m)[k]
-\]}
+% Desde el punto de vista de $P_0$, comparamos lo siguiente
+% {\tiny \[
+%   D[k]\leq Vc(m)[k]
+% \]}
 
-Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en $Q$, observamos todas las dimensiones distintas de $K$:
+% Seguido a eso, para la causalidad (esto se ve en como se retrasa en la cola el envio de $e_{21}$ con $e_{11}$) para un proceso $P_k$ en $Q$, observamos todas las dimensiones distintas de $K$:
 
-{\scriptsize \[ \textstyle 
-  [\,\underbrace{n_1, n_2, \dots}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}, 
-  n_k , 
-  \underbrace{\dots,n_{n-1}, n_{n}}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}\,]
-\]}
+% {\scriptsize \[\tiny \textstyle 
+%   [\,\underbrace{n_1, n_2, \dots}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}, 
+%   n_k , 
+%   \underbrace{\dots,n_{n-1}, n_{n}}_{\text{\textcolor{red}{\textbf{Vemos esto}}}}\,]
+% \]}
 
 
-Algo a tener en cuenta y es bastante importante, distintos observadores podrian tener distintos relojes vectoriales \textcolor{red}{(esto es debido a latencias con $P_0$)}
+% Algo a tener en cuenta y es bastante importante, distintos observadores podrian tener distintos relojes vectoriales \textcolor{red}{(esto es debido a latencias con $P_0$)}
 
 
 \subsubsection{Estados globales}
@@ -200,12 +212,6 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
     \centering
     \includegraphics[width=0.7\linewidth]{img/Chandy_ver.png}
     \caption{Algoritmo de Chandy-Lamport}\label{fig:1761838884075}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\linewidth]{img/Topologia.png}
-    \caption{Topología trabajada}\label{fig:1761838884075}
 \end{figure}
 
 
