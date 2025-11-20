@@ -1,0 +1,475 @@
+\section{Capítulo 7: Replicación de Datos} 
+\subsection{Introducción a la Replicación de Datos}
+
+\textbf{Escalabilidad/desempeño}: La escalabilidad de sistemas de almacenamiento de datos con buen desempeño ante cargas se basa en dos técnicas: 
+
+\begin{itemize}
+    \item Particionamiento (sharding o fragmentación): Datos \textcolor{blue}{se fragmentan y se distribuyen} localizandolos en varios sitios,  \textcolor{red}{aumentando el desempeño al distribuir la carga y agregar recursos}
+    \item Replicación: Datos replicados \textcolor{red}{mejora el desempeño al distribuir cargas entre réplicas}, pero también al acceder a una copia más cercana (mejor tiempo de respuesta y menor latencia)
+\end{itemize}
+
+\textbf{Disponibilidad/Resilencia}: Datos replicados para \textcolor{red}{alta disponibilidad y tolerancia a fallos}
+
+\begin{itemize}
+    \item Por ejemplo, en un modelo de fallas fail-stop, si $\alpha_0$ es la disponibilidad de una réplica, entonces la disponibilidad de $n$ réplicas es: $\alpha_n = 1 - (1 - \alpha_0)^n$
+    \item Cuando existen actualizaciones el \textcolor{red}{gran desafío} es \textcolor{blue}{mantener la consistencia} entre las réplicas
+\end{itemize}
+
+\textbf{Desafíos de la replicación de datos}:
+
+\begin{itemize}
+    \item \textcolor{blue}{Concurrencia}: Actualizar una copia genera una inconsistencia entre ellas. Se requiere \textcolor{red}{coordinar acceso concurrente} para garantizar consistencia.
+    \item \textcolor{blue}{Fallas}: En ambientes distribuidos se producen fallas de servidores y/o comunicación. Se requiere \textcolor{red}{coordinar recuperación ante posibles errores} para asegurar estado consistente y mantener disponibilidad del sistema.
+    \item \textcolor{blue}{Particiones de red}: Si se produce una partición de la red, no es posible coordinar a los nodos, pertenecientes a diferentes particiones. Se requiere \textcolor{red}{coordinar la consistencia} entre réplicas durante una partición, lo que \textbf{requiere sacrificiar disponibilidad}.
+    \item \textcolor{blue}{Complejidad}: La ejecución de los diferentes protocolos para consistencia y disponibilidad \textcolor{red}{puede ser demasiado costoso, sacrificando desempeño y limitando la escalabilidad}. Es decir, mayor latencia, uso de ancho de banda y carga sobre servidores
+\end{itemize}
+
+\subsubsection{Modelos de replicación}
+
+\textbf{Semántica de consistencia}: 
+
+\begin{itemize}
+    \item \textbf{Consistencia fuerte}: \textcolor{red}{Asegura que todas las réplicas retornan el mismo valor.}
+    \item \textbf{Consistencia débil}: \textcolor{blue}{Permite retornar diferentes valores}, sacrificando consistencia para favorecer alta disponibilidad y mejorar desempeño. (consistencia eventual)
+\end{itemize}
+
+\textbf{Atomicidad computacional}: 
+
+\begin{itemize}
+    \item \textbf{Mono-objeto + mono-operacional}: \textcolor{blue}{Cada operación sobre un objeto de datos se realiza atómicamente}, \textcolor{red}{independiente} de otras operaciones y objetos. (en ejecución de métodos en objetos distribuidos y replicados)
+    \item \textbf{Multi-objeto + Multi-operacional (transaccional)}: \textcolor{red}{Operaciones de diferentes transacciones actualizan concurremente las réplicas.} (con propiedades ACID)
+\end{itemize}
+
+\subsubsection{Consistencia débil}
+La consistencia débil \textcolor{blue}{es útil para mejorar disponibilidad y desempeño, }a costa de sacrificar consistencia
+
+Ejemplos:
+\begin{itemize}
+    \item \textbf{DNS}: Actualizaciones desde un único primario \textcolor{red}{son propagadas asincrónicamente} a los secundarios, no siendo inmediatamente visibles.
+    \item \textbf{WWW}: \textcolor{blue}{Uso de caching intensivo}, porque es tolerable leer un a página desactualizada. Puede haber copia de caché desactualizadas en navegadores, servidores proxies o CDN.
+    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) \textcolor{red}{quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes}. Similar situación en CVS o GitHub para control de versiones de programas.
+    \item \textbf{Carrito de compra}: Copia local puede quedar desactualizada por desconexión.
+\end{itemize}
+
+\subsubsection{Teorema CAP}
+\textbf{Teorema}: \textcolor{red}{Un sistema de datos compartidos puede cumplir simultáneamente a lo más dos de las siguientes tres propiedades}:
+
+\begin{itemize}
+    \item \textbf{C - Consistencia de datos}: Equivalente a mantener actualización de una copia.
+    \item \textbf{A - Disponibilidad (Availability)}: Tolerancia a fallos y del sistema para seguir actualizando las copias de datos. 
+    \item \textbf{P - Tolerancia a particiones}: Sistema sigue operando, pese a existir una partición de red.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{img/CAP.png}
+    \caption{Teorema CAP}\label{fig:cap}
+\end{figure}
+
+\subsubsection{Estrategias de actualización de réplicas}
+
+\textbf{Sincronización de actualizaciones}: 
+\begin{itemize}
+    \item \textbf{Sincrónica}:\textcolor{blue}{Una actualización está completa cuando se obtiene confirmación de todas para comprometerla}. Asegura una consistencia fuerte pero introduce mayor latencia.
+    \item \textbf{Asincrónica}: \textcolor{blue}{Una actualización se considera completa si lo confirma un nodo distinguido.} \textcolor{red}{Demás réplicas se actualizan más tarde}, lo que reduce latencia ymejora desempeño. Mejora disponibilidad, pero puede producir inconsistencias por concurrencia, latencias o fallas.
+\end{itemize}
+
+\textbf{Propagación de actualizaciones}: 
+\begin{itemize}
+    \item \textbf{Ansiosa}: \textcolor{red}{Las actualizaciones se propagan inmediatemente una vez comprometidas}. Se mantiene réplicas cercanamente sincronizadas.
+    \item \textbf{Perezosa}: \textcolor{blue}{Actualizaciones se envían después de cierto retardo o tiempo}. Habilita replicación optimista y operaciones desconectadas.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{img/Descentralizacion.png}
+    \caption{Descentralizacion en la Gestión de réplica}\label{fig:descentralizacion}
+\end{figure}
+
+\subsubsection{Estrategias de Resolución de conflictos}
+
+\textbf{Pesimista}: Estrategia de replicación que \underline{previene conflictos}, coordinando actualizaciones antes de comprometerlas.
+
+\begin{itemize}
+    \item Garantiza una \textcolor{red}{consistencia fuerte} en replicación de datos.
+    \item \textcolor{blue}{Se sacrifica disponibilidad, si se tolera particiones de red}. Más pesado y no escala bien.
+\end{itemize}
+
+\underline{Técnicas}: Uso de métodos de candados, protocolos de quorum o consenso
+
+\textbf{Optimista}: 
+Permite \underline{actualizaciones concurrentes}, baja la premisa que los conflictos rara vez ocurren; y si ocurren, se reseuelven más tarde.
+
+\begin{itemize}
+    \item Acepta semánticas de \textcolor{red}{consistencia débil}. Típicamente las actualizaciones se propagan \textcolor{red}{asincrónicamente}. Requiere mecanismos de resolución de conflictos. 
+    \item Se logra \textcolor{red}{mayor disponibilidad, sacrificando consistencia}, eventualmente tolerando paraticiones de red. Escala bien, con mejores tiempos de respuesta.
+\end{itemize}
+
+\underline{Técnicas}: Uso de métodos como relojes vectoriales, marcas de tiempos, algoritmos epidémicos.
+
+\subsection{Modelos semánticos de consistencia en replicación}
+
+\textbf{Definición (Modelo de consistencia)}: \textcolor{red}{Contrato} entre los procesos y los almacenes de datos respecto a cómo se realizan las operaciones sobre los objetos de datos replicados. \textcolor{blue}{Involucra reglas} sobre cómo y cuándo las actualizaciones sobre datos replicados se vuelven visibles y qué garantía de orden existe para las operaciones observables por los clientes.
+
+\subsubsection{Consistencia estricta}
+\textcolor{red}{Cualquier lectura sobre un objeto de dato x retorna el valor corresponiente al resultado de la escritura más reciente sobre x.}
+
+Nomenclatura: $W_i(x) : a$ escritura del proceso $P_i$ del valor $a$ en el dato x. $R_j(x) : a$ lectura del proceso $P_i$ del valor $a$ desde el dato x.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/consistencia_estricta.png}
+    \caption{Consistencia estricta}\label{fig:consistencia_estricta}
+\end{figure}
+
+\subsubsection{Consistencia fuerte (1-copia)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/Modelos_de_consistencia_en_replicacion.png}
+    \caption{Modelo de consistencia en replicación}\label{fig:modelos_de_consistencia_en_replicacion}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Consistencia linealizable}: Una vez se completa una escritura sobre un objeto x, \textcolor{red}{toda lectura posterior sobre x deben retornar el valor de esa escritura, o el de una escritura posterior}. Una vez que una lectura sobre x retorna un valor particular,\textcolor{red}{todas las lecturas posteriores sobre x retornan ese valor, o el de una escritura posterior}.
+    \item \textbf{Consistencia serializable}: \textcolor{red}{Garantiza que la ejecución de un conjunto de transacciones con operaciones sobre varios objetos de datos}, es quivalente a alguna ejecución serial. \textcolor{blue}{Corresponde a semántica de serialización de una copia}.
+    \item \textbf{Consistencia estrictamente serializable}: Es una consistencia linealizable y serializable
+\end{itemize}
+
+
+
+\subsubsection{Modelos de consistencia no-transaccional}
+
+\textbf{A) Consistencia linealizable}: \textcolor{red}{El resultado de cualquier ejecución es la misma, si las operaciones sobre los datos fueron ejecutadas en algún orden secuencial por todos los procesos y las operaciones de cada proceso aparecen en esa secuencia en el orden especificado por el programa}. El orden es consistente con el tiempo real en la que ocurrió cada operación durante la ejecución. Requiere sincronización de todas las copias para cada actualización.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/consistencia_linealizable.png}
+        \caption{Sin consistencia linealizable}
+        \label{fig:consistencia_linealizable_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/consistencia_linealizable_2.png}
+        \caption{Con consistencia linealizable}
+        \label{fig:consistencia_linealizable_2}
+    \end{subfigure}
+    
+\end{figure}
+
+\textbf{B) Consistencia secuencial (No-transaccional)}: El \textcolor{red}{resultado de cualquier ejecución es la mismsa, si las operaciones sobre los datos fueron ejecutadas en algún orden secuencial y las operaciones de cada proceso individual aparecen en esa secuencia en el orden especificado por el programa}. SUpone que operaciones de diferentes procesos se entremezclan y todos los procesos ven este mismo orden. No hay restricciones temporales, se cumple especificación de una única copia del objeto de datos. Corresponde al modelo de múltiples procesadores con memoria compartida.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/secuecial_1.png}
+        \caption{Sin consistencia secuencial}
+        \label{fig:secuencial_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/secuencial_2.png}
+        \caption{Con consistencia secuencial}
+        \label{fig:secuencial_2}
+    \end{subfigure}
+    
+\end{figure}
+\textbf{C) Consistencia causal}: \textcolor{red}{Escrituras que son potencialmente causales tienen que verse en todos los procesos en el mismo orden. Escrituras concurrentes pueden verse en diferente orden en distintos procesos}. No se cumple especificación de una única copia para un objeto de datos. Se puede implementar usando relojes vectoriales. \textcolor{blue}{Supone una consistencia más débil} que consistencia secuencial, pues sólo impone un ordenamiento para eventos causales.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/causal_1.png}
+    \caption{Causal pero no secuencial}\label{fig:causal_1}
+\end{figure}
+
+\underline{Problemas de consistencia fuerte}:
+\begin{itemize}
+    \item \textbf{Disponibilidad y latencia de red}: \textcolor{red}{Internet es muchas veces lenta y poco fiable, afectando la disponibilidad y latencia}, los dispositivos móviles se desconectan frecuentemente de la red. Intento de sincronización con un servidor no disponible puede provocar bloqueos.
+    \item \textbf{Escalabilidad de sistemas replicados}: \textcolor{blue}{En redes extendidas con gran cantidad de nodos, es díficil replicar masivamente sistemas que realizan frecuentemente actualizaciones.} Throughput y disponibilidad empeora con el incremento del número de nodos.
+    \item \textbf{Necesidades de aplicaciones de trabajo colaborativo}: \textcolor{red}{Se comparten datos, pero permitiendo trabajar temporalmente en forma aislada.} Es preferible actualizar datos independientes y resolver ocasionalmente conflictos cuando ocurren.
+\end{itemize}
+
+\textbf{D) Consistencia eventual}: En ausencia de nuevas operaciones de escritura sobre un objeto de dato x, \textcolor{red}{todas las operaciones de sobre x \underline{eventualmente} retornarán el mismo resultado}. Requiere que las actualizaciones se propaguen a todas las réplicas, tal que en algún momento todas convergan al mismo valor. Es más escalable y barato de implementar. Funciona bien mientras los clientes accedan a una misma copia.
+
+\subsubsection{Modelos de consistencia de sesión}
+\textbf{Concepto de consistencia}: \textcolor{red}{Solo provee garantía de conssitencia para un único cliente}. \textcolor{Fuchsia}{No provee garantía de consistencia si existe acceso concurrente de diferentes clientes a un mismo dato.} Potenciales conflictos se deben resolver en una capa superior.
+
+\textbf{Autoría}: Base de datos para clientes móviles, \underline{un cliente trabaja con una copia local}, \textcolor{red}{cada dato tiene un dueño quien preferentemente lo modifica}.
+
+Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escribe versión $x_2$ del dato sin conoceer otras versiones anteriores. $W_1(x_1 ; x_2)$: $P_1$ escribe versión $x_2$ del dato, basada en versión $x_1$. $W_1(x_1 | x_2)$: $P_1$ escribe versión $x_2$ del dato concurrentemente a $x_1$
+
+\textbf{A) Lecturas monótonas}: \textcolor{Fuchsia}{Si un proceso $P$ lee un valor de un objeto de datos x, cualquier lectura posterior de $P$ sobre x siempre reotrnará el mismo valor o uno más reciente.}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_1.png}
+        \caption{Escritura no monótona}
+        \label{fig:monotona_1}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_2.png}
+        \caption{Escritura monótona}
+        \label{fig:monotona_2}
+    \end{subfigure}
+    
+\end{figure}
+
+\textbf{B) Escrituras monótonas}: \textcolor{blue}{Operación de escritura de un proceso $P$ sobre un objeto de datos x se completa antes que cualquier operación posterior de escritura de $P$ sobre x.} Las operaciones de escritura, independiente del sitio, se propagan en el orden correcto a todas las copias de un almacen de datos.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_3.png}
+        \caption{Escritura no monótona}
+        \label{fig:monotona_3}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/monotona_4.png}
+        \caption{Escritura monótona}
+        \label{fig:monotona_4}
+    \end{subfigure}
+    
+\end{figure}
+
+\textbf{C) Lecturas de propias escrituras (read your writes)}: \textcolor{ForestGreen}{Los efectos de una operación de escritura de un proceso $P$ sobre un objeto de datos x va a ser siempre visto por operaciones de lectura suscesivas sobre x por $P$.}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-inconsistente.png}
+        \caption{Lectura inconsistente}
+        \label{fig:lec-inconsistente}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-consistente.png}
+        \caption{Lectura consistente}
+        \label{fig:lec-consistente}
+    \end{subfigure}
+    
+\end{figure}
+
+\textbf{D) Escrituras siguen lecturas (writes follow reads)}: \textcolor{Maroon}{Una operación de escritura de un proceso $P$ sobre un objeto de datos x que sigue a una operación de lectura sobre x realizada también por $P$,} tiene garantizado que $P$ va a obtener el mismo valor de x o uno más reciente.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-inconsistente-2.png}
+        \caption{Lectura inconsistente}
+        \label{fig:lec-inconsistente-2}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/lec-consistente-2.png}
+        \caption{Lectura consistente}
+        \label{fig:lec-consistente-2}
+    \end{subfigure}
+    
+\end{figure}
+
+\subsection{Arquitectura para replicación de datos}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/modelo_de_referencia.png}
+    \caption{Modelo básico de referencia}\label{fig:modelo_de_referencia}
+\end{figure}
+
+Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
+
+
+\textcolor{red}{FE es un proxy} del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
+
+\textcolor{blue}{RM es servidor que gestiona una réplica y coordina con otros RMs para consistencia}. Grupo de RMs puede ser estático o dinámico. \textcolor{red}{Un RM puede sufrir fallas de crash y/o omisión}. Se asume algún grado de sincronismo. 
+
+\subsubsection{Replicación pasiva con protocolo Primario-Respaldo (Primary-backup)}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/primary-backup.png}
+    \caption{Protocolo de Primario-Respaldo}\label{fig:primary-backup}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Petición}: FE \textcolor{blue}{genera una petición con un identificador único (UID) y lo envía al Primario}. Peticiones se generan sincrónicamente por el cliente (secuencial).
+    \item \textbf{Coordinación}: El primario procesa cada petición atómicamente y en el orden de llegada. Antes verifica el UID de la petición para asegurarse que no ha sido procesada previamente \textcolor{red}{(at-most-once)}. Si es el caso, responde inmediatamente con copia de respuesta guardada en \underline{buffer}.
+    \item \textbf{Ejecución}: El primario ejecuta la petición y almacena en \underline{buffer} la respuesta.
+    \item \textbf{Acuerdo}: Si la petición es una \textcolor{blue}{actualización, el primario envía a todos los RMs de respaldo el estado} de la actualización, la respuesta y UID. Cada respaldo \textcolor{red}{responde con un ACK} al primario.
+    \item \textbf{Respuesta}: El primario responde a FE, que a su vez le responde de vuelta al cliente.
+\end{itemize}
+
+Las operaciones de lectura se hacen directamente sobre cualquier réplica para distribuir carga y aumentar disponibilidad. La propragación de actualizaciones es asincrónica y perezosa, para mejorar el tiempo de respuesta \textcolor{red}{(sacrificando consistencia)}.
+
+El sistema implementa una \textcolor{blue}{semántica de consistencia linealizable}. Si el primario falla, un respaldo debe asumir su rol. Tiene la desventaja de que es bastante pesado, para mejorarlo se requiere sacrificar consistencia. Para balancear la carga, los clientes pueden leer directamente en algún servidor de respaldo, pero se pierde consistencia linealizable y se conserva consistencia secuencial.
+
+En un modelo \underline{Fail-Stop}, se requiere de $f+1$ copias; en modelo \underline{crash} se requiere $2f+1$ copias; en modelo \underline{bizantino} se requiere $3f+1$ copias. 
+
+\textbf{Reparación}: Tiene tres enfoques:
+\begin{itemize}
+    \item \textbf{Hot backup}: Respaldo \textcolor{red}{siempre listo} para tomar control si falla el primario, \textcolor{blue}{con retardo mínimo}.
+    \item \textbf{Warm backup}: Se ha \textcolor{red}{realizado el trabajo de preparación} para tomar el control, \textcolor{red}{pero no está listo inmediatamente} para asumir el rol de primario.
+    \item \textbf{Cold backup}: \textcolor{red}{No existe trabajo preparatorio}, \textcolor{blue}{se debe recuperar la base de datos antes} de que el respaldo pueda tomar el control.
+\end{itemize}
+
+\textbf{Detección de fallas}: \textcolor{Fuchsia}{Para detectar la falla del primario, debe haber un proceso de monitoreo que deba ser fiable en la detección}. Puede haber retardo en detectar la falla, lo que aumenta el MTTR y degrada la disponibilidad. \textcolor{red}{Si falla el primario, es posible que al haber fallado y reparado quiera tomar el rol de primario haciendo fallar al primario suplente}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/primario-respaldo.png}
+    \caption{Esquema de Primario-Respaldo}\label{fig:primario-respaldo}
+\end{figure} 
+
+\subsubsection{Replicación activa}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/replicacion-activa.png}
+    \caption{Esquema de Replicación Activa}\label{fig:replicacion-activa}
+\end{figure} 
+
+\begin{itemize}
+    \item \textbf{Petición}: \textcolor{Sepia}{FE genera una petición con un identificador único} y lo envía a todos los RMs. \textcolor{red}{FE a lo más falla por crash}.
+    \item \textbf{Coordinación}: \textcolor{red}{El sistema de comunicación grupal entrega la petición a cada RM en el mismo orden.}
+    \item \textbf{Ejecución}: \textcolor{Fuchsia}{Cada RM ejecuta la petición y en el mismo orden.} Grupo de RMs definen una máquina de estado replicada y determinista. La respuesta contiene UID de la petición.
+    \item \textbf{Acuerdo}: \textcolor{red}{No se requiere}. Está subyacente en el protocolo de multicast.
+    \item \textbf{Respuesta}: Cada RM envía su respuesta al \textcolor{blue}{FE, el cual debe filtrar respuestas repetidas} según el mismo UID o modelo de fallas usado.
+\end{itemize}
+
+Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se procesan en orden FIFO}. \textcolor{blue}{No es linealizable}. Si los clientes no se comunican entre sí mientras esperan una respuesta se garantiza ordenamiento causal. De esto último, si tiene multihebra en los clientes, puede ocurrir comunicación entre ellos y si se quiere orden causal habrá que agregar un protocolo de multicast que provea el orden causal y total.
+
+\textcolor{Sepia}{Puede tolerar $f$ fallas bizantinas, si se tiene al menos $2f + 1$ réplicas y FE debe recolectar al menos $f+1$ respuestas iguales.} Es posible mejorar el desempeño si se considera que operaciones de diferentes clientes conmutan.
+
+\subsection{Protocolos de consistencia de datos}
+
+\textbf{Tipos de protocolos}: \textcolor{red}{Pesimista} 
+(prevención de conflictos) y \textcolor{ForestGreen}{optimista} (actualizaciones concurrentes y con resolución de conflictos).
+
+\subsubsection{A) Protocolo de copia primaria}
+
+\begin{itemize}
+    \item \textbf{Actualización}: \textcolor{red}{Reservar la copia primaria, modificar la copia primaria.} Si modificación es válida, copia primaria provocará actualización de copias secundarias.
+    \item \textbf{Consultas}: \underline{Consulta consistente}: \textcolor{red}{Reservar en copia primaria y luego consultar copia local.} \underline{Consulta aproximada}: Consultar la copia local, sin reservar la primaria.
+\end{itemize}
+
+\textcolor{Fuchsia}{Si existen $k+1$ copias, se pueden tolerar $k$ fallas de nodos.} Si el nodo primario falla, se puede activar algoritmo de elección, si se produce partición, sólo se permiten operaciones en la partición del primario. \textcolor{blue}{Funciona bien si es posible discriminar entre falla del primario y partición de red}. Existen esquemas que detectan si el primario está en una partición con una mayoría de nodos; si no es el caso, se le destituye y una partición mayoritaria puede elegir otro primario.
+
+\subsubsection{B) Protocolo de Quorum mayoritoria}
+
+\begin{itemize}
+    \item \textbf{Antecedentes}: \textcolor{ForestGreen}{Permite tolerar fallas de nodos y particiones de red}, sin necesidad de discriminar entre ellas.
+    \item \textbf{Idea básica}: \textcolor{Sepia}{Asignarle a cada copia o réplica de dato una cierta cantidad de votos}. Una operación de lectura o escritura sólo se acepta si el usuario logra obtener suficientes votos.
+\end{itemize}
+
+\textbf{Quórums de observación}: $V(a)$: Número de votos totales sobre el dato \enquote{a}. $R(a)$: Quórum necesario para leer \enquote{a}. $W(a)$: Quórum necesario para poder escribir \enquote{a}.
+
+\textbf{Relaciones a cumplir}: $2 \cdot W(a) > V(a)$: \textcolor{red}{evita actualizaciones simultáneas}. $W(a) + R(a) > V(a)$: \textcolor{red}{evita lectura y escritura simultánea}. 
+
+\subsubsection{C) CODA: Sistema de archivos distribuidos}
+
+\textcolor{Fuchsia}{Existen varios servidores que mantienen réplicas de archivos}. Clientes pueden trabajar desconectado, manteniendo en caché copia de archivos de trabajo. \textcolor{ForestGreen}{Replicación optimista para detectar conflictos.} En la reconexión se detectan conflictos y se resuelven semi-manualmente. Sus conceptos son patrones de diseño claves en sistemas móviles y colaborativos. 
+
+\textbf{Mecanismo de resolución de conflictos}: Existen $n$ sitios, donde existe una copia de cada archivo. \textcolor{red}{Se mantiene un vector n-dimensional $V_i$ para cada archivo en cada sitio i; cada sitio i cuenta el número de actualizaciones provenientes de cada otro sitio j en $V_i[j]$. Si no existe partición, entonces los vectores son iguales en todos los sitios; sino pueden diferenciarse en diferentes particiones}. Si existe casualidad, se dice que un vector domina al otro, sino existe conflicto.  
+
+\begin{itemize}
+    \item Si $V_i$ domina a $V_j$: \textcolor{red}{Se actualiza copia de sitio i a sitio j}.
+    \item Si $V_i$ en conflicto con $V_j$: \textcolor{Fuchsia}{El administrador del sistema realiza resolución (semi)-manual}.
+\end{itemize}
+
+\subsubsection{CODA}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{img/CODA.png}
+    \caption{CODA}\label{fig:CODA}
+\end{figure} 
+
+\subsubsection{D) Protocolos épidemicos (optimista y sin líder)}
+
+\textcolor{Sepia}{Implementan consistencia \textbf{eventual}, propagando actualizaciones asincrónica entre los RMs}. No resuelven conflictos de actualización, que deber ser realizado por otra instancia de orden superior. \textcolor{Sepia}{Actualizaciones se propagan infectando progresivamente las réplicas hasta infectarlas todas. }
+
+Tres tipos (o estados) para las réplicas en los servidores (RM):
+\begin{itemize}
+    \item \textbf{Infectado}: \textcolor{Fuchsia}{Tiene actualización que desea propagar}.
+    \item \textbf{Propenso}: \textcolor{red}{No ha sido infectado}.
+    \item \textbf{Removido}: \textcolor{Sepia}{Está actualizado, pero no propaga más la actualización}.    
+\end{itemize}
+
+\textbf{Idea del algoritmo}: Actualizaciones se realizan inicialmente en una o pocas réplicas. \textcolor{ForestGreen}{Una réplica propaga sus actualizaciones a un número limitado de vecinos}. \textcolor{Sepia}{Las actualizaciones se propagan flojamente, en forma asincrónica y no se realizan inmediatamente}, lo que se puede demorar más en lograr consistencia eventual. \textcolor{blue}{Finalmente, cada actualización alcanzará a cada réplica, quedando todas ellas con un mismo valor}.
+
+\textbf{Estrategias de actualización}:
+\begin{itemize}
+    \item \textbf{Anti-entropía}: \textcolor{Sepia}{Cada servidor de réplica regularmente elige a otra aleatoriamente Q, e intercambia diferencias de estados}, dejándolos iguales al posteriomente. Dos estrategias de intercambio. 1. \underline{Push}: \textcolor{Sepia}{P sólo transfiere sus actualizaciones a Q} (sin conocer las de Q). 2.\underline{Pull}: \textcolor{Sepia}{P sólo obtiene nuevas actualizaciones desde Q} (sin comunicar las propias). 3. \underline{Push \& Pull}: \textcolor{ForestGreen}{P y Q intercambian todas sus actualizaciones.}
+    \item \textbf{Chisme}: \textcolor{Fuchsia}{Réplica que acaba de actualizarse, lo comunica a otras}. \textcolor{Red}{Si un servidor P es actualizado, contacta aleatoriamente a un servidor Q arbitrario y tratar de empujar su actualización}. \textcolor{Sepia}{Si Q ya está actualizado, P pierde interés en propagar la actualización}. Para \underline{asegurar} que se actualizan todas las réplicas \textcolor{blue}{se combina con Anti-Entropía}.  
+\end{itemize}
+
+\textbf{Caso blockchain}: 
+
+\begin{itemize}
+    \item Arquitectura: Arquitectura 2P2, descentralizada, simétrica y sin líder. Cada nodo mantiene copia de la cadena de bloques.
+    \item Propagación de actualización: \textcolor{red}{Cuando un nodo resuelve el problema de minado, lo propaga al resto de la red}. \textcolor{blue}{Minero ganador asume el rol de coordinador para propagar nuevo bloque} a ser agregado a la cadena. \textcolor{Sepia}{Se usa un método optimista con un estilo epidémico de chisme para propagar(consistencia eventual)}.
+    \item Resolución de conflcitos: Se produce un fork, si se agregan concurrentemente varios bloques. Se resuelve por la regla de la cadena más larga es válida. 
+\end{itemize}
+
+\subsection{Ubicación y distribución de réplicas}
+
+\subsubsection{Gestión de número de réplicas}
+
+\textbf{Estrategias de ubicación y colocación de réplicas}: \textcolor{Sepia}{Distribución geográfica y aspectos de balance de carga, latencia, consumo energético}.
+
+\textbf{Dinamismo en número de réplicas}: \textcolor{Fuchsia}{Replicación elástica por demanda, recolección de basura, variación de miembros}.
+
+\subsubsection{Localización de réplicas}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/localizacion.png}
+    \caption{Localización de réplicas}\label{fig:localizacion}
+\end{figure} 
+
+\subsubsection{Réplicas lado del servidor}
+\textbf{Réplicas permanentes}:
+
+\begin{itemize}
+    \item Característica: \textcolor{Fuchsia}{Corresponde a conjunto inicial de réplicas, normalmente un número pequeño y estático de réplicas.}
+    \item Dos estrategias: \textbf{Clustering} (balance de carga) y \textbf{Mirroring} (mayor distribución geográfica).
+    \item Ejemplos: Sitio web replicado en cluster, base de datos distribuidas o replicadas.
+\end{itemize}
+
+\textbf{Réplicas iniciadas por el servidor}:
+
+\begin{itemize}
+    \item \textbf{Característica}: \textcolor{Fuchsia}{Copia réplica a lugar más cerca del cliente}, para \textcolor{Sepia}{satisfacer la alta demanda}, de preferencia de lectura.
+    \item \textbf{Gestión de N° de réplicas}: \textcolor{Fuchsia}{Requiere monitorear frecuencia de acceso}. \textcolor{red}{Se copia si se sobrepasa un umbral, se borra si baja de un umbral} y las copias también pueden migrar.
+    \item Ejemplo: El CDN
+\end{itemize}
+
+\subsubsection{Réplicas al lado del cliente}
+Conocidas como (client) caches. \textcolor{Fuchsia}{Frecuentemente administradas por el cliente, pero a veces se incorpora el servidor}, mejora el tiempo de acceso y típicamente se utiliza una marca de tiempo de último acceso.   
+
+\textbf{En caso de caching}: \textcolor{Fuchsia}{Se propaga notificaciones de actualización, datos de una copia a otra, operación de actualización a otras copias}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\linewidth]{img/propagacion.png}
+    \caption{Propagación de actualizaciones}\label{fig:Propagacion-de-actualizaciones}
+\end{figure} 

@@ -50,7 +50,7 @@ Las \textbf{\textit{fallas}} o \textbf{\textit{averias}} se clasifican según su
 \end{itemize}
 
 
-Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos de fallas, en base a una jerarquia.
+Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos de fallas, en base a una jerarquia (esta ordenada de adentro hacia afuera, vale decir, de la más "debil" a la más dañina).
 
 \begin{itemize}
     \item \textcolor{red}{\textbf{Fail-stop:}} Un proceso fallado se detiene, conservando su estado, y todos los demas saben inmediatamente que ha fallado. Los procesos se comportan correctamente o se detienen.
@@ -59,13 +59,6 @@ Una vez definidas el tipo de fallas, estableceremos los modelos para los tipos d
     \item \textcolor{red}{\textbf{Temporal (\textit{timing}):}} El sistema puede violar restricciones temporales, tal como respuestas fuera de tiempo. Dificil de discriminar entre fallas de crash y omisión
     \item \textcolor{red}{\textbf{Bizantino:}} Un proceso puede enviar mensajes contradictorios, mentir sobre su estado interno o colaborar maliciosamente con otros. Corresponde a un modelo más general
 \end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\linewidth]{img/modelo_de_fallas.png}
-    \caption{Modelo de fallas}\label{fig:1761834118505}
-\end{figure}
-
 
 \begin{figure}[H]
     \centering
@@ -94,7 +87,7 @@ El manejo de fallos en un sistema es un proceso de cuatro fases: primero, la \te
 La \textcolor{red}{\textbf{redundancia}} se define en base a las partes de un sistema que no son necesarias para su correcto funcionamiento, si no se requiere tolerar fallos. Existen 3 tipos de tolerancias
 \begin{enumerate}
     \item \textbf{Espacial:} Se agregan componentes de redundantes de hardware o software.
-    \item \textbf{Temporal:} Ejecutar y repetir varias veces una acción o secuencia de instrucciones (similar a la maquina de estado determoinista y replicada). Un ejemplo es la retransmisión de mensajes, rollback de una acción y repetir su ejecición.
+    \item \textbf{Temporal:} Ejecutar y repetir varias veces una acción o secuencia de instrucciones. Un ejemplo es la retransmisión de mensajes, rollback de una acción y repetir su ejecición.
     \item \textbf{De información:} Se agrega información redundante para tolerar fallos.
 \end{enumerate} 
 
@@ -122,7 +115,7 @@ Dentro de los esquemas para tolerancia a fallos encontramos
 \end{itemize}
 
 \subsection{Maquina de estado determinista y replicada}
-Esta maquina es un grupo de replicación, donde cada proceso no fallado, ejecuta los mismos comandos en el mismo orden. Se caracteriza por el determinismo de estado, donde todas las replicas correctas mantienen el mismo estado. Se necesita concenso (dińamico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Se trabaja sobre modelos con o sin fallas donde, si se trabaja en un modelo \textbf{sin fallas}, se pueden usar relojes de lamport para ordenamiento global y total de los mensajes del grupo o un secuenciador central. Para el caso del modgaelo con fallas, se requieren de algoritmos de consesso tolerantes a fallos. 
+Esta maquina es un grupo de replicación, donde cada proceso no fallado, ejecuta los mismos comandos en el mismo orden. Se caracteriza por el determinismo de estado, donde todas las replicas correctas mantienen el mismo estado. Se necesita concenso (dińamico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Se trabaja sobre modelos con o sin fallas donde, si se trabaja en un modelo \textbf{sin fallas}, se pueden usar relojes de lamportt para ordenamiento global y total de los mensajes del grupo o un secuenciador central. Para el caso del modgagaelo con fallas, se requieren de algoritmos de consesso tolerantes a fallos. 
 
 Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es iniciado con un valor de 1, tendremos dos maquinas que ejecutaran las mismas instrucciones, pero en diferente orden, para este caso:
 
@@ -130,7 +123,7 @@ Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es ini
 \textcolor{red}{\textbf{Maquina A:}} & \textcolor{red}{\textbf{Maquina B:}} \\
 Multiplicar por 2 a $k$ & Sumar 1 a $k$ \\
 Sumar 1 a $k$ & Multiplicar por 2 a $k$ \\    
-\end{tabular}
+\end{tabular}       
 
 
 Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$k=3$} y para la maquina B, \textcolor{red}{$k=4$}. por esto buscamos mantener un orden y los mismos comandos para ambas maquinas.
@@ -161,14 +154,6 @@ Un sistema en paralelo, es aquel donde si \textbf{TODOS} los componentes del sis
 \]
 
 Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{paralelo}= \frac{1}{\lambda}*\frac{ln(n)}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $
-
-\subsubsection{Confiabilidad con cadenas de Markov}
-Modelo de fallas que tolera una única falla y con una reparación, se plantea la siguiente solución, considerando que $MTTF=\frac{1}{\lambda}$ y que $MTTR=\frac{1}{\mu}$
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\linewidth]{img/Markov.png}
-    \caption{Solución y dos ejemplos}\label{fig:1761834118505}
-\end{figure}
 
 \subsubsection{Caso de fiabilidad en discos raid-4 y espejo}
 
@@ -207,37 +192,25 @@ Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos e
 de lo anterior definimos que MTTF corresponde al "Mean Time To Failure", MTBF como "Mean Time Between Failure" y MTTR como "Mean Time To Repair", donde tenemos finalmente que $MTBF= MTTF + MTTR$. Adicionalmente, podemos encontrar la disponibilidad limite $\alpha$ como:
 
 \[
-   \textstyle  \alpha = \frac{MTTF}{MTTF+MTTR}
+    \textstyle  \alpha = \frac{MTTF}{MTTF+MTTR}
 \]
 
 \subsubsection{Caso de replicación de servidores}
 Suponiendo un sistema de n réplicas similares, donde la disponibilidad por servidor es de $a_0$ , donde se trabaja con un modelo en paralelo, la solucion de disponibilidad es $a_n=1-(1-a_0)^n$
 
 \subsection{Acuerdo y consenso distribuido}
-Para el consenso  en sistemas distribudios es fundamental mantener consistencia y confiabilidad en el sistema, es decir mantener un estado consistente y funcionar correctamente en presencia de fallas, particiones de red y/o retardos. El objetivo de los algoritmos asociados al tema es garantizar el acuerdo entre nodos sobre un unico valor o tomar una misma decisión. Los desafios principales son la falla en nodos, particiones de red, comunicación asincrona (Demora en mensaje, cambio de orden o perdida de los mismos), y las fallas bizantinas.
+El consenso en sistemas distribuidos busca garantizar la consistencia y confiabilidad frente a fallas (de nodos, red o bizantinas) y asincronía. El objetivo es alcanzar una decisión común satisfaciendo propiedades de \textcolor{blue}{\textbf{\textit{safety}}} (Acuerdo, Integridad, Validez) y \textcolor{purple}{\textbf{\textit{liveness}}} (Término).
 
 En el problema del acuerdo, se busca decidir sobre un único valor o curso de acción tal que se satisfaca el \textcolor{blue}{\textbf{acuerdo}} (el valor decidido debe ser igual para todos), \textcolor{blue}{\textbf{integridad}} (no se puede cambiar la decisión de un participante), \textcolor{blue}{\textbf{validez}}(el valor elegido debio ser propuesto por alguno de los participales) y \textcolor{purple}{\textbf{termino}} (se decide en tiempo finito). Todo esto sobre el ambiente de fallas anteriormente planteado. Notar que las tres primeras condiciones hacen referencia a \textcolor{blue}{\textbf{\textit{safety}}} y la última a \textcolor{purple}{\textbf{\textit{liveness}}}.
  
 \textbf{Acuerdo.}Existe un proceso designado (transmisor) que tiene y propone un valor inicial, para alcanzar acuerdo con los demás procesos sobre este valor, según las siguientes condiciones:
 \begin{itemize}
-    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo valor.
-    \item \textbf{Validez:} Si el proceso transmisor está no fallado, entonces el valor acordado por todos los procesos no fallados tiene que ser el mismo valor inicial del transmisor.
+    \item \textbf{Acuerdo:} Un proceso \textit{transmisor} propone un valor. Todos los procesos correctos deben acordar el mismo valor (si el transmisor es correcto, se acuerda su valor inicial).
+    \item \textbf{Consenso:} Cada proceso tiene un valor inicial. Todos los procesos correctos acuerdan un único valor común (si todos tenían el mismo valor inicial, ese debe ser el elegido).
+    \item \textbf{Consistencia Interactiva:} Todos tienen un valor inicial. Se acuerda un vector de valores $A$, donde $A[i]$ corresponde al valor inicial del proceso $P_i$ (si este no ha fallado).
 \end{itemize}
 
-\textbf{Consenso.} Cada proceso tiene un valor inicial y todos los procesos correctos tienen que acordar un único valor, según las siguientes condiciones:
-\begin{itemize}
-    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo valor (único).
-    \item \textbf{Validez:} Si todos los procesos no fallados tienen el mismo valor inicial, entonces el valor acordado tiene que ser este valor; o alguno de los valores iniciales, si los valores no son iguales.
-\end{itemize}
-
-\textbf{Consistencia interactiva.} Cada proceso tiene un valor inicial y todos los procesos correctos tienen que acordar sobre un conjunto de valores, según las siguientes condiciones:
-\begin{itemize}
-    \item \textbf{Acuerdo:} Todos los procesos no fallados tienen que acordar el mismo arreglo de valores $A[v_1, v_2, \dots, v_n]$.
-    \item \textbf{Validez:} Si proceso $P_i$ no fallado tiene valor inicial $v_i$, entonces todos los procesos no fallados acordará $v_i$ como el valor $A[i]$ (\textit{nótese}: si proceso $P_j$ está fallado, entonces todos los procesos no fallados acordarán cualquier valor común para $A[j]$).
-\end{itemize}
-
-Para la relación entre procesos se sigue la siguiente relacion de componentes en buen estado y fallados $f<n$ (varia segun el modelo de fallas). Para la existencia de solucion debe de existir comunicación fiable, en caso de que es sistema sea asincrónico, no es posible llegar a una solucion, dado que no se puede discriminar entre falla o demora.
-
+Para garantizar solución, se requiere una relación de fallas $f<n$ y comunicación fiable. En sistemas puramente asincrónicos es imposible alcanzar una solución determinista, dado que no se puede distinguir entre una demora y una falla.
 \subsubsection{Algoritmo de acuerdo bizantino con mensajes ordinarios (no tienen ningún hash criptografico)}
 
 \begin{figure}[H]
@@ -248,14 +221,6 @@ Para la relación entre procesos se sigue la siguiente relacion de componentes e
 
 Para este algoritmo, solo se trabaja con un modelo de fallas bizantinas y no de comunicación, donde se debe cumplir que $3f+1\leq n$ . Para el numero m de rondas, se cumple que existe a lo mas $m= f+1$ rondas.
 
-Para la primera ronda (el caso base $m = 0$), el transmisor envía su valor a todos los receptores (nodos), seguido a eso, cada receptor usa el valor recibido del transmisor o el por defecto.
-
-Para las siguientes rondas (los pasos recursivos $m > 0$), el transmisor envía el valor a los receptores, \textbf{y cada receptor ($P_i$) anota ese valor ($v_i$)} (o usa el valor por defecto si no recibe nada). Inmediatamente, ese mismo receptor $P_i$ actúa como un nuevo transmisor en una \textbf{sub-ronda} del algoritmo (específicamente $OM(f-1)$), y le envía \textit{su} valor $v_i$ a todos los demás $n-2$ receptores.
-
-Finalmente, después de esa sub-ronda, cada receptor $P_i$ recopila todos los valores ($v_j$) que recibió de sus compañeros. El valor que $P_i$ decide y adopta como final es el que gane por \textbf{mayoría} entre todos los valores que juntó ($v_1, \dots, v_{n-1}$). (se explica mejor visualizando el algoritmo la verdad)
-
-
-
 \subsection{Comunicación grupal tolerante a fallos}
 El principal enfoque es que, una vez tengamos el mecanismo necesitamos las herramientas (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) para la replicación de los datos.
 
@@ -264,11 +229,6 @@ Estan presentes dos tipos de multicast.
 
 \textbf{Fiable:} Garantiza la entrega a procesos no fallados aun en presencia de de fallos de comunicación. Se retransmiten mensajes automáticamente, elimiando mensajes repetidos o corruptos.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\linewidth]{img/Multicast_grupal.png}
-    \caption{Usando comunicación grupal (multicast)}\label{fig:1761651184845}
-\end{figure}
 \subsubsection{Semantica de dentrega de mensajes}
 \textbf{Fiabilidad de entrega:}
 \begin{itemize}
@@ -279,28 +239,38 @@ Estan presentes dos tipos de multicast.
 \textbf{Orden de entrega:}
 \begin{itemize}
     \item \textbf{No ordenado}: Ninguna garantía de orden de entrega en el receptor.
+    
     \item \textbf{Orden FIFO}: Mensajes de un mismo emisor se entregan según orden de envío.
-    \item \textbf{Orden causal}: Se respeta en la entrega orden causal de eventos de envío.
-    \item \textbf{Orden total}: Único orden de entrega de los mensajes en los receptores. Podría requerir también cumplir orden causal.
-\end{itemize}
-
-\begin{figure}[H]
+      
+    \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{img/multi_fifo.png}
     \caption{Multicast: orden FIFO}\label{fig:1761678535409}
-\end{figure}
+    \end{figure}
 
-\begin{figure}[H]
+    \item \textbf{Orden causal}: Se respeta en la entrega orden causal de eventos de envío.
+    
+    \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{img/multi_causal.png}
     \caption{Multicast: orden causal}\label{fig:1761678585653}
 \end{figure}
 
-\begin{figure}[H]
+
+    \item \textbf{Orden total}: Único orden de entrega de los mensajes en los receptores. Podría requerir también cumplir orden causal.
+    
+    \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{img/multi_total.png}
     \caption{Multicast: orden total}\label{fig:1761678629682}
 \end{figure}
+\end{itemize}
+
+
+
+
+
+
 
 \textcolor{red}{\textbf{Obs.1:}} Es necesario utilizar multicast con entrega con orden total y causal pasa maquinas de estado replicadas deterministas para asegurar la entrega de comandos en el mismo orden.
 
@@ -387,12 +357,6 @@ Paxos se usa para mantener consistente información del sistema, por ejemplo, in
 \end{itemize}
 
 \textcolor{red}{\textbf{Obs.1:}} Un acceptor y un proposer puede estar en un mismo proceso, pero no pueden haber mas de dos acceptor en un mismo proceso, dado que se asegura que las fallas de los acceptor son independientes.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{img/paxos_componentes.png}
-    \caption{Componentes de Paxos}\label{fig:1761858653370}
-\end{figure}
 
 Paxos cuenta con dos pasos escenciales:
 

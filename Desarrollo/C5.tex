@@ -1,7 +1,7 @@
 \section{Capítulo 5: Algoritmos Distribuidos}
 \subsection{Conceptos Básicos}
 
-\textbf{Definición}: Tipo de algoritmo que se ejecuta concurrentemente en una red de procesos, con información limitada sobre los demás procesos. Trabajando cooperativamente mediante paso de mensajes en lograr un objetivo común.
+\textbf{Definición}: Tipo de algoritmo que se ejecuta concurrentemente en una red de procesos, con información limitada sobre los demás procesos, se hace uso de paso de mensajes.
 
 Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monitoreo consistente. Elección de un líder o coordinador. Exclusión mutua distribuida.
 
@@ -9,7 +9,7 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
     \item Tipo de topología: Anilo, árbol, grafo general (dirigido o no dirigido, total o parcialmente conectado)
     \item Modelos de computación: Estilo de interacción, modelo de sincronismo y restricciones temporales, modelo de fallas y fiabilidad
     \item Medidas de desempeño: Complejidad de mensajes (\# mensajes), complejidad de tiempo (\# rondas)
-    \item Técnicas de diseño: Números de secuencia, relojes lógicos o vectoriales, marcas de tiempo para mensajes, contadores de mensajes, métodos de asentimiento (acknowledge), métodos de crédito, paso de testigo (token-passing)
+
 \end{itemize}
 
 \subsection{\textbf{Algoritmo de Eco-Chang}}
@@ -43,11 +43,8 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 \vspace{0.5em}
 
 \textbf{Observación 3}: Aun con ciclos, este algoritmo converge.
-
-\textbf{Observación 4}: El como se genera el arbol depende de la velocidad de transmisión del explorador entre nodos 
 \textbf{Complejidad}: \textcolor{red}{\textbf{Tiene complejidad 2e mensajes}}, donde \textbf{e} es el número de aristas del grafo
-
-Se usa paso de mensajes unidireccional y asincrónico. El algoritmo genera un spanning tree. Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. Se supone que el algoritmo se \underline{se inicia sólo en un nodo}.
+Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. 
 
 \subsection{Algoritmos de elección}
 \textbf{Objetivo}: Ponerse de acuerdo en una red de procesos, suponiendo que los procesos están únicamente identificados y es posible ordenarlos totalmente.
@@ -71,7 +68,7 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
     \centering
     \includegraphics[width=0.2\textwidth]{img/GG_1.png}
     \includegraphics[width=0.2\textwidth]{img/GG_2.png}
-    \includegraphics[width=0.2\textwidth]{img/GG_3.png}
+    %\includegraphics[width=0.2\textwidth]{img/GG_3.png}
     \caption{Esquema de elección en un grafo general}
 \end{figure}
 
@@ -85,7 +82,7 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
     \centering
     \includegraphics[width=0.2\textwidth]{img/AU_1.png}
     \includegraphics[width=0.2\textwidth]{img/AU_2.png}
-    \includegraphics[width=0.2\textwidth]{img/AU_3.png}
+    %\includegraphics[width=0.2\textwidth]{img/AU_3.png}
     \caption{Esquema de elección en un anillo unidireccional}
 \end{figure}
 
@@ -115,12 +112,6 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
 
 \textbf{Objetivo}: Garantizar que a lo más un único proceso puede ejecutar simultáneamente una sección crítica. Se requiere evitar condiciones de carrera, como coordinar acceso a un recurso, garantizar la consistencia de los datos o mantener el correcto funcionamiento de un sistema distribuido.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.2\textwidth]{img/Clasificacion_algoritmos.png}
-    \caption{Esquema de exclusión mutua distribuida}
-\end{figure}
-
 \textbf{Una solución correcta para el problema de la exclusión mutua considera los siguientes estados y requisitos}
 
 \begin{itemize}
@@ -147,19 +138,13 @@ Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.2\textwidth]{img/E_M_Control_Centralizado.png}
+    \includegraphics[width=0.15\textwidth]{img/E_M_Control_Centralizado.png}
     \caption{Esquema de exclusión mutua con control centralizado}
 \end{figure}
 
-\subsubsection{Algoritmos basados en token}
+\subsection{Algoritmos basados en token}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.25\textwidth]{img/Algoritmos_token.png}
-    \caption{Esquema de algoritmo basado en token}
-\end{figure}
-
-\subsection{Algoritmo de Lamport} 
+\subsubsection{Algoritmo de Lamport} 
 
 \textbf{Caracterización}: Algoritmo descentralizado basado en permisos, para un sisema asincrónico y basado en relojes lógico de lamport, para ordenar las solicitudes de ingreso a la SC.
 
@@ -186,7 +171,7 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 
 \textbf{Correctitud}: Es imposible que dos procesos vean en primera posición su solicitud en la cola, si sus canales son FIFO. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
 
-\subsection{Algoritmo de Ricart y Agrawala}
+\subsubsection{Algoritmo de Ricart y Agrawala}
 
 \textbf{Claves de diseño}: Comparte la misma caracterización general con el algoritmo de Lamport. Cada proceso requiere permiso de todos los demás procesos. Inicialmente se cumple \textcolor{blue}{$\forall i, 1 \leq i \leq n$: $State_i$ = IDLE $\wedge$ $RequestQueue_i$ = $\emptyset$}. La RequestQueue contiene a los procesos que han sido diferidos en el ingreso a la SC. Solo se requiere 2 tipos de mensajes: Request y Reply
 Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la siguiente figura) hace el trabajo de Grant (para notificar el proximo proceso que tenga acceso a la SC), eso lo hace retrasando en envio de \textcolor{green}{\textbf{reply}} hasta el final.
@@ -201,7 +186,7 @@ Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la sigui
 
 \textbf{Correctitud}: Es imposible que dos procesos diferentes, si sus canales son FIFO, reciban un mensaje \textcolor{red}{REPLY} de los demás. Necesariamente el mayor de los dos va a ser diferido en la cola de menor marca. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
 
-\subsection{Algoritmo de Susuki-Kasami}
+\subsubsection{Algoritmo de Susuki-Kasami}
 
 \textbf{Caracterización}: Algoritmo \textcolor{blue}{descentralizado basado en token}, para un sistema \textcolor{magenta}{asincrónico}. Garantiza \textcolor{magenta}{seguridad, vivacidad y justicia}.
 
