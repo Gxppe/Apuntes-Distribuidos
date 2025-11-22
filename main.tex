@@ -1,4 +1,4 @@
-\documentclass[final, legalpaper, 12pt]{article} % <-- CAMBIO AQUÍ
+\documentclass[letterpaper]{article} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%
@@ -17,13 +17,14 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{eufrak}
-\usepackage{amsmath}
+% \usepackage{amsmath} % (Repetido, lo comenté para limpiar)
 \usepackage[justification=centering]{caption}
 \usepackage{multirow}
-\usepackage{mathrsfs} % para formato de letra
-\usepackage{amssymb, amsmath, amsbsy} % simbolitos
+\usepackage{multicol} % <--- AGREGADO: Faltaba este paquete para usar multicols
+\usepackage{mathrsfs} 
+\usepackage{amssymb, amsbsy} 
 \usepackage{listings}
-\usepackage[compatibility=false]{caption}
+% \usepackage[compatibility=false]{caption} % (Repetido, causa conflictos)
 \usepackage{color}
 \usepackage[T1]{fontenc}
 \usepackage{longtable}
@@ -32,11 +33,11 @@
 \usepackage{import}
 \usepackage{float}
 \usepackage{wrapfig}
-%
-% --- ESTA ES LA LÍNEA MÁS IMPORTANTE ---
-% Añadimos 'legalpaper' a las opciones de geometry
-\usepackage[legalpaper, margin=0.65in, foot=30pt, head = 10pt, bottom = 1.6in]{geometry} % <-- CAMBIO AQUÍ
-%
+
+% --- CAMBIO PRINCIPAL AQUI ---
+% Se cambió 'legalpaper' por 'letterpaper'
+\usepackage[letterpaper, margin=0.65in, foot=30pt, head = 10pt, bottom = 1.6in]{geometry} 
+
 \usepackage{hyphenat}
 \usepackage{array}
 \usepackage{epstopdf}
@@ -45,11 +46,11 @@
 \usepackage{bookmark}
 \usepackage{titlesec}
 \usepackage{siunitx}
-\usepackage{gensymb}
+% \usepackage{gensymb} % (Repetido)
 \usepackage{setspace}
-\usepackage{subfigure}
+% \usepackage{subfigure} % (Obsoleto, ya usas subcaption, mejor evitar conflictos)
 \usepackage{comment}
-\usepackage{subcaption}
+% \usepackage{subcaption} % (Repetido)
 \usepackage{csquotes}
 \usepackage{tabularx}
 \usepackage{dirtytalk}
@@ -62,29 +63,28 @@
 \usepackage[dvipsnames]{xcolor}
 
 % Esta línea anula los márgenes definidos antes, 
-% pero mantiene el 'legalpaper'
+% y ahora mantiene el 'letterpaper' definido arriba
 \geometry{margin=0.4cm} 
+
 \setlength{\parskip}{0pt}
 \setlength{\parindent}{0pt}
 \renewcommand{\baselinestretch}{0.55} % Interlineado más reducido
 
-
-
 % Configuración COMPLETA para listas compactas
 \usepackage{enumitem}
 \setlist{
-  nosep,                    % Elimina TODO el espacio vertical
-  left=0pt,                 % Sangría izquierda cero
-  topsep=0pt,               % Sin espacio arriba
-  partopsep=0pt,            % Sin espacio adicional
-  parsep=0pt,               % Sin espacio entre ítems
-  itemsep=0pt               % Sin espacio entre elementos
+  nosep,                    
+  left=0pt,                 
+  topsep=0pt,               
+  partopsep=0pt,            
+  parsep=0pt,               
+  itemsep=0pt               
 }
 
 \captionsetup{
-    font = scriptsize,  % <-- Letra más pequeña
+    font = scriptsize,  
     justification = centering,
-    skip = 1pt            % <-- Espacio MÍNIMO entre imagen y leyenda (puedes usar 0pt)
+    skip = 1pt            
 }
 
 % Quita TODO el espacio vertical ANTES y DESPUÉS de las figuras [H]
@@ -95,13 +95,13 @@
 \titleformat{\section}{\bfseries}{\thesection}{0.2em}{}
 \titleformat{\subsection}{\bfseries}{\thesubsection}{0.2em}{}
 \titleformat{\subsubsection}{\bfseries}{\thesubsubsection}{0.2em}{}
-\titlespacing{\section}{0pt}{6pt}{0pt} % Espacio reducido alrededor de secciones
+\titlespacing{\section}{0pt}{6pt}{0pt} 
 \titlespacing{\subsection}{0pt}{6pt}{0pt}
 \titlespacing{\subsubsection}{0pt}{6pt}{0pt}
 
 \begin{document}
 \scriptsize % Tamaño de letra más pequeño
-\begin{multicols}{3}
+\begin{multicols}{4}
 \input{Desarrollo/Desarrollo.tex}
 \end{multicols}
 \end{document}

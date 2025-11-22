@@ -169,7 +169,6 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 
 \textbf{Desempeño}: \textcolor{red}{3(N-1)} mensajes por cada invocación a la \textbf{SC}. \textcolor{magenta}{Retardo de sincronización: T. Throughput = $\frac{1}{E+T}$}
 
-\textbf{Correctitud}: Es imposible que dos procesos vean en primera posición su solicitud en la cola, si sus canales son FIFO. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
 
 \subsubsection{Algoritmo de Ricart y Agrawala}
 
@@ -184,7 +183,6 @@ Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la sigui
 
 \textbf{Desempeño}: \textcolor{red}{2(N-1)} mensajes por cada invocación a la \textbf{SC}.  \textcolor{magenta}{Retardo de sincronización: T. Throughput = $\frac{1}{E+T}$}
 
-\textbf{Correctitud}: Es imposible que dos procesos diferentes, si sus canales son FIFO, reciban un mensaje \textcolor{red}{REPLY} de los demás. Necesariamente el mayor de los dos va a ser diferido en la cola de menor marca. Vivacidad y justicia son garantizadas por el orden de las solicitudes y el procesamiento en orden creciente de las marcas.
 
 \subsubsection{Algoritmo de Susuki-Kasami}
 
