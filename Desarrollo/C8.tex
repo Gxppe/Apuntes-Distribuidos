@@ -1,0 +1,216 @@
+\section{Capítulo 8: Transacciones Distribuidas}
+\subsection{Concepto de Transacción}
+
+\textbf{Definición}: Una \textcolor{red}{transacción} es un conjunto de acciones que realiza múltiples operaciones sobre varios objetos de datos y \textcolor{red}{que produce cambios de estados consistentes en el sistema}. Estos \textcolor{blue}{cambios concurrentes} ocurren aun en presencia de accesos concurrentes y con las posible ocurrencia de errores o fallos. Los cambios de estado \textcolor{red}{ocurren} cuando una \textcolor{blue}{transacción se compromete}; pero si no ocurre, aborta.
+
+\subsubsection{Aplicaciones de las transacciones}
+\begin{itemize}
+    \item Bases de datos.
+    \item Base de datos distribuidas.
+    \item Sistemas de archivos distribuidos.
+    \item Aplicaciones tolerante a fallos: Proveen acciones y cambios atómicos para enmascarar fallos.
+\end{itemize}
+
+\subsubsection{Transparencia de Transacciones}
+Provee dos tipos de transparencias: \textcolor{ForestGreen}{Concurrencia y fallos}. Pero si es distribuido, también provee: Transparencia de \textcolor{ForestGreen}{ubicación} y \textcolor{ForestGreen}{replicación} (si existe).
+
+Además se usa buffering para proveer alto desempeño en acceso de datos persistentes, lo que puede considerarse como transparencia de \textcolor{ForestGreen}{persistencia}. 
+
+\textcolor{blue}{Próposito}: Permite simplificar el modelo de programación de aplicaciones en ambientes complejos de operación que trabajan con datos persistentes.
+
+\textbf{Problemas básicos}: \textcolor{blue}{Control de concurrencia}: ¿Cómo hacer transparente al usuario el hecho de que los datos pueden accedidos concurrentemente? (transparencia de concurrencia). \textcolor{blue}{Recuperación de errores}: ¿Cómo ocultar al usuario la concurrencia de errores? (Transparencia de fallas o tolerancia a fallos).
+
+\subsubsection{Modelo de Fallas (típicos)}
+\begin{itemize}
+
+    \item \textbf{Modelo de almacenamiento de datos}: Operaciones de escritura sobre el medio de almacenamiento pueden fallas. Lecturas pueden usar un código tipo checksum para detectar errores de lectura. El medio puede decaer perdiendose información, o puede destruirse completamente.
+
+    \item \textbf{Procesos}: Pueden caerse ocasionalmente, perdiendo la memoria volátil. Procesos fallados se detienen (fail-stop, crash), sin mandar mensajes o escribir en disco datos erróneos. \textcolor{Fuchsia}{Existe procedimiento de recuperación basado en el uso de memoria estable}, para restaurar estado anterior a la fallas de un proceso y recomenzar recuperación desde un estado consistente.
+
+    \item \textbf{Comunicación}: \textcolor{Sepia}{Mensajes pueden sufrir retardo arbitrario, perderse, duplicarse, o corromperse.} Receptor es capaz de detectar estos errores y de recuperarse.
+
+    \item \textcolor{Fuchsia}{Memoria Estable}: Soporta operaciones atómicas de escritura sobre un medio persistente independiente de alta fiabilidad, \textcolor{Sepia}{capaz de sobrevivir caídas de proceso y fallas de medio de almacenamiento}, para apoyar procedimientos de recuperación de errores en diversos escenarios.
+\end{itemize}
+
+\subsubsection{Modelo transaccional plano}
+Ejecución \textcolor{red}{atómica y fiable en presencia de fallas}, ejecución \textcolor{ForestGreen}{correcta en presencia de múltiples accesos de usuarios} y \textcolor{red}{gestión correcta de réplicas}.
+
+\subsubsection{Propiedades ACID}
+\begin{itemize}
+    \item \textbf{Atomicidad}: La transacción se ejecuta completamente o no se ejecuta.
+    \item \textbf{Consistencia}: La base de datos pasa solo de un estado consistente a otro estado consistente o mantenerse en estado actual si se aborta.
+    \item \textbf{Aislación}: Una transacción no debe ser afectada por otras transacciones concurrentes.
+    \item \textbf{Durabilidad}: Los resultados de una transacción deben ser permanentes, sobreviviendo a fallas del sistema.
+\end{itemize}
+
+Expandiendo el concepto de \textbf{Aislación}: 
+
+\begin{itemize}
+    \item \textcolor{blue}{Serialización}: Si varias transacciones son ejecutadas concurrentemente, el resultado debe ser el mismo si se hubiera ejecutado serialmente en algún orden. \textcolor{red}{No se aceptan interferencias entre transacciones}.
+    \item \textcolor{Fuchsia}{Resultados incompletos}: Una \textcolor{ForestGreen}{transacción incompleta no puede revelar sus resultados a otras} transacciones antes de su compromiso. Necesario para evitar abortos en cascada.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/T_Cen.png}
+        \caption{Transaccion Centralizada}
+        \label{fig:Transaccion-Centralizada}
+    \end{subfigure}
+    \hfill 
+    \begin{subfigure}[b]{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/T_distr.png}
+        \caption{Ejecución de Transacción Distribuida}
+        \label{fig:Ejecucion-Transaccion-Distribuida}
+    \end{subfigure}
+    
+\end{figure}
+
+\subsection{Control de Concurrencia de Transacciones}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{img/Modelo-arquitectonico.png}
+    \caption{Modelo arquitectónico de un sistema de gestión de transacciones distribuidas}
+    \label{fig:Modelo-arquitectonico}
+\end{figure}
+
+\subsubsection{Planificación}
+\textcolor{Sepia}{Secuencias de operaciones ejecutadas por una o más transacciones.}
+
+\subsubsection{Ejecuciones Seriales y Concurrentes}
+
+\textbf{Definición: Ejecución serial}: Un par de transacciones $T_i$ y $T_j$ se ejecutan serialmente en una planificación $S$ ssi: 
+
+\begin{itemize}
+    \item Última operación de $T_i$ precede a primera operación de $T_j$ $\veebar$ última operación de $T_j$ precede a primera operación de $T_i$.
+    \item Si $\forall T_i, T_j \in S:$ $T_i$ y $T_j$ se ejecutan serialmente. Entonces la planificación $S$ es serial y se cumple el predicado $Serial(S)$.
+\end{itemize}
+
+\textbf{Definición: Ejecución concurrente}: \textcolor{Fuchsia}{Si un par de transacciones no son ejecutadas serialmente, entonces se dice que su ejecución es concurrente}. Si en una planificación $S$ existe un par de transacciones que se ejecutan concurrentemente, entonces la ejecución de $S$ es concurrente. Es decir, $Serial(S)$ es falso.
+
+\subsubsection{Serialización de transacciones}
+\textbf{Axioma}: Una \textcolor{red}{ejecución serial de transacciones es siempre correcta}
+
+\textbf{Definición: Principio de serialización}: Un \textcolor{ForestGreen}{método de control de concurrencia es correcto si es serializable}. Es decir, \textcolor{Fuchsia}{existe una secuencia equivalente en que las operaciones de cada transacción aparecen antes o después de otra transacción, pero no entremezcladas}.
+
+\subsubsection{Equivalencia de planificaciones concurrents} 
+\textbf{Condiciones de equivalencia}:
+\begin{itemize}
+    \item \textcolor{Fuchsia}{Cada transacción lee para cada dato el mismo valor y realiza, por lo tanto, la misma computación}.
+    \item \textcolor{red}{La última operación de escritura sobre cada dato es realizada por la misma transacción}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{img/lec-esc-datos.png}
+    \caption{Lectura y escritura de datos}
+    \label{fig:Lectura-y-escritura-de-datos}
+\end{figure}
+
+\subsubsection{Conflicto entre operaciones}
+\textbf{Definición: Operaciones en conflicto}:
+Dos operaciones están en conflicto, ssi:
+\begin{itemize}
+    \item Operan sobre los mismos datos
+    \item Una de las operaciones es de escritura
+    \item Cada operación pertenece a diferentes transacciones
+\end{itemize}
+
+\textbf{Teorema de equivalencia}: Dos planificaciones $S_1$ y $S_2$ son equivalentes, ssi: $\forall o_i, o_j$ en conflicto: $(S_1: o_i  < o_j) \Rightarrow (S_2: o_i < o_j)$
+
+Dos planificaciones son equivalentes si respetan el orden de precedencia para todas las operaciones en conflicto. Operaciones que no están en conflicto pueden permutarse, sin afectar el resultado de equivalencia. Por lo tanto, \textcolor{Sepia}{una planificación serializable podría ser equivalente a diferentes planificaciones seriales}.
+
+\subsubsection{Protocolo de candado de dos fases (2PLP)}
+
+\textcolor{blue}{Reglas}: 
+
+\begin{itemize}
+    \item Una transacción antes de acceder a un objeto debe ponerle \textcolor{red}{candado}.
+    \item Una transacción no puede adquirir otro candado si ha liberado alguno 
+\end{itemize}
+
+\textcolor{blue}{Fases}: La segunda regla determina que el protocolo tiene dos fases.
+
+\begin{itemize}
+    \item \textcolor{red}{Fase de crecimiento: acumula candados}
+    \item \textcolor{Sepia}{Fase de decrecimiento: libera candados}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/2plp.png}
+    \caption{2PLP - simple}
+    \label{fig:2plp-simple}
+\end{figure}
+
+Se puede demostrar que 2PLP serializa (al menos) el orden en que se producen los cambios de fases. El principio de la demostración es que aquella transacción no tiene conflicto con ninguna otra transacción.
+
+\subsubsection{Tipos de candado}
+Para aumentar el grado de concurrencia, se usan diferentes tipos de candado.
+
+\textcolor{blue}{Esquema candado exclusivo y compartido}: 
+
+\begin{itemize}
+    \item \textbf{Candado exclusivo (De escritura)}
+    \item \textbf{Candado compartido (De lectura)}
+\end{itemize}
+
+Un dato puede tener múltiples candados de lectura de diferentes transacciones, \textcolor{Fuchsia}{pero sólo uno de escritura}.
+
+\subsubsection{Problemas con 2PLP}
+\textcolor{blue}{Abrazo mortal (deadlock)}: Soluciones: Timeout con aborto y recomienzo o detección de deadlock.
+
+\textcolor{blue}{Aborto en cascada}: Soluciones: Usar 2PLP estricto, restringe más la concurrencia, pero evita los abortos en cascada.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/2plp-estricto.png}
+    \caption{2PLP - estricto}
+    \label{fig:2plp-estricto}
+\end{figure}
+
+\subsection{Control de concurrencia en transacciones distribuidas}
+
+\subsection{Modelo de transacciones distribuidas}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{img/modelo-transacciones-distribuidas.png}
+    \caption{Modelo de transacciones distribuidas}
+    \label{fig:modelo-transacciones-distribuidas}
+\end{figure}
+
+Nomenclatura: $T_i$: Transacción N°i, LTM: Local Transaction Manager, DTM: Distributed Transaction Manager.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\linewidth]{img/modelo-pero-distribuido.png}
+    \caption{Gestión de transacciones distribuidas}
+    \label{fig:gestión de transacciones distribuidas}
+\end{figure}
+
+\subsubsection{A) 2PLP distribuido}
+\textbf{Procedimiento}: Los candados son administrados localmente en cada sitio usando 2PLP. A nivel de DTM, cada solicitud se hace a través del coordinador, quien la redirige algún a agente si fuese necesario.
+
+\textbf{Correctitud}: En \textcolor{red}{cada sitio la planificación es serializable}. \textcolor{blue}{Debe existir un ordenamiento globa}l, de manera que las serializaciones locales respeten ese orden global.
+
+\subsubsection{B) Protocolo de ordenamiento por marcas de tiempo básico (BTO)}
+
+Cada transacción al iniciarse recibe un $TS$ como identificador en su lugar de origen. Cada operación (R o W) lleva el $TS$ de la transacción. Para cada dato $x$ se ejecuta el mayor $TS$ de lectura y de escritura, que denotaremos respectivamente por: $RTM(x)$ y $WTM(x)$ 
+
+\textcolor{Reglas de BTO}
+
+\begin{itemize}
+    \item \textcolor{Sepia}{Regla de lectura}: Sea $TS_i$ la marca de una operación de lectura sobre $x$. 
+    LO HAGO DESPUÉS
+\end{itemize}
+
+El protocolo serializa en el orden creciente de las marcas de tiempo, operaciones en conflicto son ordenadas por marca de tiempo creciente. El protocolo no produce deadlock, al no existir bloqueos y ciclos de espera. Transacciones que recomienzan no dejan huella y parten con un nuevo TS (que debe ser mayor). Puede producir postergación indefinida. Tiene un costo significativo en memoria para mantener información sobre TS asociado a última lectura y última escritura de cada objeto de datos. 
+
+\subsubsection{C) Métodos optimistas}
+\textbf{Principio de funcionamiento}: Asumen que los conflictos durante la ejecución de una transacción, de manera de reducir el costo de estar sincronizando cada acceso a datos
