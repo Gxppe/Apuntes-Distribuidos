@@ -201,7 +201,7 @@ Nomenclatura: $T_i$: Transacción N°i, LTM: Local Transaction Manager, DTM: Dis
 
 \subsubsection{B) Protocolo de ordenamiento por marcas de tiempo básico (BTO)}
 
-Cada transacción al iniciarse recibe un $TS$ como identificador en su lugar de origen. Cada operación (R o W) lleva el $TS$ de la transacción. Para cada dato $x$ se ejecuta el mayor $TS$ de lectura y de escritura, que denotaremos respectivamente por: $RTM(x)$ y $WTM(x)$ 
+Cada \textcolor{Fuchsia}{transacción al iniciarse recibe un $TS$ como identificador en su lugar de origen}. Cada operación (R o W) lleva el $TS$ de la transacción. \textcolor{ForestGreen}{Para cada dato $x$ se ejecuta el mayor $TS$ de lectura y de escritura}, que denotaremos respectivamente por: $RTM(x)$ y $WTM(x)$ 
 
 \textbf{Reglas de BTO}
 
@@ -210,16 +210,16 @@ Cada transacción al iniciarse recibe un $TS$ como identificador en su lugar de 
     \item \textcolor{Sepia}{Regla de escritura}: Sea $TS_j$ la marca de operación de escritura sobre $y$. Si $TS_j < RTM(y)$ o $TS_j < WTM(y)$, se rechaza la escritura y recomienza transacción. Si no, se realiza la escritura diferida y $WTM(y) = TS_j$
 \end{itemize}
 
-El protocolo serializa en el orden creciente de las marcas de tiempo, operaciones en conflicto son ordenadas por marca de tiempo creciente. El protocolo no produce deadlock, al no existir bloqueos y ciclos de espera. Transacciones que recomienzan no dejan huella y parten con un nuevo TS (que debe ser mayor). Puede producir postergación indefinida. Tiene un costo significativo en memoria para mantener información sobre TS asociado a última lectura y última escritura de cada objeto de datos. 
+El protocolo \textcolor{red}{serializa en el orden creciente de las marcas de tiempo, operaciones en conflicto son ordenadas por marca de tiempo creciente}. El protocolo \textcolor{ForestGreen}{no produce deadlock}, al no existir bloqueos y ciclos de espera. Transacciones que recomienzan no dejan huella y parten con un nuevo TS (que debe ser mayor). Puede producir postergación indefinida. \textcolor{blue}{Tiene un costo significativo en memoria} para mantener información sobre TS asociado a última lectura y última escritura de cada objeto de datos. 
 
 \subsubsection{C) Métodos optimistas}
-\textbf{Principio de funcionamiento}: Asumen que los conflictos durante la ejecución de una transacción, de manera de reducir el costo de estar sincronizando cada acceso a datos. Se valida al término de una transacción si existieron conflictos durante su ejecución, si no existe conflictos, se compromete; si no, se aborta. Serializa al menos en el orden que se van vvalidando las transacciones.
+\textbf{Principio de funcionamiento}: \textcolor{red}{Asumen que los conflictos durante la ejecución de una transacción son poco probables}, de manera de reducir el costo de estar sincronizando cada acceso a datos. Se valida al término de una transacción si existieron conflictos durante su ejecución, si no existe conflictos, se compromete; si no, se aborta. \textcolor{ForestGreen}{Serializa al menos en el orden que se van validando las transacciones.}
 
 \textbf{Fases de un método optimista}:
 \begin{itemize}
-    \item \textbf{Fase de lectura}: Cuerpo de la transacción, copiando datos usados desde la memoria persistente (BD) a buffers en la memoria principal y volátil. Copias que puede ser actualizada en memoria principal, pero sin respaldar a la BD
-    \item \textbf{Fase de validación}: Se comprueba que no existan conflictos.
-    \item \textbf{Fase de escritura}: Si no hay conflicto se compromete la transacción, si no es así se aborta aplicando rollback.  
+    \item \textbf{Fase de lectura}: Cuerpo de la transacción, \textcolor{Fuchsia}{copiando datos usados desde la memoria persistente (BD) a buffers en la memoria principal y volátil}. Copias que puede ser actualizada en memoria principal, pero sin respaldar a la BD
+    \item \textbf{Fase de validación}: \textcolor{Sepia}{Se comprueba que no existan conflictos}.
+    \item \textbf{Fase de escritura}: \textcolor{red}{Si no hay conflicto se compromete la transacción, si no es así, se aborta aplicando rollback}.  
 \end{itemize}
 
 \subsubsection{Algoritmo de Kung}
@@ -228,15 +228,15 @@ Suponiendo que T es una transacción donde $T_s$ es mayor número de secuencia a
 \textbf{Algoritmo}:
 
 \begin{itemize}
-    \item Asume validez
-    \item Busca conflictos
-    \item Decisión: Si hubo cambios declara la transacción como inválida. Si no hubo cambios, se guardan los cambios. 
+    \item \textcolor{red}{Asume validez}
+    \item \textcolor{Sepia}{Busca conflictos}
+    \item \textcolor{blue}{Decisión: Si hubo cambios declara la transacción como inválida. Si no hubo cambios, se guardan los cambios.}
 \end{itemize}
 
 \subsubsection{Casos de control de concurrencia}
 
 \begin{itemize}
-    \item Dropbox: Usa un método optimista con un historial de versiones. Conflictos son resueltos manualmente por una transacción rechazada.
-    \item Dynamo: Servicio de Amazon, utiliza un método optimista de control de concurrencia y replicación. Se deben reconciliar versiones en conflicto.
-    \item Google: Permite acceder a documentos concurrentemente. Procesador de palabras ve el cursor y actualizaciones de otro usuario.
+    \item Dropbox: Usa un \textcolor{ForestGreen}{método optimista} con un historial de versiones. Conflictos son resueltos manualmente por una transacción rechazada.
+    \item Dynamo: Servicio de Amazon, utiliza un \textcolor{ForestGreen}{método optimista} de control de concurrencia y replicación. Se deben reconciliar versiones en conflicto.
+    \item Google: \textcolor{Sepia}{Permite acceder a documentos concurrentemente}. Procesador de palabras ve el cursor y actualizaciones de otro usuario.
 \end{itemize}
