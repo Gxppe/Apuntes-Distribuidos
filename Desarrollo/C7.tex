@@ -4,8 +4,8 @@
 \textbf{Escalabilidad/desempeño}: La escalabilidad de sistemas de almacenamiento de datos con buen desempeño ante cargas se basa en dos técnicas: 
 
 \begin{itemize}
-    \item Particionamiento (sharding o fragmentación): Datos \textcolor{blue}{se fragmentan y se distribuyen} localizandolos en varios sitios,  \textcolor{red}{aumentando el desempeño al distribuir la carga y agregar recursos}
-    \item Replicación: Datos replicados \textcolor{red}{mejora el desempeño al distribuir cargas entre réplicas}, pero también al acceder a una copia más cercana (mejor tiempo de respuesta y menor latencia)
+    \item \textbf{Particionamiento} (sharding o fragmentación): Datos \textcolor{blue}{se fragmentan y se distribuyen} localizandolos en varios sitios,  \textcolor{red}{aumentando el desempeño al distribuir la carga y agregar recursos}
+    \item \textbf{Replicación}: Datos replicados \textcolor{red}{mejora el desempeño al distribuir cargas entre réplicas}, pero también al acceder a una copia más cercana (mejor tiempo de respuesta y menor latencia)
 \end{itemize}
 
 \textbf{Disponibilidad/Resilencia}: Datos replicados para \textcolor{red}{alta disponibilidad y tolerancia a fallos}
@@ -47,7 +47,7 @@ Ejemplos:
 \begin{itemize}
     \item \textbf{DNS}: Actualizaciones desde un único primario \textcolor{red}{son propagadas asincrónicamente} a los secundarios, no siendo inmediatamente visibles.
     \item \textbf{WWW}: \textcolor{blue}{Uso de caching intensivo}, porque es tolerable leer un a página desactualizada. Puede haber copia de caché desactualizadas en navegadores, servidores proxies o CDN.
-    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) \textcolor{red}{quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes}. Similar situación en CVS o GitHub para control de versiones de programas.
+    \item \textbf{Documentos compartidos}: Actualizacion de un documento (replicado) \textcolor{red}{quedará después de un tiempo consistente y se resolverán conflicots por actualizaciones concurrentes}. Similar situación en CVS o GitHub.
     \item \textbf{Carrito de compra}: Copia local puede quedar desactualizada por desconexión.
 \end{itemize}
 
@@ -298,10 +298,10 @@ Notación: $R_1(x_2)$: $P_1$ lee versión $x_2$ del dato. $W_1(x_2)$: $P_1$ escr
     \caption{Modelo básico de referencia}\label{fig:modelo_de_referencia}
 \end{figure}
 
-Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
+ % Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de consistencia eventual, máquina de estado replicada, sistemas de multicasting, sistemas móviles con caching, sistemas de blockchain. 
 
 
-\textcolor{red}{FE es un proxy} del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs hace transparente a los clientes el acceso y la replicación de datos. 
+\textcolor{red}{FE es un proxy} del cliente al servicio, cohabita con el cliente en un único proceso. Mediante las APIs \textcolor{red}{hace transparente} a los clientes el acceso y la replicación de datos. 
 
 \textcolor{blue}{RM es servidor que gestiona una réplica y coordina con otros RMs para consistencia}. Grupo de RMs puede ser estático o dinámico. \textcolor{red}{Un RM puede sufrir fallas de crash y/o omisión}. Se asume algún grado de sincronismo. 
 
@@ -323,11 +323,11 @@ Ejemplos de sistemas con replicación de datos: Sistemas transaccionales, de con
 
 Las operaciones de lectura se hacen directamente sobre cualquier réplica para distribuir carga y aumentar disponibilidad. La propragación de actualizaciones es asincrónica y perezosa, para mejorar el tiempo de respuesta \textcolor{red}{(sacrificando consistencia)}.
 
-El sistema implementa una \textcolor{blue}{semántica de consistencia linealizable}. Si el primario falla, un respaldo debe asumir su rol. Tiene la desventaja de que es bastante pesado, para mejorarlo se requiere sacrificar consistencia. Para balancear la carga, los clientes pueden leer directamente en algún servidor de respaldo, pero se pierde consistencia linealizable y se conserva consistencia secuencial.
+El sistema implementa una \textcolor{blue}{semántica de consistencia linealizable}. Si el primario falla, un respaldo debe asumir su rol. Es bastante pesado, para mejorarlo se requiere sacrificar consistencia. Para balancear la carga, los clientes pueden leer directamente en algún servidor de respaldo, pero se pierde consistencia linealizable y se conserva consistencia secuencial.
 
-En un modelo \underline{Fail-Stop}, se requiere de $f+1$ copias; en modelo \underline{crash} se requiere $2f+1$ copias; en modelo \underline{bizantino} se requiere $3f+1$ copias. 
+En un modelo \textcolor{Sepia}{\underline{Fail-Stop}, se requiere de $f+1$ copias}; en modelo \textcolor{Fuchsia}{\underline{crash} se requiere $2f+1$ copias}; en modelo \textcolor{Fuchsia}{\underline{bizantino} se requiere $3f+1$ copias}. 
 
-\textbf{Reparación}: Tiene tres enfoques:
+\textbf{Reparación}: Tres enfoques:
 \begin{itemize}
     \item \textbf{Hot backup}: Respaldo \textcolor{red}{siempre listo} para tomar control si falla el primario, \textcolor{blue}{con retardo mínimo}.
     \item \textbf{Warm backup}: Se ha \textcolor{red}{realizado el trabajo de preparación} para tomar el control, \textcolor{red}{pero no está listo inmediatamente} para asumir el rol de primario.
@@ -357,7 +357,7 @@ En un modelo \underline{Fail-Stop}, se requiere de $f+1$ copias; en modelo \unde
     \item \textbf{Respuesta}: Cada RM envía su respuesta al \textcolor{blue}{FE, el cual debe filtrar respuestas repetidas} según el mismo UID o modelo de fallas usado.
 \end{itemize}
 
-Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se procesan en orden FIFO}. \textcolor{blue}{No es linealizable}. Si los clientes no se comunican entre sí mientras esperan una respuesta se garantiza ordenamiento causal. De esto último, si tiene multihebra en los clientes, puede ocurrir comunicación entre ellos y si se quiere orden causal habrá que agregar un protocolo de multicast que provea el orden causal y total.
+Se logra consistencia secuencial. \textcolor{red}{Peticiones de un mismo FE se procesan en orden FIFO}. \textcolor{blue}{No es linealizable}. Si los clientes no se comunican entre sí mientras esperan una respuesta se garantiza ordenamiento causal. \textcolor{red}{Si tiene multihebra en los clientes, puede ocurrir comunicación entre ellos y si se quiere orden causal habrá que agregar un protocolo de multicast que provea el orden causal y total}.
 
 \textcolor{Sepia}{Puede tolerar $f$ fallas bizantinas, si se tiene al menos $2f + 1$ réplicas y FE debe recolectar al menos $f+1$ respuestas iguales.} Es posible mejorar el desempeño si se considera que operaciones de diferentes clientes conmutan.
 
@@ -428,7 +428,7 @@ Tres tipos (o estados) para las réplicas en los servidores (RM):
 \begin{itemize}
     \item Arquitectura: Arquitectura 2P2, descentralizada, simétrica y sin líder. Cada nodo mantiene copia de la cadena de bloques.
     \item Propagación de actualización: \textcolor{red}{Cuando un nodo resuelve el problema de minado, lo propaga al resto de la red}. \textcolor{blue}{Minero ganador asume el rol de coordinador para propagar nuevo bloque} a ser agregado a la cadena. \textcolor{Sepia}{Se usa un método optimista con un estilo epidémico de chisme para propagar(consistencia eventual)}.
-    \item Resolución de conflcitos: Se produce un fork, si se agregan concurrentemente varios bloques. Se resuelve por la regla de la cadena más larga es válida. 
+    \item Resolución de conflictos: Se produce un fork, si se agregan concurrentemente varios bloques. \textcolor{red}{Se resuelve por la regla de la cadena más larga es válida}. 
 \end{itemize}
 
 \subsection{Ubicación y distribución de réplicas}

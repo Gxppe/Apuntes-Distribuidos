@@ -1,4 +1,4 @@
-\section{Capitulo 4: Fundamentos teoricos de la computación distriuida}
+\section{Capítulo 4: Fundamentos teóricos de la computación distribuida}
 %\subsection{Historias Causales}
 %Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
 %
@@ -29,21 +29,22 @@
 
 
 \subsection{Relojes vectoriales}
-Para los relojes vectoriales definiremos la siguiente estructura para el un proceso $P_i$, para n procesos
+Definiremos la siguiente estructura para un proceso $P_i$, para n procesos.
+
 \[\textstyle
    \left[ \mathit{Vc}[1], \mathit{Vc}[2], \dots, \mathit{Vc}[i], \dots, \mathit{Vc}[n] \right]
 \]
 
-Donde cada indice esta asociado a un proceso $P_i$. De los relojes vectoriales sabemos que $\forall e \in E$: $Vc(e)$ representa $H(e)$.
+Cada índice esta asociado a un proceso $P_i$. Sabemos que $\forall e \in E$: $Vc(e)$ representa $H(e)$.
 
-Continuando, los procesos irán aumentando de la sigueinte forma:
+Los procesos irán aumentando de la siguiente forma:
 
 Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
 
 \begin{enumerate}[label=\textbf{Paso \arabic*:}, wide, labelindent=0pt]
-    \item Se suma 1 al $Vc(e_i)[i]$, vale decir que le sumamos 1 a la marca del proceso $i$
+    \item $Vc(e_i)[i] + 1$, es decir que aumentamos la marca del proceso $i$
     
-    \item Asignarle el valor anterior al resto de los otros procesos, al nuevo evento
+    \item Asignar el valor anterior al resto de los otros procesos, al nuevo evento.
     
     \[
     \left[ \textstyle
@@ -59,10 +60,10 @@ Para \textcolor{red}{\textbf{eventos locales}} del proceso $P_i$:
     \right]
     \]
     
-    donde los indices en verde, se mantendran iguales para el evento local.
+    donde los índices en verde, se mantendrán iguales para el evento local.
 \end{enumerate}
 
-Resultando Finalmente en el siguiente vector para $P_i$
+Resultando en el siguiente vector para $P_i$
 
 \[
 \left[ \textstyle
@@ -78,7 +79,7 @@ Resultando Finalmente en el siguiente vector para $P_i$
 \right]
 \]
 
-Para mensajes entre procesos, solo se modifica la marca del proceso que esta mandando el mensaje, por ejemplo, si $P_i$ manda un mensaje a $P_j$, se modifica la marca del vector $P_j$ asociada a $P_i$.
+Para mensajes entre procesos solo se modifica la marca del proceso que está mandando el mensaje. Por ejemplo, si $P_i$ manda un mensaje a $P_j$, se modifica la marca del vector $P_j$ asociada a $P_i$.
 
 % \subsubsection{Propiedades de los rejoles vectoriales}
 
@@ -199,14 +200,16 @@ Para mensajes entre procesos, solo se modifica la marca del proceso que esta man
 
 
 \subsubsection{Estados globales}
-Un corte puede tener mensajes en transito. pero denotamos la siguiente caracteristica:
+Un corte puede tener mensajes en tránsito. Denotamos la siguiente característica:
+
 {\tiny \[
   \text{Corte valido} \neq \text{Corte consistente}
 \]}
-Por lo tanto decimos que, un corte consistente es aquel que un evento sucede antes que otro, es considerado
+
+Decimos que un corte consistente contiene todos los eventos que causan a cualquier evento incluido en el corte.
 
 \subsubsection{Algoritmo de Chandy-Lamport}
-Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, un proceso puede recibir distintas marcas, de distintos procesos (más adelante definiremos que sucede en estos casos).
+Este algoritmo sirve para definir cortes consistentes. Si el grafo tiene ciclos, un proceso puede recibir distintas marcas de distintos procesos (más adelante definiremos qué sucede en estos casos).
 
 \begin{figure}[H]
     \centering
@@ -215,9 +218,9 @@ Este algoritmo sirve para definir cortes consitentes. Si es grafo tiene ciclos, 
 \end{figure}
 
 
-Notar que primero, los nodos que estan totalmente en rojo, son los que por primera vez reciben la marca, por lo tanto, estos envian otra marca a sus nodos vecinos. Mientras que las que solo tienen el contorno rojo, y el centro blanco son las que ya recibieron una marca, por ende, no envian una marca.
+Notar que, inicialmente los nodos que están totalmente en rojo son los que por primera vez reciben la marca; por lo tanto, estos envían otra marca a sus nodos vecinos. En cambio, los nodos que solo tienen el contorno rojo y el centro blanco ya recibieron una marca y, por ende, no envían una marca.
 
-En casos de ciclos, el algoritmo si termina, dado que, cada nodo manda una marca exactamente, independiente de la cantidad de marcas que vaya a recibir. 
+En casos de ciclos, el algoritmo sí termina, dado que cada nodo manda exactamente una marca, independiente de la cantidad de marcas que pueda recibir.
 
 % \subsubsection{Estados estables}
 % Para cualquier estado \textcolor{red}{\textbf{$S$}} y un estado futuro \textcolor{red}{\textbf{$S'$}}, si la propiedad \textcolor{red}{\textbf{$P$}} es verdadera en \textcolor{red}{\textbf{$S$}}, y el sistema puede llegar a \textcolor{red}{\textbf{$S'$}}, entonces la propiedad \textcolor{red}{\textbf{$P$}} tambien debe ser verdadera en \textcolor{red}{\textbf{$S'$}}

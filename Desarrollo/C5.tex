@@ -6,7 +6,7 @@
 Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monitoreo consistente. Elección de un líder o coordinador. Exclusión mutua distribuida.
 
 \textbf{Caracterización de algoritmos distribuidos}: \begin{itemize}
-    \item Tipo de topología: Anilo, árbol, grafo general (dirigido o no dirigido, total o parcialmente conectado)
+    \item Tipo de topología: Anillo, árbol, grafo general (dirigido o no dirigido, total o parcialmente conectado)
     \item Modelos de computación: Estilo de interacción, modelo de sincronismo y restricciones temporales, modelo de fallas y fiabilidad
     \item Medidas de desempeño: Complejidad de mensajes (\# mensajes), complejidad de tiempo (\# rondas)
 
@@ -39,10 +39,10 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 
 \textbf{Observación}: Inicialmente se asume que todo nodo no es iniciador, que no están comprometidos y que no han recibido mensajes.
 
-\textbf{Observación 2}: Si el Eco de Chang se inicia varias veces en una misma topologia por nodos distintos., lo que se genera se denomina como \textcolor{red}{\textbf{bosque}}, vale decir tambien, que cada iniciador tiene un arbol distinto.
+\textbf{Observación 2}: Si el Eco se inicia varias veces en una misma topologia por nodos distintos, se genera lo que se denomina como \textcolor{red}{\textbf{bosque}}. Mencionar que cada iniciador tiene un árbol distinto.
 \vspace{0.5em}
 
-\textbf{Observación 3}: Aun con ciclos, este algoritmo converge.
+\textbf{Observación 3}: Aún con ciclos, el algoritmo converge.
 \textbf{Complejidad}: \textcolor{red}{\textbf{Tiene complejidad 2e mensajes}}, donde \textbf{e} es el número de aristas del grafo
 Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. 
 
@@ -51,7 +51,7 @@ Tiene aplicación para recolectar y difundir información ordenadamente en un gr
 
 Ejemplos: Determinación de un único coordinador o líder para un grupo de procesos cooperativos. Elección de un coordinador para gestionar una transacción distribuida y comprometerla, etc.
 
-Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, si pasa esto, puede existir dos coordinadores \textcolor{red}{\textbf{(Cortar el algoritmmo antes de tiempo)}}.
+Existe la posibilidad de que se pregunte el nuevo coordinador antes de tiempo, si pasa esto pueden existir dos coordinadores \textcolor{red}{\textbf{(Cortar el algoritmo antes de tiempo)}}.
 \vspace{0.5em}
 
 \textbf{Caracterización} \begin{itemize}
@@ -62,7 +62,7 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
 
 \subsubsection{Elección en un grafo general}
 
-\textbf{Claves de diseño del algoritmo}: Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador del sistema. Propagar identificador máximo conocido por un nodo. Identificadores menores se extignuen y dejar de propagarse, al ser dominador por algún máximo relativo. Sólo \textbf{mayor identificador logra propagarse} y alcanzar a todos los nodos de la red. Sólo procesos candidatos en una elección ejecutan la partida del algoritmo.
+\textbf{Claves de diseño del algoritmo}: Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador. Propagar identificador máximo conocido por un nodo. Identificadores menores se extinguen y dejan de propagarse, al ser dominador por algún máximo relativo. Sólo \textbf{mayor identificador logra propagarse} y alcanzar a todos los nodos. Sólo procesos candidatos en una elección ejecutan la partida del algoritmo.
 
 \begin{figure}[H]
     \centering
@@ -74,9 +74,9 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
 
 \subsubsection{Elección en un anillo unidireccional} 
 
-\textbf{Claves de diseño del algoritmo}: Es similar al anterior, pero permite una elección en una topología de anillo unidireccional. Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como líder al proceso con mayor identificador. Sólo mayor identificador logra circular por todo el anillo. Usado en redes token-ring.
+\textbf{Claves de diseño del algoritmo}: Similar al anterior, pero permite una elección en una topología de anillo unidireccional. Modelo asincrónico, con paso de mensajes unidireccional y fiable. Se elige como \textcolor{red}{líder al proceso con mayor identificador}. Sólo mayor identificador logra circular por todo el anillo. 
 
-\textbf{Comentarios}: Mensajes con identificador menor que M se extinguen. Si un iniciador le llega un mensaje de elección con su propio identificador, entonces toma conocimiento que ha sido elegido. El algoritmmo se puede extender, para que en una segunda ronda el ganador comunique a los otros nodos que ha sido elegido.
+\textbf{Comentarios}: Si un iniciador le llega un mensaje de elección con su propio identificador, entonces toma conocimiento que ha sido elegido. El algoritmo se puede extender en una segunda ronda para que el ganador comunique a los otros nodos que ha sido elegido.
 
 \begin{figure}[H]
     \centering
@@ -91,14 +91,14 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
 \textbf{Algoritmo del matón}:
 
 \begin{itemize}
-    \item \textbf{Requisito de conectividad}: Cada proceso conoce a todos los demás y existe conectividad completa. Cualquier nodo se comunica con un \underline{broadcast} con todos y fiablemente.
+    \item \textbf{Requisito de conectividad}: Cada proceso conoce a todos los demás y existe conectividad completa. Cualquier nodo se comunica con mediante \underline{broadcast} con todos fiablemente.
 
     \item \textbf{Inicio del algoritmo}: Se inicia cuando un proceso diferente al coordinador detecta que éste ha fallado, lo que puede ocurrir \underline{concurrentemente} en varios procesos. Corresponde a un mecanismo de \underline{heartbeat}, donde el coordinador manda periódicamente un mensaje avisando que \textcolor{blue}{está vivo}. La detección requiere uso de \underline{timers}, por lo tanto usa un modelo \textbf{sincrónico}.
 
     \item \textbf{Lógico del algoritmo}: Cada proceso envía un mensaje de control especial sólo a procesos con \textcolor{red}{mayor identificador}, estos procesos reciben el mensaje y responde con OK solo a procesos con \textcolor{red}{menor identificador}. Proceso que no recibe respuesta, se hace coordinador y lo comunica a los demás, si recibe respuesta de uno \textcolor{red}{mayor abandona} la elección.
 \end{itemize}
 
-\textbf{Comentarios}: Se requiere una red de conexión directa entre cualquier par de nodos. Cada nodo requiere conocer a todos los demás y como se ordenan. Opera en un modelo sincrónico. Es necesario disponer de un cierto nivel de sincronismo, para saber hasta cuánto esperar. Para detectar la falla del coordinador se usan algoritmos de tipo \underline{heartbeat}
+\textbf{Comentarios}: Se requiere una red de conexión directa entre cualquier par de nodos. Cada nodo requiere conocer a todos los demás y como se ordenan. Es necesario disponer de un cierto nivel de sincronismo para saber hasta cuánto esperar.
 
 \begin{figure}[H]
     \centering
@@ -110,7 +110,7 @@ Existe la posibilidad de que se pregunte el nuevo coordiandor antes de tiempo, s
 
 \subsection{Algoritmos distribuidos de exclusión mutua}
 
-\textbf{Objetivo}: Garantizar que a lo más un único proceso puede ejecutar simultáneamente una sección crítica. Se requiere evitar condiciones de carrera, como coordinar acceso a un recurso, garantizar la consistencia de los datos o mantener el correcto funcionamiento de un sistema distribuido.
+\textbf{Objetivo}:\textcolor{ForestGreen}{Garantizar que a lo más un único proceso puede ejecutar simultáneamente una sección crítica}. Se requiere evitar condiciones de carrera, como coordinar acceso a un recurso, garantizar la consistencia de los datos o mantener el correcto funcionamiento de un sistema distribuido.
 
 \textbf{Una solución correcta para el problema de la exclusión mutua considera los siguientes estados y requisitos}
 
@@ -128,7 +128,7 @@ Eventualmente podrán agregarse requisitos de rendimiento y resistencia a fallas
 
 \subsubsection{Exclusión mutua con control centralizado}
 
-\textbf{Caracterización}: Requiere de un único proceso controlador que otorga el permiso para entrar a la SC. Procesos que solicitan permiso al controlador deben esperar respuesta para ingresar a su SC. La solución requiere 3 tipos de mensajes: 
+\textbf{Caracterización}: \textcolor{red}{Requiere de un único proceso controlador que otorga el permiso para entrar a la SC}. Procesos que solicitan permiso al controlador deben esperar respuesta para ingresar a su SC. La solución requiere 3 tipos de mensajes: 
 
 \begin{itemize}
     \item \textcolor{blue}{Request}: Proceso solicita permiso a controlador para ingresar a su SC.
@@ -173,11 +173,12 @@ Mantiene cola \textcolor{blue}{$RequestQueue_i$} con solicitudes ordenadas ascen
 \subsubsection{Algoritmo de Ricart y Agrawala}
 
 \textbf{Claves de diseño}: Comparte la misma caracterización general con el algoritmo de Lamport. Cada proceso requiere permiso de todos los demás procesos. Inicialmente se cumple \textcolor{blue}{$\forall i, 1 \leq i \leq n$: $State_i$ = IDLE $\wedge$ $RequestQueue_i$ = $\emptyset$}. La RequestQueue contiene a los procesos que han sido diferidos en el ingreso a la SC. Solo se requiere 2 tipos de mensajes: Request y Reply
-Algo en tener en cuenta, con Ricart-Agrawala es que, el Reply (Verde en la siguiente figura) hace el trabajo de Grant (para notificar el proximo proceso que tenga acceso a la SC), eso lo hace retrasando en envio de \textcolor{green}{\textbf{reply}} hasta el final.
+
+Con Ricart-Agrawala, el Reply (Verde en la figura) hace el trabajo de Grant (para notificar el próximo proceso que tenga acceso a la SC), eso lo hace retrasando en envío de \textcolor{green}{\textbf{reply}} hasta el final.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.33\textwidth]{img/A_Ricart_Agrawala.png}
+    \includegraphics[width=0.2\textwidth]{img/A_Ricart_Agrawala.png}
     \caption{Esquema del algoritmo de Ricart y Agrawala}
 \end{figure}
 

@@ -79,10 +79,10 @@ Para manejar lo anterior, se propone los siguientes enfoques para mejorar la con
 \end{itemize}
 
 \subsection{Tolerancia a fallos}
-Definimos la tolerancia a fallos como la capacidad de enmascarar la existencia de fallos en un sistema, usando redundacia. Esto busca evitar una averia o falla del sistema. Si bien un sistema puede ser tolerante a fallos, estos deberian ser de sus propios componentes, y no con fallas que comprometen todo el sistema. Queremos que el sistema, a pesar de que sus componentes esten fallados, este tenga un comportamiento consistente a lo especificado.
+La tolerancia a fallos es \textcolor{Sepia}{la capacidad de enmascarar la existencia de fallos} en un sistema, usando redundacia. Esto busca \textcolor{ForestGreen}{evitar una averia o falla del sistema}. Si bien un sistema puede ser tolerante a fallos, estos deberian ser de sus propios componentes, y no con fallas que comprometen todo el sistema. Queremos que el sistema, tenga un comportamiento consistente a lo especificado.
 \vspace{1mm}
 
-El manejo de fallos en un sistema es un proceso de cuatro fases: primero, la \textbf{Detección de error}, donde los fallos se deducen por errores en el estado del sistema; segundo, la \textbf{Aislación y evaluación del daño}, que busca contener la expansión del error; tercero, la \textbf{Recuperación del error}, que corrige el problema y devuelve el sistema a un estado consistente (e.g., \textit{rollback}); y finalmente, el \textbf{Tratamiento del fallo y servicio contínuo}, que, ante fallos permanentes, reconfigura el sistema para dejar de usar el componente dañado y reemplazarlo.
+El \textcolor{Sepia}{manejo de fallos en un sistema es un proceso de cuatro fases}: primero, la \textbf{Detección de error}, donde los fallos se deducen por errores en el estado del sistema; segundo, la \textbf{Aislación y evaluación del daño}, que busca contener la expansión del error; tercero, la \textbf{Recuperación del error}, que corrige el problema y devuelve el sistema a un estado consistente (e.g., \textit{rollback}); y finalmente, el \textbf{Tratamiento del fallo y servicio contínuo}, que, ante fallos permanentes, reconfigura el sistema para dejar de usar el componente dañado y reemplazarlo.
 
 La \textcolor{red}{\textbf{redundancia}} se define en base a las partes de un sistema que no son necesarias para su correcto funcionamiento, si no se requiere tolerar fallos. Existen 3 tipos de tolerancias
 \begin{enumerate}
@@ -92,11 +92,12 @@ La \textcolor{red}{\textbf{redundancia}} se define en base a las partes de un si
 \end{enumerate} 
 
 \subsection{Enfoques de recuperación de errores}
-Para recuperarnos de errores durante la ejecución tenemos dos enfoques.
+Dos enfoques.
 
-\textcolor{purple}{\textbf{Recuperación regresiva(\textit{backward recovery}):}} El sistema retrocede a un estado correcto anterior y se repite la ejecución, se introduce el concepto de checkpoints en la ejecución, los cuales son puntos donde se guarda el estado del sistema en una memoria estable (no se ve afectada por alguna averia). En caso de detectar errores, el sistema hace un rollback.
+\textcolor{purple}{\textbf{Recuperación regresiva(\textit{backward recovery}):}} El sistema retrocede a un estado correcto anterior y se repite la ejecución, se introduce el concepto de checkpoints en la ejecución, % los cuales son puntos donde se guarda el estado del sistema en una memoria estable
+(no se ve afectada por alguna averia). En caso de detectar errores, el sistema hace un rollback.
 
-\textcolor{purple}{\textbf{Recuperación progresiva(\textit{forward recovery}):}} El sistema sigue avanzando, corrigiendo un posible estado erroneo. Al detectarse errores, se sigue la ejecución mientras que a la par se realizan acciones correctivas. No es viable para todos los sistemas
+\textcolor{purple}{\textbf{Recuperación progresiva(\textit{forward recovery}):}} \textcolor{Sepia}{El sistema sigue avanzando, corrigiendo un posible estado erróneo}. Al detectarse errores, se sigue la ejecución mientras que a la par se realizan acciones correctivas. No es viable para todos los sistemas
 
 \begin{figure}[H]
     \centering
@@ -104,56 +105,54 @@ Para recuperarnos de errores durante la ejecución tenemos dos enfoques.
     \caption{Comparativa de enfoques de recuperación}\label{fig:1761609494042}
 \end{figure}
 
-Dentro de los esquemas para tolerancia a fallos encontramos 
+Esquemas para tolerancia a fallos
 \begin{itemize}
-    \item Transacciones o acciones atomicas
+    \item Transacciones o acciones atómicas
     \item Checkpoint y rollback
     \item Replicación de procesos
-    \item Maquina de estado replicada o determinista
-    \subitem Basada en multicast atomico con orden total
-    \subitem Ordenamiento basado en conceso (Paxos,Raft)
+    \item Máquina de estado replicada o determinista: Basada en multicast atómico con orden total. Ordenamiento basado en conceso (Paxos,Raft)
 \end{itemize}
 
-\subsection{Maquina de estado determinista y replicada}
-Esta maquina es un grupo de replicación, donde cada proceso no fallado, ejecuta los mismos comandos en el mismo orden. Se caracteriza por el determinismo de estado, donde todas las replicas correctas mantienen el mismo estado. Se necesita concenso (dińamico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Se trabaja sobre modelos con o sin fallas donde, si se trabaja en un modelo \textbf{sin fallas}, se pueden usar relojes de lamportt para ordenamiento global y total de los mensajes del grupo o un secuenciador central. Para el caso del modgagaelo con fallas, se requieren de algoritmos de consesso tolerantes a fallos. 
+\subsection{Máquina de estado determinista y replicada}
+Grupo de replicación, \textcolor{Fuchsia}{donde cada proceso no fallado ejecuta los mismos comandos en el mismo orden}. Se caracteriza por el determinismo de estado. %donde todas las replicas correctas mantienen el mismo estado
+ Se necesita consenso (dinámico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Si se trabaja en un modelo \textbf{sin fallas}, \textcolor{ForestGreen}{se pueden usar relojes de lamport para ordenamiento global y total} de los mensajes del grupo o un secuenciador central. Para el caso del \textcolor{Sepia}{modelo con fallas}, se requieren de algoritmos de consesso tolerantes a fallos. 
 
-Para un ejemplo vamos a considerar lo siguiente, un contador $k$, el cual es iniciado con un valor de 1, tendremos dos maquinas que ejecutaran las mismas instrucciones, pero en diferente orden, para este caso:
+Vamos a considerar lo siguiente, un contador $k$, el cuál es iniciado con un valor de 1, tenemos dos máquinas que ejecutarán las mismas instrucciones, pero en diferente orden:
 
 \begin{tabular}{l|l}
-\textcolor{red}{\textbf{Maquina A:}} & \textcolor{red}{\textbf{Maquina B:}} \\
-Multiplicar por 2 a $k$ & Sumar 1 a $k$ \\
-Sumar 1 a $k$ & Multiplicar por 2 a $k$ \\    
+\textcolor{red}{\textbf{Máquina A:}} & \textcolor{red}{\textbf{Máquina B:}} \\
+$k \cdot 2$ & $k + 1$ \\
+$k + 1$ & $k \cdot 2$ \\    
 \end{tabular}       
 
-
-Esto resulta en que al final el contador de la maquina A, sera \textcolor{red}{$k=3$} y para la maquina B, \textcolor{red}{$k=4$}. por esto buscamos mantener un orden y los mismos comandos para ambas maquinas.
+Esto resulta en que el contador de la máquina A, es \textcolor{red}{$k=3$} y para la máquina B es \textcolor{red}{$k=4$}. Buscamos mantener un orden y los mismos comandos para ambas máquinas.
 
 \subsection{Modelos cuantitativos de confiabilidad}
 %Pagina 21
-Se define la \textbf{fiabilidad R(t)} como la probabilidad de que un sistema no falle hasta el timepo t. Tambien definimos \textbf{MTTF (Mean Time To Failure)} como el tiempo de vida esperado sin un fallo del sistema. la cual se calcula de la siguiente forma:
+Se define la \textbf{fiabilidad R(t)} \textcolor{Sepia}{como la probabilidad de que un sistema no falle hasta el tiempo $t$}. Definimos \textbf{MTTF (Mean Time To Failure)} \textcolor{red}{como el tiempo de vida esperado sin un fallo del sistema}:
 
 \[
   \textstyle  MTTF= \int_{0}^{\infty}R(t)dt
 \]
 
-Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF= \frac{1}{\lambda}$
+Caso especial: donde $R(t)$ \textcolor{ForestGreen}{sigue una distribución exponencial} tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF= \frac{1}{\lambda}$
 
 \subsubsection{Fiabilidad en serie}
-Un sistema en serie, es aquel en donde si un componente falla, el sistema completo falla. Donde $R_i(t)$ es la fiabilidad del componente i, y $\lambda_i$ es la tasa media de fallas de componentes, de lo anterior la fiabilidad del sistema completo es:
+{Sepia}{Es aquel en donde si un componente falla el sistema completo falla}. Donde $R_i(t)$ es la fiabilidad del componente i, y $\lambda_i$ es la tasa media de fallas. La fiabilidad del sistema es:
 
 \[
   \textstyle  R_{serie}=\prod_{i=1}^{n} R_i(t)
 \]
-Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $ 
+Caso especial, donde $R(t)$ \textcolor{Sepia}{sigue una distribución exponencia}l tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{serie}= \frac{1}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $ 
 
 \subsubsection{Fiabilidad en paralelo}
-Un sistema en paralelo, es aquel donde si \textbf{TODOS} los componentes del sistema, el sistema falla (Se mantendra la misma notación que anteriormente definida)
+Es aquel donde \textcolor{Sepia}{si fallan \textbf{TODOS} los componentes, el sistema falla}.
 
 \[
   \textstyle  R_{paralelo}= 1 - \prod_{i=1}^{n} (1-R_i(t))
 \]
 
-Para un caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{paralelo}= \frac{1}{\lambda}*\frac{ln(n)}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $
+Caso especial, donde $R(t)$ sigue una distribución exponencial tenemos que $R(t)=\exp^{-\lambda t}$ y $MTTF_{paralelo}= \frac{1}{\lambda}*\frac{ln(n)}{\lambda}$ con $\lambda= \sum_{i=1}^{n}\lambda_i $
 
 \subsubsection{Caso de fiabilidad en discos raid-4 y espejo}
 
@@ -178,69 +177,72 @@ Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. %El funcion
 % \]
 
 \subsection{Disponibilidad}
-Se definira la disponibilidad instantanea como $A(T)$ como la probabilidad de que un sistema este funcionamiento correctamente en un tiempo T. Luego la disponibilidad limite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$ como:
+Disponibilidad instantánea como $A(T)$ como \textcolor{Sepia}{la probabilidad de que un sistema esté funcionando correctamente en un tiempo $T$}. Disponibilidad límite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$:
+
 \[
    \textstyle  \alpha= \lim_{\tau \rightarrow \infty} \frac{1}{\tau}\int_{0}^{\tau}A(t)dt
 \]
 
-Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
+% Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{img/MTTF.png}
     \caption{Flujo de vida de un componente}\label{fig:1761836148913}
 \end{figure}
-de lo anterior definimos que MTTF corresponde al "Mean Time To Failure", MTBF como "Mean Time Between Failure" y MTTR como "Mean Time To Repair", donde tenemos finalmente que $MTBF= MTTF + MTTR$. Adicionalmente, podemos encontrar la disponibilidad limite $\alpha$ como:
+El MTTF corresponde al "\textcolor{ForestGreen}{Mean Time To Failure}", MTBF como "\textcolor{Sepia}{Mean Time Between Failure}" y MTTR como "\textcolor{red}{Mean Time To Repair}", tenemos que $MTBF= MTTF + MTTR$. Entonces la disponibilidad límite $\alpha$ como:
 
 \[
     \textstyle  \alpha = \frac{MTTF}{MTTF+MTTR}
 \]
 
 \subsubsection{Caso de replicación de servidores}
-Suponiendo un sistema de n réplicas similares, donde la disponibilidad por servidor es de $a_0$ , donde se trabaja con un modelo en paralelo, la solucion de disponibilidad es $a_n=1-(1-a_0)^n$
+Suponiendo un sistema de $n$ réplicas similares, donde la disponibilidad por servidor es de $a_0$, \textcolor{Sepia}{trabajando con un modelo en paralelo}, la solución de disponibilidad es $a_n=1-(1-a_0)^n$
 
 \subsection{Acuerdo y consenso distribuido}
-El consenso en sistemas distribuidos busca garantizar la consistencia y confiabilidad frente a fallas (de nodos, red o bizantinas) y asincronía. El objetivo es alcanzar una decisión común satisfaciendo propiedades de \textcolor{blue}{\textbf{\textit{safety}}} (Acuerdo, Integridad, Validez) y \textcolor{purple}{\textbf{\textit{liveness}}} (Término).
+El consenso busca garantizar la consistencia y confiabilidad frente a fallas (de nodos, red o bizantinas) y asincronía. El \textcolor{blue}{objetivo es alcanzar una decisión común} satisfaciendo propiedades de \textcolor{blue}{\textbf{\textit{safety}}} (Acuerdo, Integridad, Validez) y \textcolor{purple}{\textbf{\textit{liveness}}} (Término).
 
-En el problema del acuerdo, se busca decidir sobre un único valor o curso de acción tal que se satisfaca el \textcolor{blue}{\textbf{acuerdo}} (el valor decidido debe ser igual para todos), \textcolor{blue}{\textbf{integridad}} (no se puede cambiar la decisión de un participante), \textcolor{blue}{\textbf{validez}}(el valor elegido debio ser propuesto por alguno de los participales) y \textcolor{purple}{\textbf{termino}} (se decide en tiempo finito). Todo esto sobre el ambiente de fallas anteriormente planteado. Notar que las tres primeras condiciones hacen referencia a \textcolor{blue}{\textbf{\textit{safety}}} y la última a \textcolor{purple}{\textbf{\textit{liveness}}}.
+En el problema del acuerdo, \textcolor{Sepia}{se busca decidir sobre un único valor o curso de acción tal que se satisfaca el }acuerdo (el valor decidido debe ser igual para todos), \textcolor{blue}{\textbf{integridad}} (no se puede cambiar la decisión de un participante), \textcolor{blue}{\textbf{validez}}(el valor elegido debio ser propuesto por alguno de los participales) y \textcolor{purple}{\textbf{término}} (se decide en tiempo finito). Notar que las tres primeras condiciones hacen referencia a \textcolor{blue}{\textbf{\textit{safety}}} y la última a \textcolor{purple}{\textbf{\textit{liveness}}}.
  
-\textbf{Acuerdo.}Existe un proceso designado (transmisor) que tiene y propone un valor inicial, para alcanzar acuerdo con los demás procesos sobre este valor, según las siguientes condiciones:
+\textbf{Acuerdo}: \textcolor{red}{Existe un proceso designado (transmisor) que tiene y propone un valor inicial}, para alcanzar acuerdo con los demás procesos sobre este valor, según las siguientes condiciones:
 \begin{itemize}
     \item \textbf{Acuerdo:} Un proceso \textit{transmisor} propone un valor. Todos los procesos correctos deben acordar el mismo valor (si el transmisor es correcto, se acuerda su valor inicial).
     \item \textbf{Consenso:} Cada proceso tiene un valor inicial. Todos los procesos correctos acuerdan un único valor común (si todos tenían el mismo valor inicial, ese debe ser el elegido).
     \item \textbf{Consistencia Interactiva:} Todos tienen un valor inicial. Se acuerda un vector de valores $A$, donde $A[i]$ corresponde al valor inicial del proceso $P_i$ (si este no ha fallado).
 \end{itemize}
 
-Para garantizar solución, se requiere una relación de fallas $f<n$ y comunicación fiable. En sistemas puramente asincrónicos es imposible alcanzar una solución determinista, dado que no se puede distinguir entre una demora y una falla.
+Para garantizar solución, se requiere una relación de fallas $f<n$ y comunicación fiable. \textcolor{red}{En sistemas puramente asincrónicos es imposible alcanzar una solución determinista}, dado que no se puede distinguir entre una demora y una falla.
 \subsubsection{Algoritmo de acuerdo bizantino con mensajes ordinarios (no tienen ningún hash criptografico)}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{img/ordinario.png}
-    \caption{Ejemplo de OM con n=4 y f=1}\label{fig:1761838884075}
+    \caption{Ejemplo de OM con n=4 y f=1}
+    \label{fig:17161838884075}
 \end{figure}
 
-Para este algoritmo, solo se trabaja con un modelo de fallas bizantinas y no de comunicación, donde se debe cumplir que $3f+1\leq n$ . Para el numero m de rondas, se cumple que existe a lo mas $m= f+1$ rondas.
+En este algoritmo, sólo \textcolor{Sepia}{se trabaja con un modelo de fallas bizantinas} y no de comunicación, donde se debe cumplir que $3f+1\leq n$ . Para el numero m de rondas, se cumple que existe a lo mas $m= f+1$ rondas.
 
 \subsection{Comunicación grupal tolerante a fallos}
-El principal enfoque es que, una vez tengamos el mecanismo necesitamos las herramientas (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) para la replicación de los datos.
+El principal enfoque es: una vez tengamos el mecanismo \text{}{Fuchsia}{necesitamos las herramientas} (replicación de maquina de estado, \textit{primary-backup}, sistemas basados en quorums) \textcolor{Fuchsia}{para la replicación de los datos}.
 
-Estan presentes dos tipos de multicast.
-\textbf{Simple:}  No esta determinado el número de receptores efectivos, cuando existen emisores de uno o varios, no esta determinado el orden de llegada a los receptores, es util para apliicaciones no críticas, no tiene condiciones de consistencia, es mas eficiente o liviano
+Dos tipos de multicast
 
-\textbf{Fiable:} Garantiza la entrega a procesos no fallados aun en presencia de de fallos de comunicación. Se retransmiten mensajes automáticamente, elimiando mensajes repetidos o corruptos.
+\textbf{Simple}: \textcolor{blue}{No está determinado el número de receptores efectivos}, cuando existen emisores de uno o varios no está determinado el orden de llegada a los receptores, es útil para aplicaciones no críticas. \textcolor{red}{No tiene condiciones de consistencia}, es más eficiente o liviano
 
-\subsubsection{Semantica de dentrega de mensajes}
-\textbf{Fiabilidad de entrega:}
+\textbf{Fiable}: \textcolor{Sepia}{Garantiza la entrega a procesos no fallados estando en presencia de fallos de comunicación}. Se retransmiten mensajes automáticamente, eliminando mensajes repetidos o corruptos.
+
+\subsubsection{Semántica de entrega de mensajes}
+\textbf{Fiabilidad de entrega}:
 \begin{itemize}
-    \item \textbf{Mejor esfuerzo} (Best-effort): Sin garantía sobre cuántos miembros reciben un mensaje.
-    \item \textbf{Fiabilidad-}$k$: Garantía de que al menos $k$ miembros reciben el mensaje.
-    \item \textbf{Atómico}: Garantía de que todos los miembros lo reciben, o ninguno de ellos lo recibe.
+    \item \textbf{Mejor esfuerzo} (Best-effort): \textcolor{blue}{Sin garantía sobre cuántos miembros reciben un mensaje}.
+    \item \textbf{Fiabilidad-$k$}: \textcolor{ForestGreen}{Garantía de que al menos $k$ miembros reciben el mensaje}.
+    \item \textbf{Atómico}: \textcolor{red}{Garantía de que todos los miembros lo reciben, o ninguno de ellos lo recibe}.
 \end{itemize}
 \textbf{Orden de entrega:}
 \begin{itemize}
-    \item \textbf{No ordenado}: Ninguna garantía de orden de entrega en el receptor.
+    \item \textbf{No ordenado}: \textcolor{blue}{Ninguna garantía de orden de entrega en el receptor}.
     
-    \item \textbf{Orden FIFO}: Mensajes de un mismo emisor se entregan según orden de envío.
+    \item \textbf{Orden FIFO}: Mensajes de un mismo emisor \textcolor{Sepia}{se entregan según orden de envío}.
       
     \begin{figure}[H]
     \centering
@@ -248,7 +250,7 @@ Estan presentes dos tipos de multicast.
     \caption{Multicast: orden FIFO}\label{fig:1761678535409}
     \end{figure}
 
-    \item \textbf{Orden causal}: Se respeta en la entrega orden causal de eventos de envío.
+    \item \textbf{Orden causal}: Se respeta en la entrega \textcolor{red}{el orden causal de eventos de envío}.
     
     \begin{figure}[H]
     \centering
@@ -266,17 +268,19 @@ Estan presentes dos tipos de multicast.
 \end{figure}
 \end{itemize}
     
-\textcolor{red}{\textbf{Obs.1:}} Es necesario utilizar multicast con entrega con orden total y causal pasa maquinas de estado replicadas deterministas para asegurar la entrega de comandos en el mismo orden.
+\textcolor{red}{\textbf{Obs.1}}: Es necesario utilizar multicast con entrega con orden total y causal pasa máquinas de estado replicadas deterministas para asegurar la entrega de comandos en el mismo orden.
 
-En los grupos muchas veces existen miembros distinguidos (con un rol asociado), los nodos, deben tomar el rol del nodo afectado una vez detectada la falla. Si en algún punto un nuevo nodo se integra al grupo, se debe sincronizar con los demás nodos
-\subsubsection{Modelo de sincronia virtual (modelo \textit{Fail-stop})}
-Definimos la sincronia virtual como un modelo de comunicación que asegura consistencia de entrega de mensajes aun en presencia de fallos. Es facil de implementar una maquina de estado replicada y determinista y replicada  en un modelo \textit{Fail-stop} multicast fiable y cambios de mebresía. Algo a tener en cuenta es que este modelo no soporta fallas bizantinas ni particiones de red.
+En los grupos muchas veces existen miembros distinguidos (con un rol asociado), los nodos deben tomar el rol del nodo afectado una vez detectada la falla. Si en algún punto un nuevo nodo se integra al grupo, se debe sincronizar con los demás nodos.
 
-El sistema es parcialmente asincronico porque requiere de \textit{timer} para detectar la falla de procesos 
+\subsubsection{Modelo de sincronía virtual (modelo \textit{Fail-stop})}
 
-\textbf{ABCAST:} Asegura orden total, tiene la semantica de entrega más fuerte. Para que un grupo reciba un mensaje en el mismo orden, se necesita un protocolo de dos fases, para este caso el proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso %, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
+La sincronía virtual es un modelo de comunicación \textcolor{ForestGreen}{que asegura consistencia de entrega de mensajes estando también en presencia de fallos}. Es fácil de implementar una máquina de estado replicada y determinista y replicada  en un modelo \textit{Fail-stop} multicast fiable y cambios de membresía. El modelo \textcolor{red}{no soporta fallas bizantinas ni particiones de red}.
 
-En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez enviado el mensaje, el resto de los procesos del grupo (no fallados), marca tentativamente los mensajes recibidos en base a su reloj local de lamport $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}.
+El sistema es \textcolor{blue}{parcialmente asincrónico} dado que requiere de un \textit{timer} para detectar la falla de procesos.
+
+\textbf{ABCAST:} \textcolor{Fuchsia}{Asegura orden total, tiene la semántica de entrega más fuerte}. Para que un grupo reciba un mensaje en el mismo orden se necesita un protocolo de dos fases. El proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso %, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
+
+En su primera fase $P_i$ envía un mensaje usando multicast fiable, una vez enviado el resto de los procesos del grupo (no fallados) \textcolor{red}{marca tentativamente los mensajes recibidos en base a su marca de lamport} $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}.
 
 \textbf{Primera fase}
 \begin{figure}[H]
@@ -292,7 +296,7 @@ En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez
 \end{figure}
 
 
-En la segunda fase, una vez $P_i$ reciba la marca tentativa de sus miembros del grupo, marca la máxima marca tentativa como $t_m$, (en caso de que dos procesos tengan el mismo valor para el relojes, se desempata con el id). Finalmente una vez definido el valor para el mensaje, Se le notifica a todos los procesos del grupo, la marca ganadora y se pasa el valor de comprometido a \textcolor{blue}{\textbf{TRUE}}.
+En la segunda fase, una vez $P_i$ recibe la marca tentativa de sus miembros del grupo, marca la máxima marca tentativa como $t_m$, (en caso de que dos procesos tengan el mismo valor para el relojes, se desempata con el id). Finalmente, una vez definido el valor para el mensaje, Se le notifica a todos los procesos del grupo de la marca ganadora y se pasa al valor de comprometido a \textcolor{blue}{\textbf{TRUE}}.
 
 \textbf{Segunda fase}
 \begin{figure}[H]
@@ -307,10 +311,10 @@ En la segunda fase, una vez $P_i$ reciba la marca tentativa de sus miembros del 
     \caption{Cuarto paso ABCAST}\label{fig:1761653182730}
 \end{figure}
 
-Para establecer un numero de mensajes por solicitud, Si hay N procesos, hay N envios, Como hay N procesos, hay N respuestas, y finalmente Se tiene que comunicar para los N procesos N actualizaciones de marca para un mensaje, resultando finalmente en que la \textcolor{red}{complejidad} es $3N$
+Para establecer un número de mensajes por solicitud. Si hay N procesos, hay N envios, Como hay N procesos, hay N respuestas, y finalmente Se tiene que comunicar para los N procesos N actualizaciones de marca para un mensaje, resultando finalmente en que la \textcolor{red}{complejidad} es $3N$
 
 
-\textbf{CBCAST:} Asegura orden causal, hace uso de relojes vectoriales,antes habia un solo monitor, y cada miembro hace entrega causal. Las reglas son las siguientes. Para cada mensaje m, a ser enviado por $P_i$, se incrementa $VC_i[i]$, Cuando $P_j$,  recibe un mensaje m desde $P_i$, con la marca asociada al mensaje, entonces $P_j$ retarda la entrega de m hasta que se cumpla la condicion \textcolor{red}{\textbf{FIFO}} y la condicion \textcolor{red}{\textbf{CAUSAL}} (estas se definieron en el capitulo 4, y están en este apunte).
+\textbf{CBCAST:} \textcolor{red}{Asegura orden causal, hace uso de relojes vectoriales}, antes había un solo monitor, y cada miembro hace entrega causal. Las reglas son las siguientes. Para cada mensaje m, a ser enviado por $P_i$, se incrementa $VC_i[i]$, Cuando $P_j$,  recibe un mensaje m desde $P_i$, con la marca asociada al mensaje, entonces $P_j$ retarda la entrega de m hasta que se cumpla la condición \textcolor{red}{\textbf{FIFO}} y la condición \textcolor{red}{\textbf{CAUSAL}} (estas se definieron en el capitulo 4, y están en este apunte).
 
 \begin{figure}[H]
     \centering
@@ -318,11 +322,11 @@ Para establecer un numero de mensajes por solicitud, Si hay N procesos, hay N en
     \caption{Ejemplo visual de CBCAST}\label{fig:1761675486364}
 \end{figure}
 
-\textbf{Api de gestion de grupos:} Pasa asegurar atomicidad, nos provee una interfaz para gestionar grupos, servicios como, crear grupo, unirse a un grupo, salir de un grupo (por detección termino o fallas), una lista de quienes reciben el mensaje (Vista), y notificar un cambio de en la lista del grupo.
+\textbf{Api de gestión de grupos:} Para asegurar atomicidad nos provee una interfaz para gestionar grupos, servicios como: crear grupo, unirse a un grupo, salir de un grupo (por detección termino o fallas), una lista de quienes reciben el mensaje (Vista) y notificar un cambio de en la lista del grupo.
 
-Definimos un grupo atomico, como un grupo donde todos los miembros tienen la misma vista, cuando existen cambios en la vista (alguien se sale o une al grupo), este proceso necesariamente debe ser atómico.
+Definimos un grupo atómico, un grupo donde todos los miembros tienen la misma vista. Cuando existen cambios en la vista (alguien se sale o une al grupo), este proceso necesariamente debe ser atómico.
 
-\textbf{Básicos:}
+\textbf{Básicos}:
 \begin{itemize}
     \item $\mathit{GID} \leftarrow \text{CreateGroup}()$ \quad : crear un nuevo grupo
     \item $\text{JoinGroup}(\mathit{GID})$ \quad \quad \ : unirse a un grupo
@@ -341,20 +345,20 @@ Definimos un grupo atomico, como un grupo donde todos los miembros tienen la mis
 
 \subsection{Algoritmo de PAXOS y otros (consenso con fallas de crash)}
 
-Paxos se usa para mantener consistente información del sistema, por ejemplo, información de la configuración del sistema. Permite coordinacion tolerante a fallos. Paxos trabaja con un modelo de fallas de \textit{crash} (no bizantinas), con omisión de mensajes. Trabajamos en una red con comunicación no fiable, y por paso de mensajes, los mensajes pueden sufrir retardos en la entrega (lo que hace que paxos sea parcialmente sincronico), los mensajes pueden duplicarse, desordenarse o perder, pero no corromperse (modelo de falla de omisión). A nivel de tolerancia a fallas, solo soporta para $2f+1\leq n$.
+Paxos se usa para mantener consistente información del sistema. Como la información de la configuración del sistema. Permite coordinación tolerante a fallos. \textcolor{red}{Paxos trabaja con un modelo de fallas de \textit{crash} (no bizantinas), con omisión de mensajes}. \textcolor{blue}{Trabajamos en una red con comunicación no fiable, y por paso de mensajes}, los mensajes pueden sufrir retardos en la entrega (lo que hace que paxos sea parcialmente sincronico), los mensajes pueden duplicarse, desordenarse o perder, pero no corromperse (modelo de falla de omisión). \textcolor{red}{A nivel de tolerancia a fallas, solo soporta para $2f+1\leq n$}.
 
-\textbf{Roles de agentes:}
+\textbf{Roles de agentes}:
 \begin{itemize}
-    \item \textbf{\textit{Proposer}} (Proponente): Propone un valor de un cliente para que sea aceptado por consenso.
-    \item \textbf{\textit{Acceptor}} (Aceptador): Elige (o rechaza) alguna propuesta de un \textit{Proposer} y les comunica su aceptación. Este componente tiene acceso a memoria estable (esto es debido a que debe recordar su decisión en caso de fallas)
-    \item \textbf{\textit{Learner}} (Aprendiz): Aprende cuál es el valor elegido por la mayoría de los \textit{Acceptors}.
+    \item \textbf{\textit{Proposer}}: Propone un valor de un cliente para que sea aceptado por consenso.
+    \item \textbf{\textit{Acceptor}}: Elige (o rechaza) alguna propuesta de un \textit{Proposer} y les comunica su aceptación. Este componente tiene acceso a memoria estable (esto es debido a que debe recordar su decisión en caso de fallas)
+    \item \textbf{\textit{Learner}}: Aprende cuál es el valor elegido por la mayoría de los \textit{Acceptors}.
 \end{itemize}
 
-\textcolor{red}{\textbf{Obs.1:}} Un acceptor y un proposer puede estar en un mismo proceso, pero no pueden haber mas de dos acceptor en un mismo proceso, dado que se asegura que las fallas de los acceptor son independientes.
+\textcolor{red}{\textbf{Obs.1:}} Un acceptor y un proposer puede estar en un mismo proceso, pero no pueden haber mas de dos acceptor en un mismo proceso.
 
 Paxos cuenta con dos pasos escenciales:
 
-\textcolor{red}{\textbf{Paso 1:}}
+\textcolor{red}{\textbf{Paso 1}}:
 
 \begin{figure}[H]
     \centering
@@ -366,10 +370,11 @@ Paxos cuenta con dos pasos escenciales:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Por el lado del \textcolor{red}{\textbf{proposer:}} Se propone una propuesta con un valor $VALUE$, y esta propuesta tiene un ID asociado (este id es estrictamente creciente).
 
-Por el lado del \textcolor{red}{\textbf{acceptor:}} El acceptor verifica si el id de la propuesta es mayor al que ya tiene (en caso de que no este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
+Por el lado del \textcolor{red}{\textbf{acceptor:}} \textcolor{red}{El acceptor verifica si el ID de la propuesta es mayor al que ya tiene} (en caso de que no este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\textcolor{red}{\textbf{Paso 2:}}\\
+\textcolor{red}{\textbf{Paso 2}}:
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\linewidth]{img/Paso_2_paxos.png}
@@ -377,18 +382,18 @@ Por el lado del \textcolor{red}{\textbf{acceptor:}} El acceptor verifica si el i
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textcolor{red}{\textbf{Fase 2A (Aceptación):}}
+\textcolor{red}{\textbf{Fase 2A (Aceptación)}}:
 
-    Por el lado del \textcolor{red}{\textbf{proposer:}} Si un proposer ha recibido una respuesta a su promesa de la mayoria de loos acceptors, en caso de que alguna respuesta contenga valores de otras propuestas aceptadas, el proposer selecciona el valor de la propuesta con el ID mas alto, y asigna ese valor como el valor aceptado, en caso contrario, se elige el $VALUE$ de la propuesta original. Finalmente, el proposer envia un mensaje de aceptación a la mayoria de los aceptors con su ID y el $VALUE$ con mayor ID asociado
+    Por el lado del \textcolor{red}{\textbf{proposer}}: \textcolor{Sepia}{ Si un proposer ha recibido promesas de la mayoría de los acceptors, comprueba si alguna respuesta incluye una propuesta previamente aceptada}; si existe, adopta el VALUE de la propuesta con el ID más alto, en caso contrario mantiene su VALUE original. Finalmente envía a la mayoría de los acceptors un mensaje de aceptación con su ID y el VALUE seleccionado.
     
-    Por el lado del \textcolor{red}{\textbf{acceptor:}} En caso de que el acceptor reciba un mensaje de aceptación con un ID mayor o igual al maximo ID conocido, este informa a los Learners del valor aceptado.
+    Por el lado del \textcolor{red}{\textbf{acceptor:}} En caso de que el acceptor reciba un mensaje de aceptación con un ID mayor o igual al maximo ID conocido, \textcolor{ForestGreen}{este informa a los Learners del valor aceptado}.
 
 
-\textcolor{red}{\textbf{Fase 2B (Aprendizaje):}}
+\textcolor{red}{\textbf{Fase 2B (Aprendizaje)}}:
 
-Por el lado del \textcolor{red}{\textbf{learner:}} Si recibe un valor aceptado con su ID y $VALUE$, de la mayoria de los aceptors, se registra el valor $VALUE$ 
+Por el lado del \textcolor{red}{\textbf{learner:}} Cuando un learner recibe el mismo par (ID, VALUE) aceptado por una mayoría de acceptors, registra ese VALUE como el valor elegido (consenso) y lo entrega a la aplicación correspondiente.
 
-Por el lado del \textcolor{red}{\textbf{proposer:}} Una vez recibe un accepted de la mayoria de los aceptors, se confirma, el consenso de $VALUE$. 
+Por el lado del \textcolor{red}{\textbf{proposer:}} Si un proposer recibe confirmaciones de aceptación (accepted) de una mayoría de acceptors para su propuesta (ID, VALUE), considera que el valor ha sido elegido y puede difundir el resultado a los learners o al cliente.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -409,4 +414,4 @@ Por el lado del \textcolor{red}{\textbf{proposer:}} Una vez recibe un accepted d
 %     \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
 % \end{itemize}
 
-El quorum para aceptar un valor es de $\lfloor \frac{n}{2} \rfloor + 1$
+\textcolor{ForestGreen}{El quorum para aceptar un valor es de $\lfloor \frac{n}{2} \rfloor + 1$}

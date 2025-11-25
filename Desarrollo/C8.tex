@@ -14,7 +14,7 @@
 \subsubsection{Transparencia de Transacciones}
 Provee dos tipos de transparencias: \textcolor{ForestGreen}{Concurrencia y fallos}. Pero si es distribuido, también provee: Transparencia de \textcolor{ForestGreen}{ubicación} y \textcolor{ForestGreen}{replicación} (si existe).
 
-Además se usa buffering para proveer alto desempeño en acceso de datos persistentes, lo que puede considerarse como transparencia de \textcolor{ForestGreen}{persistencia}. 
+Se usa buffering para proveer alto desempeño en acceso de datos persistentes, lo que puede considerarse como transparencia de \textcolor{ForestGreen}{persistencia}. 
 
 \textcolor{blue}{Próposito}: Permite simplificar el modelo de programación de aplicaciones en ambientes complejos de operación que trabajan con datos persistentes.
 
@@ -23,11 +23,11 @@ Además se usa buffering para proveer alto desempeño en acceso de datos persist
 \subsubsection{Modelo de Fallas (típicos)}
 \begin{itemize}
 
-    \item \textbf{Modelo de almacenamiento de datos}: Operaciones de escritura sobre el medio de almacenamiento pueden fallas. Lecturas pueden usar un código tipo checksum para detectar errores de lectura. El medio puede decaer perdiendose información, o puede destruirse completamente.
+    \item \textbf{Modelo de almacenamiento de datos}: \textcolor{red}{Operaciones de escritura sobre el medio de almacenamiento pueden fallar}. \textcolor{Sepia}{Lecturas pueden usar un código tipo checksum para detectar errores de lectura}. El medio puede decaer perdiendose información, o puede destruirse completamente.
 
-    \item \textbf{Procesos}: Pueden caerse ocasionalmente, perdiendo la memoria volátil. Procesos fallados se detienen (fail-stop, crash), sin mandar mensajes o escribir en disco datos erróneos. \textcolor{Fuchsia}{Existe procedimiento de recuperación basado en el uso de memoria estable}, para restaurar estado anterior a la fallas de un proceso y recomenzar recuperación desde un estado consistente.
+    \item \textbf{Procesos}: Pueden caerse ocasionalmente, perdiendo la memoria volátil. Procesos fallados se detienen (fail-stop, crash), sin mandar mensajes o escribir en disco datos erróneos. \textcolor{Fuchsia}{Existe procedimiento de recuperación basado en el uso de memoria estable}, para restaurar estado anterior a la fallas y recomenzar recuperación desde un estado consistente.
 
-    \item \textbf{Comunicación}: \textcolor{Sepia}{Mensajes pueden sufrir retardo arbitrario, perderse, duplicarse, o corromperse.} Receptor es capaz de detectar estos errores y de recuperarse.
+    \item \textbf{Comunicación}: \textcolor{Sepia}{Mensajes pueden sufrir retardo arbitrario, perderse, duplicarse, o corromperse}. Receptor es capaz de detectar estos errores y recuperarse.
 
     \item \textcolor{Fuchsia}{Memoria Estable}: Soporta operaciones atómicas de escritura sobre un medio persistente independiente de alta fiabilidad, \textcolor{Sepia}{capaz de sobrevivir caídas de proceso y fallas de medio de almacenamiento}, para apoyar procedimientos de recuperación de errores en diversos escenarios.
 \end{itemize}
@@ -70,13 +70,13 @@ Expandiendo el concepto de \textbf{Aislación}:
 \end{figure}
 
 \subsection{Control de Concurrencia de Transacciones}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\linewidth]{img/Modelo-arquitectonico.png}
-    \caption{Modelo arquitectónico de un sistema de gestión de transacciones distribuidas}
-    \label{fig:Modelo-arquitectonico}
-\end{figure}
+%
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=0.3\linewidth]{img/Modelo-arquitectonico.png}
+%    \caption{Modelo arquitectónico de un sistema de gestión de transacciones distribuidas}
+%    \label{fig:Modelo-arquitectonico}
+%\end{figure}
 
 \subsubsection{Planificación}
 \textcolor{Sepia}{Secuencias de operaciones ejecutadas por una o más transacciones.}
@@ -90,12 +90,12 @@ Expandiendo el concepto de \textbf{Aislación}:
     \item Si $\forall T_i, T_j \in S:$ $T_i$ y $T_j$ se ejecutan serialmente. Entonces la planificación $S$ es serial y se cumple el predicado $Serial(S)$.
 \end{itemize}
 
-\textbf{Definición: Ejecución concurrente}: \textcolor{Fuchsia}{Si un par de transacciones no son ejecutadas serialmente, entonces se dice que su ejecución es concurrente}. Si en una planificación $S$ existe un par de transacciones que se ejecutan concurrentemente, entonces la ejecución de $S$ es concurrente. Es decir, $Serial(S)$ es falso.
+\textbf{Ejecución concurrente}: \textcolor{Fuchsia}{Si un par de transacciones no son ejecutadas serialmente, entonces se dice que su ejecución es concurrente}. Si en una planificación $S$ existe un par de transacciones que se ejecutan concurrentemente, entonces la ejecución de $S$ es concurrente. Es decir, $Serial(S)$ es falso.
 
 \subsubsection{Serialización de transacciones}
 \textbf{Axioma}: Una \textcolor{red}{ejecución serial de transacciones es siempre correcta}
 
-\textbf{Definición: Principio de serialización}: Un \textcolor{ForestGreen}{método de control de concurrencia es correcto si es serializable}. Es decir, \textcolor{Fuchsia}{existe una secuencia equivalente en que las operaciones de cada transacción aparecen antes o después de otra transacción, pero no entremezcladas}.
+\textbf{Principio de serialización}: Un \textcolor{ForestGreen}{método de control de concurrencia es correcto si es serializable}. Es decir, \textcolor{Fuchsia}{existe una secuencia equivalente en que las operaciones de cada transacción aparecen antes o después de otra transacción, pero no entremezcladas}.
 
 \subsubsection{Equivalencia de planificaciones concurrents} 
 \textbf{Condiciones de equivalencia}:
@@ -112,7 +112,7 @@ Expandiendo el concepto de \textbf{Aislación}:
 \end{figure}
 
 \subsubsection{Conflicto entre operaciones}
-\textbf{Definición: Operaciones en conflicto}:
+\textbf{Operaciones en conflicto}:
 Dos operaciones están en conflicto, ssi:
 \begin{itemize}
     \item Operan sobre los mismos datos
@@ -122,7 +122,7 @@ Dos operaciones están en conflicto, ssi:
 
 \textbf{Teorema de equivalencia}: Dos planificaciones $S_1$ y $S_2$ son equivalentes, ssi: $\forall o_i, o_j$ en conflicto: $(S_1: o_i  < o_j) \Rightarrow (S_2: o_i < o_j)$
 
-Dos planificaciones son equivalentes si respetan el orden de precedencia para todas las operaciones en conflicto. Operaciones que no están en conflicto pueden permutarse, sin afectar el resultado de equivalencia. Por lo tanto, \textcolor{Sepia}{una planificación serializable podría ser equivalente a diferentes planificaciones seriales}.
+Dos planificaciones son equivalentes si respetan el orden de precedencia para todas las operaciones en conflicto. Operaciones que no están en conflicto pueden permutarse, sin afectar el resultado de equivalencia. Es decir, \textcolor{Sepia}{una planificación serializable podría ser equivalente a diferentes planificaciones seriales}.
 
 \subsubsection{Protocolo de candado de dos fases (2PLP)}
 
@@ -130,7 +130,7 @@ Dos planificaciones son equivalentes si respetan el orden de precedencia para to
 
 \begin{itemize}
     \item Una transacción antes de acceder a un objeto debe ponerle \textcolor{red}{candado}.
-    \item Una transacción no puede adquirir otro candado si ha liberado alguno 
+    \item Una transacción \textcolor{blue}{no puede adquirir otro candado si ha liberado alguno}. 
 \end{itemize}
 
 \textcolor{blue}{Fases}: La segunda regla determina que el protocolo tiene dos fases.
@@ -204,7 +204,7 @@ Cada \textcolor{Fuchsia}{transacción al iniciarse recibe un $TS$ como identific
     \item \textcolor{Sepia}{Regla de escritura}: Sea $TS_j$ la marca de operación de escritura sobre $y$. Si $TS_j < RTM(y)$ o $TS_j < WTM(y)$, se rechaza la escritura y recomienza transacción. Si no, se realiza la escritura diferida y $WTM(y) = TS_j$
 \end{itemize}
 
-El protocolo \textcolor{red}{serializa en el orden creciente de las marcas de tiempo, operaciones en conflicto son ordenadas por marca de tiempo creciente}. El protocolo \textcolor{ForestGreen}{no produce deadlock}, al no existir bloqueos y ciclos de espera. Transacciones que recomienzan no dejan huella y parten con un nuevo TS (que debe ser mayor). Puede producir postergación indefinida. \textcolor{blue}{Tiene un costo significativo en memoria} para mantener información sobre TS asociado a última lectura y última escritura de cada objeto de datos. 
+El protocolo \textcolor{red}{serializa en el orden creciente de las marcas de tiempo, operaciones en conflicto son ordenadas por marca de tiempo creciente}. El protocolo \textcolor{ForestGreen}{no produce deadlock}, al no existir bloqueos y ciclos de espera las transacciones que recomienzan no dejan huella y parten con un nuevo TS (que debe ser mayor). Puede producir postergación indefinida. \textcolor{blue}{Tiene un costo significativo en memoria} para mantener información sobre TS asociado a última lectura y última escritura de cada objeto de datos. 
 
 \subsubsection{C) Métodos optimistas}
 \textbf{Principio de funcionamiento}: \textcolor{red}{Asumen que los conflictos durante la ejecución de una transacción son poco probables}, de manera de reducir el costo de estar sincronizando cada acceso a datos. Se valida al término de una transacción si existieron conflictos durante su ejecución, si no existe conflictos, se compromete; si no, se aborta. \textcolor{ForestGreen}{Serializa al menos en el orden que se van validando las transacciones.}
