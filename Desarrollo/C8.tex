@@ -177,7 +177,6 @@ Un dato puede tener múltiples candados de lectura de diferentes transacciones, 
 
 \subsection{Modelo de transacciones distribuidas}
 
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\linewidth]{img/modelo-transacciones-distribuidas.png}
@@ -185,19 +184,14 @@ Un dato puede tener múltiples candados de lectura de diferentes transacciones, 
     \label{fig:modelo-transacciones-distribuidas}
 \end{figure}
 
-Nomenclatura: $T_i$: Transacción N°i, LTM: Local Transaction Manager, DTM: Distributed Transaction Manager.
+% Nomenclatura: $T_i$: Transacción N°i, LTM: Local Transaction Manager, DTM: Distributed Transaction Manager.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\linewidth]{img/modelo-pero-distribuido.png}
-    \caption{Gestión de transacciones distribuidas}
-    \label{fig:gestión de transacciones distribuidas}
-\end{figure}
+
 
 \subsubsection{A) 2PLP distribuido}
 \textbf{Procedimiento}: Los candados son administrados localmente en cada sitio usando 2PLP. A nivel de DTM, cada solicitud se hace a través del coordinador, quien la redirige algún a agente si fuese necesario.
 
-\textbf{Correctitud}: En \textcolor{red}{cada sitio la planificación es serializable}. \textcolor{blue}{Debe existir un ordenamiento globa}l, de manera que las serializaciones locales respeten ese orden global.
+%\textbf{Correctitud}: En \textcolor{red}{cada sitio la planificación es serializable}. \textcolor{blue}{Debe existir un ordenamiento globa}l, de manera que las serializaciones locales respeten ese orden global.
 
 \subsubsection{B) Protocolo de ordenamiento por marcas de tiempo básico (BTO)}
 
@@ -233,10 +227,10 @@ Suponiendo que T es una transacción donde $T_s$ es mayor número de secuencia a
     \item \textcolor{blue}{Decisión: Si hubo cambios declara la transacción como inválida. Si no hubo cambios, se guardan los cambios.}
 \end{itemize}
 
-\subsubsection{Casos de control de concurrencia}
+%\subsubsection{Casos de control de concurrencia}
 
-\begin{itemize}
-    \item Dropbox: Usa un \textcolor{ForestGreen}{método optimista} con un historial de versiones. Conflictos son resueltos manualmente por una transacción rechazada.
-    \item Dynamo: Servicio de Amazon, utiliza un \textcolor{ForestGreen}{método optimista} de control de concurrencia y replicación. Se deben reconciliar versiones en conflicto.
-    \item Google: \textcolor{Sepia}{Permite acceder a documentos concurrentemente}. Procesador de palabras ve el cursor y actualizaciones de otro usuario.
-\end{itemize}
+    % \begin{itemize}
+    %     \item Dropbox: Usa un \textcolor{ForestGreen}{método optimista} con un historial de versiones. Conflictos son resueltos manualmente por una transacción rechazada.
+    %     \item Dynamo: Servicio de Amazon, utiliza un \textcolor{ForestGreen}{método optimista} de control de concurrencia y replicación. Se deben reconciliar versiones en conflicto.
+    %     \item Google: \textcolor{Sepia}{Permite acceder a documentos concurrentemente}. Procesador de palabras ve el cursor y actualizaciones de otro usuario.
+    % \end{itemize}

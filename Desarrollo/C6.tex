@@ -171,11 +171,11 @@ Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
     \caption{Ejemplo para discos fragmentados RAID-4}\label{fig:1761834325234}
 \end{figure}
 
-Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$, y $P$ como la paridad del sistema.
+Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. %El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$, y $P$ como la paridad del sistema.
 
-\[
-    \textstyle  D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
-\]
+% \[
+%     \textstyle  D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
+% \]
 
 \subsection{Disponibilidad}
 Se definira la disponibilidad instantanea como $A(T)$ como la probabilidad de que un sistema este funcionamiento correctamente en un tiempo T. Luego la disponibilidad limite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$ como:
@@ -265,13 +265,7 @@ Estan presentes dos tipos de multicast.
     \caption{Multicast: orden total}\label{fig:1761678629682}
 \end{figure}
 \end{itemize}
-
-
-
-
-
-
-
+    
 \textcolor{red}{\textbf{Obs.1:}} Es necesario utilizar multicast con entrega con orden total y causal pasa maquinas de estado replicadas deterministas para asegurar la entrega de comandos en el mismo orden.
 
 En los grupos muchas veces existen miembros distinguidos (con un rol asociado), los nodos, deben tomar el rol del nodo afectado una vez detectada la falla. Si en algún punto un nuevo nodo se integra al grupo, se debe sincronizar con los demás nodos
@@ -280,7 +274,7 @@ Definimos la sincronia virtual como un modelo de comunicación que asegura consi
 
 El sistema es parcialmente asincronico porque requiere de \textit{timer} para detectar la falla de procesos 
 
-\textbf{ABCAST:} Asegura orden total, tiene la semantica de entrega más fuerte. Para que un grupo reciba un mensaje en el mismo orden, se necesita un protocolo de dos fases, para este caso el proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
+\textbf{ABCAST:} Asegura orden total, tiene la semantica de entrega más fuerte. Para que un grupo reciba un mensaje en el mismo orden, se necesita un protocolo de dos fases, para este caso el proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso %, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
 
 En su primera fase $P_i$ va a enviar un mensaje usando multicast fiable, una vez enviado el mensaje, el resto de los procesos del grupo (no fallados), marca tentativamente los mensajes recibidos en base a su reloj local de lamport $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}.
 
@@ -335,13 +329,13 @@ Definimos un grupo atomico, como un grupo donde todos los miembros tienen la mis
     \item $\text{LeaveGroup}(\mathit{GID})$ \quad \ : dejar un grupo o por detección de término o fallas
 \end{itemize}
 
-\begin{itemize}
-    \item \textbf{Adicionales.} Además, para gestionar el protocolo:
-    \begin{itemize}
-        \item $\mathit{List} \leftarrow \text{Members}(\mathit{GID})$ \quad : Recibir lista de miembros (vista)
-        \item $\text{SignalChanges}(\mathit{GID})$ \ : señalizar un cambio de vista
-    \end{itemize}
-\end{itemize}
+% \begin{itemize}
+%     \item \textbf{Adicionales.} Además, para gestionar el protocolo:
+%     \begin{itemize}
+%         \item $\mathit{List} \leftarrow \text{Members}(\mathit{GID})$ \quad : Recibir lista de miembros (vista)
+%         \item $\text{SignalChanges}(\mathit{GID})$ \ : señalizar un cambio de vista
+%     \end{itemize}
+% \end{itemize}
 \textcolor{red}{\textbf{Obs.1}} Notar que los 3 protocolos antes descritos tienen entrega atómica.
 
 
@@ -398,21 +392,21 @@ Por el lado del \textcolor{red}{\textbf{proposer:}} Una vez recibe un accepted d
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\textbf{Proposer:}
-\begin{itemize}
-    \item \textit{ID} : Identificador único y ordenado de una propuesta.
-    \item \textit{cnt} : Mayor \textit{ID} conocido en el sistema (podría ser un TS o contador con UID)
-\end{itemize}
+% \textbf{Proposer:}
+% \begin{itemize}
+%     \item \textit{ID} : Identificador único y ordenado de una propuesta.
+%     \item \textit{cnt} : Mayor \textit{ID} conocido en el sistema (podría ser un TS o contador con UID)
+% \end{itemize}
 
 
-\textbf{Acceptor:}
-\begin{itemize}
-    \item \textit{max\_id} : Máximo identificador de propuesta conocido por \textit{Acceptor} y que respondió con una promesa (en 1\textsuperscript{a} fase).
-    \item \textit{proposal\_accepted} : El \textit{Acceptor} ha aceptado una propuesta (en 2\textsuperscript{a} fase), una variable booleana.
+% \textbf{Acceptor:}
+% \begin{itemize}
+%     \item \textit{max\_id} : Máximo identificador de propuesta conocido por \textit{Acceptor} y que respondió con una promesa (en 1\textsuperscript{a} fase).
+%     \item \textit{proposal\_accepted} : El \textit{Acceptor} ha aceptado una propuesta (en 2\textsuperscript{a} fase), una variable booleana.
     
-    % Marcamos el inicio y fin de la llave
-    \item \textit{accepted\_ID} : \textit{ID} de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (start-brace) {};
-    \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
-\end{itemize}
+ 
+%     \item \textit{accepted\_ID} : \textit{ID} de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (start-brace) {};
+%     \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
+% \end{itemize}
 
 El quorum para aceptar un valor es de $\lfloor \frac{n}{2} \rfloor + 1$
