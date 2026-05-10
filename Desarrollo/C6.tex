@@ -94,7 +94,7 @@ La \textcolor{red}{\textbf{redundancia}} se define en base a las partes de un si
 \subsection{Enfoques de recuperación de errores}
 Dos enfoques.
 
-\textcolor{purple}{\textbf{Recuperación regresiva(\textit{backward recovery}):}} El sistema retrocede a un estado correcto anterior y se repite la ejecución, se introduce el concepto de checkpoints en la ejecución, % los cuales son puntos donde se guarda el estado del sistema en una memoria estable
+\textcolor{purple}{\textbf{Recuperación regresiva(\textit{backward recovery}):}} El sistema retrocede a un estado correcto anterior y se repite la ejecución, se introduce el concepto de checkpoints en la ejecución, los cuales son puntos donde se guarda el estado del sistema en una memoria estable
 (no se ve afectada por alguna averia). En caso de detectar errores, el sistema hace un rollback.
 
 \textcolor{purple}{\textbf{Recuperación progresiva(\textit{forward recovery}):}} \textcolor{Sepia}{El sistema sigue avanzando, corrigiendo un posible estado erróneo}. Al detectarse errores, se sigue la ejecución mientras que a la par se realizan acciones correctivas. No es viable para todos los sistemas
@@ -114,7 +114,7 @@ Esquemas para tolerancia a fallos
 \end{itemize}
 
 \subsection{Máquina de estado determinista y replicada}
-Grupo de replicación, \textcolor{Fuchsia}{donde cada proceso no fallado ejecuta los mismos comandos en el mismo orden}. Se caracteriza por el determinismo de estado. %donde todas las replicas correctas mantienen el mismo estado
+Grupo de replicación, \textcolor{Fuchsia}{donde cada proceso no fallado ejecuta los mismos comandos en el mismo orden}. Se caracteriza por el determinismo de estado. donde todas las replicas correctas mantienen el mismo estado
  Se necesita consenso (dinámico) de los miembros del grupo, este consenso es sobre \textcolor{red}{\textbf{cúales comandos ejecutar y en que orden}}. Si se trabaja en un modelo \textbf{sin fallas}, \textcolor{ForestGreen}{se pueden usar relojes de lamport para ordenamiento global y total} de los mensajes del grupo o un secuenciador central. Para el caso del \textcolor{Sepia}{modelo con fallas}, se requieren de algoritmos de consesso tolerantes a fallos. 
 
 Vamos a considerar lo siguiente, un contador $k$, el cuál es iniciado con un valor de 1, tenemos dos máquinas que ejecutarán las mismas instrucciones, pero en diferente orden:
@@ -128,7 +128,7 @@ $k + 1$ & $k \cdot 2$ \\
 Esto resulta en que el contador de la máquina A, es \textcolor{red}{$k=3$} y para la máquina B es \textcolor{red}{$k=4$}. Buscamos mantener un orden y los mismos comandos para ambas máquinas.
 
 \subsection{Modelos cuantitativos de confiabilidad}
-%Pagina 21
+Pagina 21
 Se define la \textbf{fiabilidad R(t)} \textcolor{Sepia}{como la probabilidad de que un sistema no falle hasta el tiempo $t$}. Definimos \textbf{MTTF (Mean Time To Failure)} \textcolor{red}{como el tiempo de vida esperado sin un fallo del sistema}:
 
 \[
@@ -170,11 +170,11 @@ Para este caso el $MTTF\approx\frac{1}{2}*\frac{MTTF^2}{MTTR}$
     \caption{Ejemplo para discos fragmentados RAID-4}\label{fig:1761834325234}
 \end{figure}
 
-Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. %El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$, y $P$ como la paridad del sistema.
+Para este caso el $MTTF\approx\frac{1}{n(n-1)}*\frac{MTTF^2}{MTTR}$. El funcionamiento de este ultimo considera que se almacenan grupos de K bloques de datos y el uno de módulo dos (XOR) para el calculo de paridad. De lo anterior, se define lo siguiente para el calculo del bloque de datos $D_i$, y $P$ como la paridad del sistema.
 
-% \[
-%     \textstyle  D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
-% \]
+ \[
+     \textstyle  D_i = D_1 \oplus D_2 \oplus \dots \oplus D_{i-1} \oplus D_{i+1} \oplus \dots \oplus D_k \oplus P
+ \]
 
 \subsection{Disponibilidad}
 Disponibilidad instantánea como $A(T)$ como \textcolor{Sepia}{la probabilidad de que un sistema esté funcionando correctamente en un tiempo $T$}. Disponibilidad límite, se define como un valor $\alpha$, como la disponibilidad promedio en un invervalo $[0,\tau)$:
@@ -183,7 +183,7 @@ Disponibilidad instantánea como $A(T)$ como \textcolor{Sepia}{la probabilidad d
    \textstyle  \alpha= \lim_{\tau \rightarrow \infty} \frac{1}{\tau}\int_{0}^{\tau}A(t)dt
 \]
 
-% Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
+ Aca se comienza a hablar sobre el concepto de reparacion, de la cual definimos el siguiente "flujo" (Notar que ahora un componente tiene 2 estados, reparandose y funcionando). de la cual se extrae lo siguiente:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{img/MTTF.png}
@@ -278,7 +278,7 @@ La sincronía virtual es un modelo de comunicación \textcolor{ForestGreen}{que 
 
 El sistema es \textcolor{blue}{parcialmente asincrónico} dado que requiere de un \textit{timer} para detectar la falla de procesos.
 
-\textbf{ABCAST:} \textcolor{Fuchsia}{Asegura orden total, tiene la semántica de entrega más fuerte}. Para que un grupo reciba un mensaje en el mismo orden se necesita un protocolo de dos fases. El proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso %, como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
+\textbf{ABCAST:} \textcolor{Fuchsia}{Asegura orden total, tiene la semántica de entrega más fuerte}. Para que un grupo reciba un mensaje en el mismo orden se necesita un protocolo de dos fases. El proceso que manda un mensaje actúa como "coordinador", va a actuar en el grupo para determinar el orden en que deben de llegar los mensajes desde este coordinador, utiliza relojes de lamport y el id del proceso , como un par ordenado de la forma $\left[LC, \textit{pid}\right]$, se maneja una cola para garantizar la condición de entrega ordenada.
 
 En su primera fase $P_i$ envía un mensaje usando multicast fiable, una vez enviado el resto de los procesos del grupo (no fallados) \textcolor{red}{marca tentativamente los mensajes recibidos en base a su marca de lamport} $\left[LC_j, id_j\right]$, finalmente para cada mensaje recibido por el proceso $P_i$, los asigna como \textbf{No comprometido}, \textcolor{red}{(en la imagen, los mensajes con la N)}.
 
@@ -333,13 +333,13 @@ Definimos un grupo atómico, un grupo donde todos los miembros tienen la misma v
     \item $\text{LeaveGroup}(\mathit{GID})$ \quad \ : dejar un grupo o por detección de término o fallas
 \end{itemize}
 
-% \begin{itemize}
-%     \item \textbf{Adicionales.} Además, para gestionar el protocolo:
-%     \begin{itemize}
-%         \item $\mathit{List} \leftarrow \text{Members}(\mathit{GID})$ \quad : Recibir lista de miembros (vista)
-%         \item $\text{SignalChanges}(\mathit{GID})$ \ : señalizar un cambio de vista
-%     \end{itemize}
-% \end{itemize}
+ \begin{itemize}
+     \item \textbf{Adicionales.} Además, para gestionar el protocolo:
+     \begin{itemize}
+         \item $\mathit{List} \leftarrow \text{Members}(\mathit{GID})$ \quad : Recibir lista de miembros (vista)
+         \item $\text{SignalChanges}(\mathit{GID})$ \ : señalizar un cambio de vista
+     \end{itemize}
+ \end{itemize}
 \textcolor{red}{\textbf{Obs.1}} Notar que los 3 protocolos antes descritos tienen entrega atómica.
 
 
@@ -367,12 +367,9 @@ Paxos cuenta con dos pasos escenciales:
 \end{figure}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Por el lado del \textcolor{red}{\textbf{proposer:}} Se propone una propuesta con un valor $VALUE$, y esta propuesta tiene un ID asociado (este id es estrictamente creciente).
 
 Por el lado del \textcolor{red}{\textbf{acceptor:}} \textcolor{red}{El acceptor verifica si el ID de la propuesta es mayor al que ya tiene} (en caso de que no este no responde), para el caso donde si es el mayor, el ID recibido, sera el nuevo ID máximo, si la propuesta no ha sido aceptada, este le responde a al proposer con un una promesa con el ID, caso contrario, este responde con una promesa con el ID, el ID aceptado, y el $VALUE$ aceptado.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \textcolor{red}{\textbf{Paso 2}}:
 
 \begin{figure}[H]
@@ -381,7 +378,6 @@ Por el lado del \textcolor{red}{\textbf{acceptor:}} \textcolor{red}{El acceptor 
     \caption{Segundo paso de Paxos}\label{fig:1761859213280}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \textcolor{red}{\textbf{Fase 2A (Aceptación)}}:
 
     Por el lado del \textcolor{red}{\textbf{proposer}}: \textcolor{Sepia}{ Si un proposer ha recibido promesas de la mayoría de los acceptors, comprueba si alguna respuesta incluye una propuesta previamente aceptada}; si existe, adopta el VALUE de la propuesta con el ID más alto, en caso contrario mantiene su VALUE original. Finalmente envía a la mayoría de los acceptors un mensaje de aceptación con su ID y el VALUE seleccionado.
@@ -394,24 +390,21 @@ Por el lado del \textcolor{red}{\textbf{acceptor:}} \textcolor{red}{El acceptor 
 Por el lado del \textcolor{red}{\textbf{learner:}} Cuando un learner recibe el mismo par (ID, VALUE) aceptado por una mayoría de acceptors, registra ese VALUE como el valor elegido (consenso) y lo entrega a la aplicación correspondiente.
 
 Por el lado del \textcolor{red}{\textbf{proposer:}} Si un proposer recibe confirmaciones de aceptación (accepted) de una mayoría de acceptors para su propuesta (ID, VALUE), considera que el valor ha sido elegido y puede difundir el resultado a los learners o al cliente.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Proposer:}
+ \begin{itemize}
+     \item \textit{ID} : Identificador único y ordenado de una propuesta.
+     \item \textit{cnt} : Mayor \textit{ID} conocido en el sistema (podría ser un TS o contador con UID)
+ \end{itemize}
 
 
-% \textbf{Proposer:}
-% \begin{itemize}
-%     \item \textit{ID} : Identificador único y ordenado de una propuesta.
-%     \item \textit{cnt} : Mayor \textit{ID} conocido en el sistema (podría ser un TS o contador con UID)
-% \end{itemize}
-
-
-% \textbf{Acceptor:}
-% \begin{itemize}
-%     \item \textit{max\_id} : Máximo identificador de propuesta conocido por \textit{Acceptor} y que respondió con una promesa (en 1\textsuperscript{a} fase).
-%     \item \textit{proposal\_accepted} : El \textit{Acceptor} ha aceptado una propuesta (en 2\textsuperscript{a} fase), una variable booleana.
+ \textbf{Acceptor:}
+ \begin{itemize}
+     \item \textit{max\_id} : Máximo identificador de propuesta conocido por \textit{Acceptor} y que respondió con una promesa (en 1\textsuperscript{a} fase).
+     \item \textit{proposal\_accepted} : El \textit{Acceptor} ha aceptado una propuesta (en 2\textsuperscript{a} fase), una variable booleana.
     
  
-%     \item \textit{accepted\_ID} : \textit{ID} de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (start-brace) {};
-%     \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
-% \end{itemize}
+     \item \textit{accepted\_ID} : \textit{ID} de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (start-brace) {};
+     \item \textit{accepted\_VALUE} : Valor de la propuesta aceptada (en 2\textsuperscript{a} fase). \tikz[overlay,remember picture] \node (end-brace) {};
+ \end{itemize}
 
 \textcolor{ForestGreen}{El quorum para aceptar un valor es de $\lfloor \frac{n}{2} \rfloor + 1$}
