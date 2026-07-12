@@ -1,4 +1,4 @@
-\section{Capítulo 5: Algoritmos Distribuidos}
+\section*{Capítulo 5: Algoritmos Distribuidos}
 \subsection{Conceptos Básicos}
 
 \textbf{Definición}: Tipo de algoritmo que se ejecuta concurrentemente en una red de procesos, con información limitada sobre los demás procesos, se hace uso de paso de mensajes.
@@ -12,7 +12,7 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 
 \end{itemize}
 
-\subsection{\textbf{Algoritmo de Eco-Chang}}
+\subsection{Algoritmo de Eco-Chang}
 
 \textbf{Objetivo}: Visitar paralelamente todos los nodos de una red de procesos, representada como una topología de grafo general no dirigido, generando un spanning tree.
 
@@ -45,6 +45,48 @@ Ejemplos: Ordenamiento de eventos, mensajes u operaciones. Observación o monito
 \textbf{Observación 3}: Aún con ciclos, el algoritmo converge.
 \textbf{Complejidad}: \textcolor{red}{\textbf{Tiene complejidad 2e mensajes}}, donde \textbf{e} es el número de aristas del grafo
 Tiene aplicación para recolectar y difundir información ordenadamente en un grafo general. 
+
+\subsection{Algoritmo de instantánea distribuida}
+Estos algoritmos buscan determinar el estado global del sistema sin detener la computación, típicamente se \textbf{asume un modelo sin fallas}. El fin de determinar un estado global consistente busca detectar errores, monitoreo o \textit{debugging}, gestión de recursos tales como, distribución de cargas, planificación de tareas y recolección de basura.
+
+Dentro de los comentados existen:
+\begin{itemize}
+  \item Algoritmo de Chandy-Lamport
+  \item Principio de la instantánea distribuida de Mattern 
+\end{itemize}
+
+\textbf{Observación:} No confundir ambos algoritmos, ambos tienen distinta notación de estados.\\
+\subsubsection{Principio de la instantánea distribuida de Mattern}
+
+\textbf{Mensajes implicados}
+\begin{itemize}
+  \item \textcolor{red}{\textbf{Mensajes de control:}} Estos mensajes capturan el estado local de un proceso convirtiendo un nodo de color negro a uno de color rojo.
+  \item \textbf{Mensajes de base o cómputo:} Son mensajes asociados a la ejecución por defecto del sistema.\\
+\end{itemize}
+
+\textbf{Funcionamiento base}
+
+Primero un nodo cualquiera del grafo inicia el algoritmos coloreandose de color rojo (el color rojo de un nodo se puede interpretar como que el nodo ya guardo su estado global, mientras que el color negro se interpreta como un nodo que aún no ha capturado su estado), una vez ya capturado el estado, el nodo enviará a todos sus vecinos un \textcolor{blue}{mensaje de control} (los mensajes de control colorean al nodo receptor, si el receptor ya está de color rojo, este ignorará en mensaje).
+
+Segundo, si un nodo recibe un mensaje de control proveniente de alguno de sus vecinos, este nodo se tornará de color rojo y enviará a sus vecinos el mensaje de control correspondiente.
+\\
+
+\textbf{Mensajes del futuro}\\
+Estos ocurren cuando un nodo de color rojo envía un mensaje de base a un nodo de color negro. Esto se puede manejar de dos formas, primero:
+\begin{enumerate}
+  \item Una si al nodo negro le llega el mensaje de base del nodo rojo, este retrasara la entrega hasta que al nodo negro le llegue un mensaje de control por algún vecino 
+  \item Si al nodo le llega un mensaje de base de un nodo rojo, el nodo negro sabrá que el algoritmo inició su ejecución en alguna parte del sistema, por ende este cambiará su color a rojo.
+\end{enumerate}
+
+\textbf{Mensajes en transito}\\
+Un mensaje en transito es aquel mensaje de base enviado de un nodo de color negro a un nodo o canal de color rojo. Para el manejo de estos mensajes se proponen dos formas:
+
+\begin{enumerate}
+  \item Cada proceso de color rojo memoriza los mensajes de base provenientes de un nodo negro, una vez finalizado el algoritmo, el nodo rojo actualiza su estado local con los mensajes recibidos para finalmente enviarle su estado a un proceso recolectar.
+  \item Cada proceso de color rojo, una vez detecta que le llega un mensaje de base de un nodo de color negro, envía la actualización al proceso recolector de manera inmediata.
+\end{enumerate}
+
+\textbf{Observación:} Este algoritmo no considera ni tolera ejecuciones concurrentes dentro del mismo sistema, en caso de existir una ejecución concurrente, el algoritmo presenta problemas.
 
 \subsection{Algoritmos de elección}
 \textbf{Objetivo}: Ponerse de acuerdo en una red de procesos, suponiendo que los procesos están únicamente identificados y es posible ordenarlos totalmente.

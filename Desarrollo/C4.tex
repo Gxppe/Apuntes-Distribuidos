@@ -1,9 +1,9 @@
-\section{Capítulo 4: Fundamentos teóricos de la computación distribuida}
+\section*{Capítulo 4: Fundamentos teóricos de la computación distribuida}
 \subsection{Historias Causales}
 Las \textbf{Historias causales} permiten detectar si existe \textcolor{red}{\textbf{Concurrencia}} o \textcolor{red}{\textbf{Causalidad}} entre dos eventos
 
 {
-\tiny\textstyle\noindent\centering
+\tiny\noindent\centering
 $\subset \text{ : } \textbf{Contenido} \Rightarrow \text{ : } A=\{1,2\}$ y 
 $B=\big\{\underbrace{1,2}_{\text{\textcolor{red}{\textbf{A}}}},3\big\}$ podemos decir que $A \subset B$
 \par
@@ -132,36 +132,40 @@ Para mensajes entre procesos solo se modifica la marca del proceso que está man
  Para entregas causales tenemos las siguientes condiciones:
 
  \textbf{Condición FIFO:}
+ \definecolor{fifogreen}{rgb}{0.149,0.635,0.412}
+ \definecolor{fifored}{rgb}{0.878,0.106,0.141}
  \begin{figure}[H]
  \centering
+ \shorthandoff{>}
  \begin{circuitikz}[scale=0.5, transform shape]
- \tikzset{every node/.style={font=\small}}
+ \tikzset{every node/.style={font=\small}, >=Stealth}
 
- Línea principal
+ % Línea principal
  \draw (0,0) -- (6,0);
 
- Nodos
+ % Nodos
  \node[circ] (a) at (0.5,0) {};
  \node[circ] (b) at (3,0) {};
  \node[circ] (c) at (5.5,0) {};
 
- Etiquetas de eventos
+ % Etiquetas de eventos
  \node[below=2pt] at (a) {$e_{i,k}$};
  \node[below=2pt] at (b) {$e_{i,k+1}$};
  \node[below=2pt] at (c) {$e_{i,k+2}$};
 
- Flechas verdes ("Bien")
- \draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (1,-0.4) -- (2.3,-0.4);
- \draw [color={rgb,255:red,38; green,162; blue,105}, very thick, ->, >=Stealth] (3.6,-0.4) -- (4.9,-0.4);
- \node[color={rgb,255:red,38; green,162; blue,105}, font=\Large] at (3,-1) {Bien};
+ % Flechas verdes ("Bien")
+ \draw [color=fifogreen, very thick, ->] (1,-0.4) -- (2.3,-0.4);
+ \draw [color=fifogreen, very thick, ->] (3.6,-0.4) -- (4.9,-0.4);
+ \node[color=fifogreen, font=\Large] at (3,-1) {Bien};
 
- Flechas rojas ("Mal")
- \draw [color={rgb,255:red,224; green,27; blue,36}, very thick, ->, >=Stealth] (0.5,0.5) -- (5.5,0.5);
- \draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (0.5,0) -- (0.5,0.5);
- \draw [color={rgb,255:red,224; green,27; blue,36}, very thick] (5.5,0.5) -- (5.5,0);
- \node[color={rgb,255:red,224; green,27; blue,36}, font=\Large] at (3,0.9) {Mal};
+ % Flechas rojas ("Mal")
+ \draw [color=fifored, very thick, ->] (0.5,0.5) -- (5.5,0.5);
+ \draw [color=fifored, very thick] (0.5,0) -- (0.5,0.5);
+ \draw [color=fifored, very thick] (5.5,0.5) -- (5.5,0);
+ \node[color=fifored, font=\Large] at (3,0.9) {Mal};
 
  \end{circuitikz}
+ \shorthandon{>}
  \caption{Ejemplo de relaciones entre eventos}
  \label{fig:relaciones-eventos}
  \end{figure}
