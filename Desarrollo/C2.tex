@@ -1,1 +1,36 @@
 \section{Capítulo 2: Arquitectura en Sistemas distribuidos}
+
+
+\subsection{Introducción a arquitectura en Sistemas Distribuidos}
+
+Se define una arquitectura como la estructura interna de un sistema que comprende aspectos de diseño de alto nivel tales como:
+
+\begin{itemize}
+  \item \textbf{Componentes:} Bloques de construcción y sus propiedades
+  \item \textbf{Relaciones:} Conexiones entre componentes (se hace mediante conectores e interfaces) y el entorno del sistema
+  \item \textbf{Principios:} Guía de diseño con reglas y restricciones para cada componente y conector para facilitar la evolución del sistema
+\end{itemize}
+
+El fin de definir un plan para construir sistemas robustos, eficientes y mantenibles que consideren requisitos funciones como no funcionales, además nos sirven como puente entre el diseño técnico y los objetivos operativos del sistema para así garantizar un comportamiento acorde a requisitos y restricciones.
+
+Como partes de una arquitectura consideramos las siguientes entidades:
+
+\begin{itemize}
+  \item \textbf{Componente:} Unidad modular con interfaces bien definidas, reemplazable y reusable
+  \item \textbf{Conector:} Enlace de comunicación entre componentes que media entre la coordinación o cooperación 
+\end{itemize}
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{img/arquitectura.png}
+  \caption{Ejemplo de arquitectura considerando distintos tipos de interacción entre componentes y conectores}
+  \label{fig:arquitectura}
+\end{figure}
+
+\textbf{Componentes}\\
+Máquinas o procesadores, Procesos, Repositorio de datos o memoria, Objetos (e.g. Corba, Java RMI), Componentes (e.g. DCOM, Contenedor), Recursos (e.g. en HTTP)
+
+\textbf{Conectores}\\
+Invocaciones remotas (RPC, RMI, WS), Pipe \& streams / Filters (e.g. UNIX), Sockets (e.g. TCP o UDP), Conector a base de datos (e.g. ODBC), Broker de peticiones (e.g. ORB en Corba), Broker de mensajes (e.g. ESB), Bus de datos (e.g. \textit{event streaming})
